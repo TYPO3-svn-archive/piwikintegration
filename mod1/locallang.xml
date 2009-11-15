@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for module &quot;web_txpiwikintegrationM1&quot;</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="title">Statistics</label>
+			<label index="function1">Overview</label>
+			<label index="function2">Direct Statistics Access</label>
+			<label index="function3">Data for API Use</label>
+		
+			<label index="dashboard_browserfamilies">Browser families</label>
+			<label index="dashboard_visitors">Visitors</label>
+			<label index="dashboard_pages">Seiten</label>
+			<label index="dashboard_keywords">Keywords</label>
+			<label index="dashboard_frequencyoverview">Frequency</label>
+			<label index="dashboard_countries">Countries</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="title">Statistik</label>
+			<label index="function1">Übersicht</label>
+			<label index="function2">Direkter Zugriff auf die Statistiken</label>
+			<label index="function3">Daten für die PIWIK API</label>
+	
+			<label index="dashboard_browserfamilies">Browser Familien</label>
+			<label index="dashboard_visitors">Besucherentwicklung</label>
+			<label index="dashboard_pages">Seiten</label>
+			<label index="dashboard_keywords">Schlüsselwörter</label>
+			<label index="dashboard_frequencyoverview">Frequenzverhalten</label>
+			<label index="dashboard_countries">Länder</label>
+
+		</languageKey>
+	</data>
+</T3locallang>

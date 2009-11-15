@@ -1,0 +1,4 @@
+config.tx_piwikintegration {
+	piwik_siteId = {$usr_piwik_id}
+	piwik_siteId2= {$usr_name}
+}
