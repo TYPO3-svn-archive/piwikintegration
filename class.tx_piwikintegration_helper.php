@@ -97,6 +97,7 @@
 			require_once PIWIK_INCLUDE_PATH .'/core/Loader.php';
 			require_once('core/Piwik.php');
 			require_once('core/Config.php');
+			require_once('core/PluginsManager.php');
 			Piwik::createConfigObject(PIWIK_INCLUDE_PATH.'config/config.ini.php');
 			$piwikConfig = Zend_Registry::get('config'); 
 			
@@ -149,6 +150,15 @@
 					$GLOBALS['TYPO3_DB']->admin_query($tableQuery);
 				}
 			}
+			
+			//just another idea how it can be done
+			#$installer = new Piwik_Installation_Controller();
+			#$installer->session->currentStepDone = 'tablesCreation';
+			#$installer->tablesCreation();
+			
+			#$step = Piwik_Common::getRequestVar('action', 'tablesCreation', 'string');
+			#$controller = new Piwik_Installation_Controller();
+			#$controller->$step();
 		}
 		/**
 		 * This function makes a page statistics accessable for a user
