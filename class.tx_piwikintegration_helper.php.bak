@@ -254,7 +254,7 @@
 		}
 		function getPiwikJavaScriptCodeForSite($siteId) {
 			$this->initPiwik();
-			$content=Piwik::getJavascriptCode($this->session->site_idSite, $this->getPiwikBaseURL());
+			$content=Piwik::getJavascriptCode($siteId, $this->getPiwikBaseURL());
 			return $content;
 		}
 		function getPiwikJavaScriptCodeForPid($uid) {
@@ -264,7 +264,8 @@
 			$this->initPiwik();
 			$path = Piwik_Url::getCurrentUrlWithoutFileName();
 			$path = dirname($path);
-			$path.='/typo3conf/piwik/';
+			$path.='/typo3conf/piwik/piwik/';
+			$path = 'http://localhost/t3alpha4.3/typo3conf/piwik/piwik/';
 			return $path;
 		}
 	}

@@ -41,10 +41,10 @@ class tx_piwikintegration	 {
 		$this->extConf = $params['pObj']->config['config']['tx_piwikintegration.'];
 		
 		$piwikCode     = $this->piwikHelper->getPiwikJavaScriptCodeForSite($this->extConf['piwik_siteId']); 
-		$piwikCode     = str_replace('&gt;','>',$piwikCode);
-		$piwikCode     = str_replace('&lt;','<',$piwikCode);
-		$piwikCode     = str_replace('&quot;','"',$piwikCode);
-		$piwikCode     = str_replace('<br />','',$piwikCode);
+		#$piwikCode     = str_replace('&gt;','>',$piwikCode);
+		#$piwikCode     = str_replace('&lt;','<',$piwikCode);
+		#$piwikCode     = str_replace('&quot;','"',$piwikCode);
+		#$piwikCode     = str_replace('<br />','',$piwikCode);
 
         $params['pObj']->content = str_replace('</body>',$piwikCode.'</body>',$params['pObj']->content);
 

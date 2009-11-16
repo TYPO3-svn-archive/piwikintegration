@@ -264,7 +264,9 @@
 			$this->initPiwik();
 			$path = Piwik_Url::getCurrentUrlWithoutFileName();
 			$path = dirname($path);
-			$path.='/typo3conf/piwik/';
+			$path.='/typo3conf/piwik/piwik/';
+			//need to be retrieved different for fe, so that it works ...
+			$path = 'http://localhost/t3alpha4.3/typo3conf/piwik/piwik/';
 			return $path;
 		}
 	}
