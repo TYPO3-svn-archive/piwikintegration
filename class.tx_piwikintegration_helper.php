@@ -1,6 +1,33 @@
 <?php
 	class tx_piwikintegration_helper {
 		var $piwik_id = array();
+		function initPiwik() {
+			//load files from piwik
+			if(!defined('PIWIK_INCLUDE_PATH'))
+			{
+				define('PIWIK_INCLUDE_PATH', PATH_site.'typo3conf/piwik/piwik/');
+				define('PIWIK_USER_PATH'   , PATH_site.'typo3conf/piwik/piwik/');
+			}
+			if(!defined('PIWIK_INCLUDE_SEARCH_PATH'))
+			{
+				define('PIWIK_INCLUDE_SEARCH_PATH',
+					  PIWIK_INCLUDE_PATH . '/core'
+					. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/libs'
+					. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/plugins' 
+					. PATH_SEPARATOR . get_include_path());
+				@ini_set('include_path', PIWIK_INCLUDE_SEARCH_PATH);
+				@set_include_path(PIWIK_INCLUDE_SEARCH_PATH);
+			}
+			set_include_path(PIWIK_INCLUDE_PATH 
+						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/libs/'
+						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/plugins/'
+						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/core/'
+						. PATH_SEPARATOR . get_include_path());
+			require_once PIWIK_INCLUDE_PATH .'/core/Loader.php';
+			require_once('core/Piwik.php');
+			require_once('core/Config.php');
+			require_once('core/PluginsManager.php');
+		}
 		function checkPiwikInstalled() {
 			if(file_exists(t3lib_div::getFileAbsFileName('typo3conf/piwik/piwik/config/config.ini.php'))) {
 				return true;
@@ -71,31 +98,8 @@
 			       $typo_db_username,
 			       $typo_db_password,
 			       $typo_db;
-			//load files from piwik
-			if(!defined('PIWIK_INCLUDE_PATH'))
-			{
-				define('PIWIK_INCLUDE_PATH', PATH_site.'typo3conf/piwik/piwik/');
-				define('PIWIK_USER_PATH'   , PATH_site.'typo3conf/piwik/piwik/');
-			}
-			if(!defined('PIWIK_INCLUDE_SEARCH_PATH'))
-			{
-				define('PIWIK_INCLUDE_SEARCH_PATH',
-					  PIWIK_INCLUDE_PATH . '/core'
-					. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/libs'
-					. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/plugins' 
-					. PATH_SEPARATOR . get_include_path());
-				@ini_set('include_path', PIWIK_INCLUDE_SEARCH_PATH);
-				@set_include_path(PIWIK_INCLUDE_SEARCH_PATH);
-			}
-			set_include_path(PIWIK_INCLUDE_PATH 
-						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/libs/'
-						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/plugins/'
-						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/core/'
-						. PATH_SEPARATOR . get_include_path());
-			require_once PIWIK_INCLUDE_PATH .'/core/Loader.php';
-			require_once('core/Piwik.php');
-			require_once('core/Config.php');
-			require_once('core/PluginsManager.php');
+			$this->initPiwik();
+			//makeConfigObject
 			Piwik::createConfigObject(PIWIK_INCLUDE_PATH.'config/config.ini.php');
 			$piwikConfig = Zend_Registry::get('config'); 
 			
@@ -247,6 +251,21 @@
 				}
 			$this->piwik_id[$uid] = $id;
 			return $this->piwik_id[$uid];
+		}
+		function getPiwikJavaScriptCodeForSite($siteId) {
+			$this->initPiwik();
+			$content=Piwik::getJavascriptCode($siteId, $this->getPiwikBaseURL());
+			return $content;
+		}
+		function getPiwikJavaScriptCodeForPid($uid) {
+			return $this->getPiwikJavaScriptCodeForSite($this->getPiwikSiteIdForPid($uid));
+		}
+		function getPiwikBaseURL() {
+			$this->initPiwik();
+			$path = Piwik_Url::getCurrentUrlWithoutFileName();
+			$path = dirname($path);
+			$path.='/typo3conf/piwik/';
+			return $path;
 		}
 	}
 ?>

@@ -180,13 +180,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 									   .dashboardcol    {width:410px;float:left;}
 									   .widgetIframe h2 {background-color:white; display:inline;margin:5px;}';
 						$content.='</style>';
-						$widgets  = array (
-							#'overview'          => '<div id="widgetIframe"><iframe width="100%" height="350" src="'.t3lib_extMgm::extRelPath('piwikintegration').'piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=VisitsSummary&actionToWidgetize=index&idSite=5&period=week&date='.$date.'&disableLink=1" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
-							#'live'              => '<div id="widgetIframe"><iframe width="100%" height="350" src="'.t3lib_extMgm::extRelPath('piwikintegration').'piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=Live&actionToWidgetize=widget&idSite=5&period=week&date='.$date.'&disableLink=1" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
-							#'browserfamilies'   => '<div id="widgetIframe"><iframe width="100%" height="350" src="'.t3lib_extMgm::extRelPath('piwikintegration').'piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=UserSettings&actionToWidgetize=getBrowserType&idSite='.$this->getPiwikId().'&period=week&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
-							#'countries'         => '<div id="widgetIframe"><iframe width="100%" height="350" src="'.t3lib_extMgm::extRelPath('piwikintegration').'piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=GeoIP&actionToWidgetize=getGeoIPCountry&idSite='.$this->getPiwikId().'&period=week&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
-							
-	
+						$widgets  = array (							
 							'visitors'          => '<div id="widgetIframe"><iframe width="100%" height="350" src="../typo3conf/piwik/piwik/index.php?module=Widgetize&action=iframe&columns[]=nb_visits&moduleToWidgetize=VisitsSummary&actionToWidgetize=getEvolutionGraph&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
 							'frequencyoverview' => '<div id="widgetIframe"><iframe width="100%" height="350" src="../typo3conf/piwik/piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=VisitFrequency&actionToWidgetize=getSparklines&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',									
 							'pages'             => '<div id="widgetIframe"><iframe width="100%" height="350" src="../typo3conf/piwik/piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=Actions&actionToWidgetize=getActions&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
@@ -223,7 +217,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 						 * display iframe with piwik
 						 */								 														
 						$this->content.='<object id="piwik" type="text/html" data="../typo3conf/piwik/piwik/index.php?module=CoreHome&action=index&period=week&date=yesterday&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'" width="100%" height="97%"><p>Oops! That didn´t work...</p></object>';
-				break;
+					break;
 					case 3:
 						if(t3lib_div::_POST('submit')=='Update') {
 							$newCode = md5(microtime());
@@ -237,7 +231,9 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 							$BE_USER->user['tx_piwikintegration_api_code'] = $newCode;
 						}
 						$content.='Your API Code: '.$BE_USER->user['tx_piwikintegration_api_code'].'<br />';
-						$content.='Your Piwik URL: http://'.$_SERVER['SERVER_NAME'].'/'.t3lib_extMgm::siteRelPath('piwikintegration').'piwik/';
+						$content.='Your Piwik URL: '.$this->piwikHelper->getPiwikBaseURL();
+						$content.='<h3>JavaScriptCode for Piwik</h3>';
+						$content.='<p><code>'.$this->piwikHelper->getPiwikJavaScriptCodeForPid($this->pageinfo['uid']).'</code></p>';
 						$this->content.=$this->doc->section($LANG->getLL('function3'),$content,0,1);
 						
 					break;
