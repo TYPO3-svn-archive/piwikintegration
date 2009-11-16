@@ -92,8 +92,6 @@
 						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/plugins/'
 						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/core/'
 						. PATH_SEPARATOR . get_include_path());
-			#error_reporting(E_ALL);
-			#ini_set('display_errors', 1);
 			require_once PIWIK_INCLUDE_PATH .'/core/Loader.php';
 			require_once('core/Piwik.php');
 			require_once('core/Config.php');
@@ -134,31 +132,24 @@
 				unset($plugins[$key_login]);
 			}
 			//load typo3login
-			if($key_t3login===false) {
-				$plugins[]='TYPO3Login';
-			}
-			#$piwikConfig->Plugins = new Zend_Config($plugins);
-			$piwikConfig->Plugins = $plugins;
-			
-			#check tables and evt. create them
-			#problem plugin tables ...
-			$existingTables = $GLOBALS['TYPO3_DB']->admin_get_tables();
-			Piwik::createConfigObject(PIWIK_INCLUDE_PATH.'config/config.ini.php');
-			$neededTables   = Piwik::getTablesCreateSql();;
-			foreach($neededTables as $table=>$tableQuery) {
-				if(!array_key_exists($table,$existingTables)) {
-					$GLOBALS['TYPO3_DB']->admin_query($tableQuery);
+				if($key_t3login===false) {
+					$plugins[]='TYPO3Login';
 				}
-			}
+				$piwikConfig->Plugins = $plugins;
 			
-			//just another idea how it can be done
-			#$installer = new Piwik_Installation_Controller();
-			#$installer->session->currentStepDone = 'tablesCreation';
-			#$installer->tablesCreation();
+			//create PiwikTables, check wether base tables already exist 
+				Piwik::createDatabaseObject();
+				$tablesInstalled = Piwik::getTablesInstalled();
+				$tablesToInstall = Piwik::getTablesNames();
+				if(count($tablesInstalled) == 0) {
+					Piwik::createTables();
+					Piwik::createAnonymousUser();
+				}
+				
 			
-			#$step = Piwik_Common::getRequestVar('action', 'tablesCreation', 'string');
-			#$controller = new Piwik_Installation_Controller();
-			#$controller->$step();
+			//set Piwikversion
+				$updater = new Piwik_Updater();
+				$updater->recordComponentSuccessfullyUpdated('core', Piwik_Version::VERSION);
 		}
 		/**
 		 * This function makes a page statistics accessable for a user
@@ -211,29 +202,49 @@
 			if(isset($this->piwik_id[$uid])) {
 				return $this->piwik_id[$uid];
 			}
-			$template_uid = 0;
-			$pageId = $uid;
-			$tmpl = t3lib_div::makeInstance("t3lib_tsparser_ext");	// Defined global here!
-			$tmpl->tt_track = 0;	// Do not log time-performance information
-			$tmpl->init();
-
-			$tplRow = $tmpl->ext_getFirstTemplate($pageId,$template_uid);
-			if (is_array($tplRow) || 1)	{	// IF there was a template...
-					// Gets the rootLine
-				$sys_page = t3lib_div::makeInstance("t3lib_pageSelect");
-				$rootLine = $sys_page->getRootLine($pageId);
-				$tmpl->runThroughTemplates($rootLine,$template_uid);	// This generates the constants/config + hierarchy info for the template.
-				$theConstants = $tmpl->generateConfig_constants();	// The editable constants are returned in an array.
-				$tmpl->ext_categorizeEditableConstants($theConstants);	// The returned constants are sorted in categories, that goes into the $tmpl->categories array
-				$tmpl->ext_regObjectPositions($tplRow["constants"]);		// This array will contain key=[expanded constantname], value=linenumber in template. (after edit_divider, if any)
-			}
-			if($tmpl->setup['constants']['usr_piwik_id']) {
-				$id = intval($tmpl->setup['constants']['usr_piwik_id']);
-			} elseif ($tmpl->setup['constants']['usr_name']) {
-				$id =  intval($tmpl->setup['constants']['usr_name']);
-			} else {
-				$id = 0;
-			}
+			//parse ts template
+				$template_uid = 0;
+				$pageId = $uid;
+				$tmpl = t3lib_div::makeInstance("t3lib_tsparser_ext");	// Defined global here!
+				$tmpl->tt_track = 0;	// Do not log time-performance information
+				$tmpl->init();
+	
+				$tplRow = $tmpl->ext_getFirstTemplate($pageId,$template_uid);
+				if (is_array($tplRow) || 1)	{	// IF there was a template...
+						// Gets the rootLine
+					$sys_page = t3lib_div::makeInstance("t3lib_pageSelect");
+					$rootLine = $sys_page->getRootLine($pageId);
+					$tmpl->runThroughTemplates($rootLine,$template_uid);	// This generates the constants/config + hierarchy info for the template.
+					$theConstants = $tmpl->generateConfig_constants();	// The editable constants are returned in an array.
+					$tmpl->ext_categorizeEditableConstants($theConstants);	// The returned constants are sorted in categories, that goes into the $tmpl->categories array
+					$tmpl->ext_regObjectPositions($tplRow["constants"]);		// This array will contain key=[expanded constantname], value=linenumber in template. (after edit_divider, if any)
+				}
+				if($tmpl->setup['constants']['usr_piwik_id']) {
+					$id = intval($tmpl->setup['constants']['usr_piwik_id']);
+				} elseif ($tmpl->setup['constants']['usr_name']) {
+					$id =  intval($tmpl->setup['constants']['usr_name']);
+				} else {
+					$id = 0;
+				}
+			//check wether site already exists in piwik db
+				$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+					'*',
+					'tx_piwikintegration_site',
+					'idsite="'.intval($id),
+					'',
+					'',
+					'0,1'
+				);
+				if(count($erg)==0) {
+					$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+						'tx_piwikintegration_site',
+						array(
+							'idsite'=> $id,
+							'main_url'=> 'http://'.$_SERVER["SERVER_NAME"],
+							'name'    => 'Customer '.$id,
+						)
+					);
+				}
 			$this->piwik_id[$uid] = $id;
 			return $this->piwik_id[$uid];
 		}

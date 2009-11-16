@@ -167,7 +167,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 				return;
 			} elseif(!$this->piwikHelper->checkPiwikInstalled()) {
 				$this->piwikHelper->makePiwikInstalled();
-				$this->content.='need to install piwik';
+				$this->content.='<meta http-equiv="refresh" content="1" />';
 			} elseif($this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid'])) {
 				$this->piwikHelper->correctUserRightsForPid($this->pageinfo['uid']);
 				$this->piwikHelper->makePiwikConfigured();
@@ -187,10 +187,10 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 							#'countries'         => '<div id="widgetIframe"><iframe width="100%" height="350" src="'.t3lib_extMgm::extRelPath('piwikintegration').'piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=GeoIP&actionToWidgetize=getGeoIPCountry&idSite='.$this->getPiwikId().'&period=week&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
 							
 	
-							'visitors'          => '<div id="widgetIframe"><iframe width="100%" height="350" src="'.t3lib_extMgm::extRelPath('piwikintegration').'piwik/index.php?module=Widgetize&action=iframe&columns[]=nb_visits&moduleToWidgetize=VisitsSummary&actionToWidgetize=getEvolutionGraph&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
-							'frequencyoverview' => '<div id="widgetIframe"><iframe width="100%" height="350" src="'.t3lib_extMgm::extRelPath('piwikintegration').'piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=VisitFrequency&actionToWidgetize=getSparklines&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',									
-							'pages'             => '<div id="widgetIframe"><iframe width="100%" height="350" src="'.t3lib_extMgm::extRelPath('piwikintegration').'piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=Actions&actionToWidgetize=getActions&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
-							'keywords'          => '<div id="widgetIframe"><iframe width="100%" height="350" src="'.t3lib_extMgm::extRelPath('piwikintegration').'piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=Referers&actionToWidgetize=getKeywords&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
+							'visitors'          => '<div id="widgetIframe"><iframe width="100%" height="350" src="../typo3conf/piwik/piwik/index.php?module=Widgetize&action=iframe&columns[]=nb_visits&moduleToWidgetize=VisitsSummary&actionToWidgetize=getEvolutionGraph&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
+							'frequencyoverview' => '<div id="widgetIframe"><iframe width="100%" height="350" src="../typo3conf/piwik/piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=VisitFrequency&actionToWidgetize=getSparklines&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',									
+							'pages'             => '<div id="widgetIframe"><iframe width="100%" height="350" src="../typo3conf/piwik/piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=Actions&actionToWidgetize=getActions&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
+							'keywords'          => '<div id="widgetIframe"><iframe width="100%" height="350" src="../typo3conf/piwik/piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=Referers&actionToWidgetize=getKeywords&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
 	
 	
 						);

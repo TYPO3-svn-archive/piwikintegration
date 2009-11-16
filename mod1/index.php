@@ -167,7 +167,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 				return;
 			} elseif(!$this->piwikHelper->checkPiwikInstalled()) {
 				$this->piwikHelper->makePiwikInstalled();
-				$this->content.='need to install piwik';
+				$this->content.='<meta http-equiv="refresh" content="1" />Piwik is now installed, wait a moment, to let me reload the page ;) ';
 			} elseif($this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid'])) {
 				$this->piwikHelper->correctUserRightsForPid($this->pageinfo['uid']);
 				$this->piwikHelper->makePiwikConfigured();
