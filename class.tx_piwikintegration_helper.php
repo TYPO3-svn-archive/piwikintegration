@@ -85,7 +85,43 @@
 		 * @return	[type]		...
 		 */
 		function makePiwikPatched() {
-			copy(t3lib_extMgm::extRelPath('piwikintegration').'piwik_patches/config/config.ini.php',PATH_site.'typo3conf/piwik/piwik/config/config.ini.php');
+			global $FILEMOUNTS, $TYPO3_CONF_VARS, $BE_USER;
+			#copy(t3lib_extMgm::extRelPath('piwikintegration').'piwik_patches/config/config.ini.php',PATH_site.'typo3conf/piwik/piwik/config/config.ini.php');
+			//recursive directory copy is not supported under windows ... so i implement is myself!!!
+			$source = t3lib_extMgm::extPath('piwikintegration').'piwik_patches/';
+			$dest   = PATH_site.'typo3conf/piwik/piwik/';
+			$cmd    = array();
+			$t = t3lib_div::getAllFilesAndFoldersInPath(
+				array(),
+				$source,
+				'',
+				true,
+				99
+			);
+			foreach($t as $entry) {
+				$shortEntry = str_replace($source,'',$entry);
+				if($shortEntry!='' && $shortEntry!='.')
+				if(is_dir($entry)) {		
+					$cmd['newfolder'][] = array(
+						'data'   => basename($shortEntry),
+						'target' => dirname($dest.$shortEntry),
+					);
+					mkdir($dest.$shortEntry);
+				} elseif(is_file($entry)) {
+					$cmd['copy'][] = array(
+						'data'   => $entry,
+						'target' => $dest.$shortEntry,
+					);
+					copy($entry,$dest.$shortEntry);
+				}
+			}
+			#$this->fileProcessor = t3lib_div::makeInstance('t3lib_extFileFunctions');
+			#$this->fileProcessor->init($FILEMOUNTS, $TYPO3_CONF_VARS['BE']['fileExtensions']);
+			#$this->fileProcessor->init_actionPerms($BE_USER->user['fileoper_perms']);
+			#$this->fileProcessor->init_actionPerms(31);
+			#$this->fileProcessor->start($cmd);
+			#$this->fileProcessor->processData();
+			#$this->fileProcessor->printLogErrorMessages();
 		}
 
 		/**
