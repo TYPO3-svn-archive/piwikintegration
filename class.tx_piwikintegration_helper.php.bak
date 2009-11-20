@@ -254,15 +254,9 @@
 						// Gets the rootLine
 					$sys_page = t3lib_div::makeInstance("t3lib_pageSelect");
 					$rootLine = $sys_page->getRootLine($pageId);
-					$tmpl->runThroughTemplates($rootLine,$template_uid);	// This generates the constants/config + hierarchy info for the template.
-					$theConstants = $tmpl->generateConfig_constants();	// The editable constants are returned in an array.
-					$tmpl->ext_categorizeEditableConstants($theConstants);	// The returned constants are sorted in categories, that goes into the $tmpl->categories array
-					$t = $tmpl->ext_regObjectPositions($tplRow["config"]);		// This array will contain key=[expanded constantname], value=linenumber in template. (after edit_divider, if any)
+					$tmpl->runThroughTemplates($rootLine);	// This generates the constants/config + hierarchy info for the template.
+					$tmpl->generateConfig();
 				}
-				#t3lib_div::debug($tmpl);
-				#$tmpl->flattenSetup($tmpl,'',1);
-				$tmpl->generateConfig();
-				t3lib_div::debug($tmpl->setup);
 				if($tmpl->setup['config.']['tx_piwik.']['piwik_idsite']) {
 					$id = intval($tmpl->setup['config.']['tx_piwik.']['piwik_idsite']);
 				} else {

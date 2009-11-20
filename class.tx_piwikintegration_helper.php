@@ -184,12 +184,12 @@
 				if(count($tablesInstalled) == 0) {
 					Piwik::createTables();
 					Piwik::createAnonymousUser();
+					$updater = new Piwik_Updater();
+					$updater->recordComponentSuccessfullyUpdated('core', Piwik_Version::VERSION);
 				}
 				
 			
 			//set Piwikversion
-				$updater = new Piwik_Updater();
-				$updater->recordComponentSuccessfullyUpdated('core', Piwik_Version::VERSION);
 		}
 		/**
 		 * This function makes a page statistics accessable for a user
