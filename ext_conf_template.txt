@@ -1,0 +1,2 @@
+  # cat=basic/enable; type=boolean; label=EXPERIMENTAL - Enable independent mode: Enable independent mode of piwikintegration, that means, the JS is rendered without additional extensions, if not enabled an additional extension is needed to render the fe output for piwik - it's suggested to use EXT:piwik for FE-Renderin 
+enableModule = 0

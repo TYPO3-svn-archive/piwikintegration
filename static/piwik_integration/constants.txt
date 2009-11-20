@@ -1,2 +1,0 @@
-usr_piwik_id = 0
-usr_name     = 0

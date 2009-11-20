@@ -85,8 +85,6 @@
 		 * @return	[type]		...
 		 */
 		function makePiwikPatched() {
-			global $FILEMOUNTS, $TYPO3_CONF_VARS, $BE_USER;
-			#copy(t3lib_extMgm::extRelPath('piwikintegration').'piwik_patches/config/config.ini.php',PATH_site.'typo3conf/piwik/piwik/config/config.ini.php');
 			//recursive directory copy is not supported under windows ... so i implement is myself!!!
 			$source = t3lib_extMgm::extPath('piwikintegration').'piwik_patches/';
 			$dest   = PATH_site.'typo3conf/piwik/piwik/';
@@ -115,6 +113,8 @@
 					copy($entry,$dest.$shortEntry);
 				}
 			}
+			#copy(t3lib_extMgm::extRelPath('piwikintegration').'piwik_patches/config/config.ini.php',PATH_site.'typo3conf/piwik/piwik/config/config.ini.php');
+			#global $FILEMOUNTS, $TYPO3_CONF_VARS, $BE_USER;
 			#$this->fileProcessor = t3lib_div::makeInstance('t3lib_extFileFunctions');
 			#$this->fileProcessor->init($FILEMOUNTS, $TYPO3_CONF_VARS['BE']['fileExtensions']);
 			#$this->fileProcessor->init_actionPerms($BE_USER->user['fileoper_perms']);
@@ -254,15 +254,11 @@
 						// Gets the rootLine
 					$sys_page = t3lib_div::makeInstance("t3lib_pageSelect");
 					$rootLine = $sys_page->getRootLine($pageId);
-					$tmpl->runThroughTemplates($rootLine,$template_uid);	// This generates the constants/config + hierarchy info for the template.
-					$theConstants = $tmpl->generateConfig_constants();	// The editable constants are returned in an array.
-					$tmpl->ext_categorizeEditableConstants($theConstants);	// The returned constants are sorted in categories, that goes into the $tmpl->categories array
-					$tmpl->ext_regObjectPositions($tplRow["constants"]);		// This array will contain key=[expanded constantname], value=linenumber in template. (after edit_divider, if any)
+					$tmpl->runThroughTemplates($rootLine);	// This generates the constants/config + hierarchy info for the template.
+					$tmpl->generateConfig();
 				}
-				if($tmpl->setup['constants']['usr_piwik_id']) {
-					$id = intval($tmpl->setup['constants']['usr_piwik_id']);
-				} elseif ($tmpl->setup['constants']['usr_name']) {
-					$id =  intval($tmpl->setup['constants']['usr_name']);
+				if($tmpl->setup['config.']['tx_piwik.']['piwik_idsite']) {
+					$id = intval($tmpl->setup['config.']['tx_piwik.']['piwik_idsite']);
 				} else {
 					$id = 0;
 				}
