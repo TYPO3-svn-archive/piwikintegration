@@ -219,7 +219,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 						$this->content.='<object id="piwik" type="text/html" data="../typo3conf/piwik/piwik/index.php?module=CoreHome&action=index&period=week&date=yesterday&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'" width="100%" height="97%"><p>Oops! That didn´t work...</p></object>';
 					break;
 					case 3:
-						if(t3lib_div::_POST('submit')=='Update') {
+						if(t3lib_div::_GET('refreshAPICode')=='1') {
 							$newCode = md5(microtime());
 							$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 								'be_users',
@@ -230,7 +230,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 							);
 							$BE_USER->user['tx_piwikintegration_api_code'] = $newCode;
 						}
-						$content.='Your API Code: '.$BE_USER->user['tx_piwikintegration_api_code'].'<br />';
+						$content.='Your API Code: '.$BE_USER->user['tx_piwikintegration_api_code'].' <a href="?id='.intval(t3lib_div::_GET('id')).'&M=web_txpiwikintegrationM1&SET[function]=3&refreshAPICode=1">[renew]</a><br />';
 						$content.='Your Piwik URL: '.$this->piwikHelper->getPiwikBaseURL();
 						$content.='<h3>JavaScriptCode for Piwik</h3>';
 						$content.='<p><code>'.$this->piwikHelper->getPiwikJavaScriptCodeForPid($this->pageinfo['uid']).'</code></p>';
