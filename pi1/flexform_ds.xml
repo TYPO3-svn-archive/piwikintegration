@@ -1,0 +1,84 @@
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+	</meta>
+	<sheets>
+		<sDEF>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:piwikintegration/pi1/locallang.xml:flexform_sheet_sDef</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					<idsite>
+						<TCEforms>
+							<label>LLL:EXT:piwikintegration/pi1/locallang.xml:flexform_idsite_selection</label>
+							<config>
+								<type>select</type>
+								<items type="array">
+								</items>
+								<itemsProcFunc>EXT:piwikintegration/class.tx_piwikintegration_helper.php:tx_piwikintegration_helper->getSitesForFlexForm</itemsProcFunc>
+								<iconsInOptionTags>1</iconsInOptionTags>
+								<noIconsBelowSelect>1</noIconsBelowSelect>
+								<minitems>0</minitems>
+								<maxitems>1</maxitems>
+							</config>
+						</TCEforms>
+					</idsite>
+					<widget>
+						<TCEforms>
+							<label>LLL:EXT:piwikintegration/pi1/locallang.xml:flexform_widget_selection</label>
+							<config>
+								<type>select</type>
+								<items type="array">
+								</items>
+								<itemsProcFunc>EXT:piwikintegration/class.tx_piwikintegration_helper.php:tx_piwikintegration_helper->getWidgetsForFlexForm</itemsProcFunc>
+								<iconsInOptionTags>1</iconsInOptionTags>
+								<noIconsBelowSelect>1</noIconsBelowSelect>
+								<minitems>0</minitems>
+								<maxitems>1</maxitems>
+							</config>
+						</TCEforms>
+					</widget>
+					<period>
+						<TCEforms>
+							<label>LLL:EXT:piwikintegration/pi1/locallang.xml:flexform_period</label>
+							<config>
+								<type>select</type>
+								<items type="array">
+									<numIndex index="0" type="array">
+										<numIndex index="0">LLL:EXT:piwikintegration/pi1/locallang.xml:flexform_period_day</numIndex>
+										<numIndex index="1">day</numIndex>
+									</numIndex>
+									<numIndex index="1" type="array">
+										<numIndex index="0">LLL:EXT:piwikintegration/pi1/locallang.xml:flexform_period_week</numIndex>
+										<numIndex index="1">week</numIndex>
+									</numIndex>
+									<numIndex index="2" type="array">
+										<numIndex index="0">LLL:EXT:piwikintegration/pi1/locallang.xml:flexform_period_month</numIndex>
+										<numIndex index="1">month</numIndex>
+									</numIndex>
+									<numIndex index="3" type="array">
+										<numIndex index="0">LLL:EXT:piwikintegration/pi1/locallang.xml:flexform_period_year</numIndex>
+										<numIndex index="1">year</numIndex>
+									</numIndex>
+								</items>
+								<minitems>0</minitems>
+								<maxitems>1</maxitems>
+							</config>
+						</TCEforms>
+					</period>
+					<div_height>
+						<TCEforms>
+							<label>LLL:EXT:piwikintegration/pi1/locallang.xml:flexform_div_height</label>
+							<config>
+								<type>input</type>
+								<size>4</size>
+							</config>
+						</TCEforms>
+					</div_height>
+				</el>
+			</ROOT>
+		</sDEF>
+    </sheets>
+</T3DataStructure>

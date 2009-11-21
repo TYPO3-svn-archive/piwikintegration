@@ -234,8 +234,17 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 						$content.='Your Piwik URL: '.$this->piwikHelper->getPiwikBaseURL();
 						$content.='<h3>JavaScriptCode for Piwik</h3>';
 						$content.='<p><code>'.$this->piwikHelper->getPiwikJavaScriptCodeForPid($this->pageinfo['uid']).'</code></p>';
-						$this->content.=$this->doc->section($LANG->getLL('function3'),$content,0,1);
 						
+						#$widgets=$this->piwikHelper->getPiwikWidgetsForPid($this->pageinfo['uid']);
+						#foreach($widgets as $plugin) {
+						#	foreach($plugin as $widget) {
+						#		#$content.= '<div id="widgetIframe"><iframe width="100%" height="350" src="http://localhost/t3alpha4.3/typo3conf/piwik/piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize='.$widget['parameters']['module'].'&actionToWidgetize='.$widget['parameters']['action'].'&idSite=1&period=week&date=2009-11-20&disableLink=1" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>';
+						#		#$content.= Piwik_FrontController::getInstance()->fetchDispatch( $widget['parameters']['module'], $widget['parameters']['action'], $widget['parameters'])."<br>";
+						#		
+						#	}
+						#}
+						#t3lib_div::debug($widgets);
+						$this->content.=$this->doc->section($LANG->getLL('function3'),$content,0,1);
 					break;
 				}
 			} else {

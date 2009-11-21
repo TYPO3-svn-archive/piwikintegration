@@ -1,4 +1,5 @@
 <?php
+	ini_set('display_errors',1);
 	class tx_piwikintegration_helper {
 		var $piwik_id = array();
 		function initPiwik() {
@@ -293,13 +294,59 @@
 			return $this->getPiwikJavaScriptCodeForSite($this->getPiwikSiteIdForPid($uid));
 		}
 		function getPiwikBaseURL() {
-			$this->initPiwik();
-			$path = Piwik_Url::getCurrentUrlWithoutFileName();
-			$path = dirname($path);
-			$path.='/typo3conf/piwik/piwik/';
+			if(TYPO3_MODE == 'BE') {
+				$this->initPiwik();
+				$path = Piwik_Url::getCurrentUrlWithoutFileName();
+				$path = dirname($path);
+				$path.='/typo3conf/piwik/piwik/';
+			} else {
+				$path = 'http://'.$_SERVER["SERVER_NAME"].dirname($_SERVER['SCRIPT_NAME']).'/typo3conf/piwik/piwik/';
+			}
 			//need to be retrieved different for fe, so that it works ...
-			$path = 'http://localhost/t3alpha4.3/typo3conf/piwik/piwik/';
+			#$path = 'http://localhost/t3alpha4.3/typo3conf/piwik/piwik/';
 			return $path;
+		}
+		function getPiwikWidgetsForPid($uid) {
+			return $this->getPiwikWidgets($this->getPiwikSiteIdForPid($uid));
+		}
+		function getPiwikWidgets() {
+			$this->initPiwik();
+			$controller = Piwik_FrontController::getInstance();
+			$controller->init();
+			$widgets = Piwik_GetWidgetsList();
+			return $widgets;
+		}
+		static function getWidgetsForFlexForm(&$PA,&$fobj) {
+			$PA['items'] = array();
+			$piwikhelper = new tx_piwikintegration_helper();
+			$widgets=$piwikhelper->getPiwikWidgets();
+			
+			foreach($widgets as $pluginCat => $plugin) {
+				foreach($plugin as $widget) {
+					$PA['items'][] = array(
+						$pluginCat.' : '.$widget['name'],
+						base64_encode(json_encode($widget['parameters'])),
+						'i/catalog.gif'
+					);
+				}
+			}
+		}
+		static function getSitesForFlexForm(&$PA,&$fobj) {
+			$erg = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'idsite,name,main_url',
+				'tx_piwikintegration_site',
+				'',
+				'',
+				'name, main_url, idsite'
+			);
+			$PA['items'] = array();
+			while(($site = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($erg)) !== false) {
+				$PA['items'][] = array(
+					$site['name'] ? $site['name'].' : '.$site['main_url'] : $site['main_url'],
+					$site['idsite'],
+					'i/domain.gif',
+				);
+			}
 		}
 	}
 ?>

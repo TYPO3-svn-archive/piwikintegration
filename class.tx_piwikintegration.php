@@ -38,9 +38,20 @@ class tx_piwikintegration	 {
         $this->piwikHelper = new tx_piwikintegration_helper();
 		// process the page with these options
         $content       = $params['pObj']->content;
-		$this->extConf = $params['pObj']->config['config']['tx_piwikintegration.'];
+		$this->extConf = $params['pObj']->config['config']['tx_piwik.'];
+		$beUserLogin   = $params['pObj']->beUserLogin;
 		
-		$piwikCode     = $this->piwikHelper->getPiwikJavaScriptCodeForSite($this->extConf['piwik_siteId']); 
+		//check wether there is a BE User loggged in, if yes avoid to display the tracking code!
+		if($beUserLogin == 1) {
+			return;
+		}
+		
+		//check wether needed parameters are set properly
+		if (!($this->extConf['piwik_idsite']) || !($this->extConf['piwik_host'])) {
+			return;
+		}
+		
+		$piwikCode     = $this->piwikHelper->getPiwikJavaScriptCodeForSite($this->extConf['piwik_idsite']); 
 		$piwikCode     = str_replace('&gt;','>',$piwikCode);
 		$piwikCode     = str_replace('&lt;','<',$piwikCode);
 		$piwikCode     = str_replace('&quot;','"',$piwikCode);
