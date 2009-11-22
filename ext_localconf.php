@@ -8,7 +8,7 @@ t3lib_extMgm::addPItoST43(
 	'list_type',
 	1
 );
-
+$TYPO3_CONF_VARS['EXTCONF']['templavoila']['mod1']['renderPreviewContentClass'][] = 'EXT:piwikintegration/pi1/class.tx_piwikintegration_pi1_templavoila_preview.php:tx_piwikintegration_pi1_templavoila_preview';
 
 if(TYPO3_MODE=='FE') {
 	$_EXTCONF = unserialize($_EXTCONF);
