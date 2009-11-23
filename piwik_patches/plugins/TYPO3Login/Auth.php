@@ -15,10 +15,9 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 	public function authenticate()
 	{
 		$rootLogin = Zend_Registry::get('config')->superuser->login;
-		
 		/**
 		 * TYPO3 cookie
-		 */	
+		 */
 		if(array_key_exists('be_typo_user',$_COOKIE)) {
 			$beUserCookie = $_COOKIE['be_typo_user'];
 		} else {
@@ -30,7 +29,7 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 						'SELECT ses_userid FROM be_sessions WHERE ses_id = ?',
 						array($beUserCookie)
 			);
-		} elseif($_REQUEST['token_auth']!='') {
+		} elseif((in_array('token_auth',$_REQUEST)) &&($_REQUEST['token_auth']!='')) {
 			// fetch UserId, if token is set
 			$beUserId = Zend_Registry::get('db')->fetchOne(
 						'SELECT uid FROM be_users WHERE tx_piwikintegration_api_code = ?',
@@ -57,8 +56,12 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 			//normal user?
 			return new Piwik_Auth_Result(Piwik_Auth_Result::SUCCESS, $beUserName, NULL );
 		}
+		if($this->login == 'anonymous') {
+			return new Piwik_Auth_Result(Piwik_Auth_Result::SUCCESS, 'anonymous', NULL );
+		}
+		
 		// no valid user
-		return new Piwik_Auth_Result( Piwik_Auth_Result::FAILURE, '', NULL );
+		return new Piwik_Auth_Result( Piwik_Auth_Result::FAILURE, $this->login, $this->token_auth );
 	}
 
 	public function setLogin($login)

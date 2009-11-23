@@ -63,7 +63,8 @@ class tx_piwikintegration_pi1 extends tslib_pibase {
 		$this->extConf['widget']['actionToWidgetize']= $this->extConf['widget']['action'];
 		$this->extConf['widget']['idSite']           = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'idsite');
 		$this->extConf['height']                     = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'div_height');
-		$this->extConf['widget']['date']   = 'yesterday';
+		$this->extConf['widget']['date']             = 'yesterday';
+		$this->extConf['widget']['viewDataTable']    = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'viewDataTable');
 		unset($this->extConf['widget']['module']);
 		unset($this->extConf['widget']['action']);
 		

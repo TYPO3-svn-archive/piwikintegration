@@ -9,16 +9,28 @@
 			<label index="piwikintegration_pi1">Piwik Widgetize</label>
 			<label index="pi1_wizard_title">Piwik Widgetize</label>
 			<label index="pi1_wizard_description">Add a widget from piwik to the frontend</label>
-			<label index="flexform_idsite_selection">Select Site</label>
+			<label index="flexform_idsite_selection">Select Site (you will see only pages with anonymous access enabled)</label>
 			<label index="flexform_widget_selection">Select Widget</label>
 			<label index="flexform_sheet_sDef">Piwik Widget Options</label>
 			<label index="flexform_div_height">Height of the div in FE</label>
+			<label index="flexform_viewDataTable">initial chart type displayed</label>
+			
+			<label index="flexform_viewDataTable_tableAllColumns">Table all Columns</label>
+			<label index="flexform_viewDataTable_tableGoals">Table Goals</label>
+			<label index="flexform_viewDataTable_table">Table</label>
+			<label index="flexform_viewDataTable_cloud">Cloud</label>
+			<label index="flexform_viewDataTable_graphPie">Pie Graph</label>
+			<label index="flexform_viewDataTable_graphVerticalBar">Vertical Graph</label>
+			<label index="flexform_viewDataTable_graphEvolution">Evolutiongraph</label>
+			
 			
 			<label index="flexform_period_day">day</label>
 			<label index="flexform_period_week">week</label>
 			<label index="flexform_period_month">month</label>
 			<label index="flexform_period_year">year</label>
 			<label index="flexform_period">period</label>
+			
+			
 			
 		</languageKey>
 		<languageKey index="de" type="array">

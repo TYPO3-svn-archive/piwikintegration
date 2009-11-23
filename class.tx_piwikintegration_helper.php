@@ -221,7 +221,7 @@
 						'tx_piwikintegration_access',
 						array(
 							'login' => $beUserName,
-							'idsite'=> $this->getPiwikSiteIdForPid,
+							'idsite'=> $this->getPiwikSiteIdForPid($uid),
 							'access'=> 'view'
 						)
 					);
@@ -332,14 +332,29 @@
 			}
 		}
 		static function getSitesForFlexForm(&$PA,&$fobj) {
+			//fetch anonymous accessable idsites
+			$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+				'idsite',
+				'tx_piwikintegration_access',
+				'login="anonymous"'
+			);
+			
+			//build array for selecting more information
+			$sites = array();
+			foreach($erg as $site) {
+				$sites[] = $site['idsite'];
+			}
+			$accessableSites = implode(',',$sites);
 			$erg = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'idsite,name,main_url',
 				'tx_piwikintegration_site',
-				'',
+				'idsite IN('.$accessableSites.')',
 				'',
 				'name, main_url, idsite'
 			);
 			$PA['items'] = array();
+			
+			//render items
 			while(($site = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($erg)) !== false) {
 				$PA['items'][] = array(
 					$site['name'] ? $site['name'].' : '.$site['main_url'] : $site['main_url'],

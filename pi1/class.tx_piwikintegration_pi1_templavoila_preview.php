@@ -20,9 +20,10 @@ class tx_piwikintegration_pi1_templavoila_preview {
 				'widget' => json_decode(base64_decode($conf['widget']),true),
 				'height' => $conf['div_height']
 			);
-			$this->extConf['widget']['idSite'] = $conf['idsite'];
-			$this->extConf['widget']['period'] = $conf['period'];
-			$this->extConf['widget']['date']   = 'yesterday';
+			$this->extConf['widget']['idSite']           = $conf['idsite'];
+			$this->extConf['widget']['period']           = $conf['period'];
+			$this->extConf['widget']['date']             = 'yesterday';
+			$this->extConf['widget']['viewDataTable']    = $conf['viewDataTable']; 
 			$this->extConf['widget']['moduleToWidgetize']= $this->extConf['widget']['module'];
 			$this->extConf['widget']['actionToWidgetize']= $this->extConf['widget']['action'];
 			unset($this->extConf['widget']['module']);

@@ -68,6 +68,53 @@
 							</config>
 						</TCEforms>
 					</period>
+					<viewDataTable>
+						<TCEforms>
+							<label>LLL:EXT:piwikintegration/pi1/locallang.xml:flexform_viewDataTable</label>
+							<config>
+								<type>select</type>
+								<items type="array">
+									<numIndex index="0" type="array">
+										<numIndex index="0">LLL:EXT:piwikintegration/pi1/locallang.xml:flexform_viewDataTable_tableAllColumns</numIndex>
+										<numIndex index="1">tableAllColumns</numIndex>
+										<numIndex index="2">../typo3conf/piwik/piwik/themes/default/images/table.png</numIndex>
+									</numIndex>
+									<numIndex index="1" type="array">
+										<numIndex index="0">LLL:EXT:piwikintegration/pi1/locallang.xml:flexform_viewDataTable_tableGoals</numIndex>
+										<numIndex index="1">tableGoals</numIndex>
+										<numIndex index="2">../typo3conf/piwik/piwik/themes/default/images/goal.png</numIndex>
+									</numIndex>
+									<numIndex index="2" type="array">
+										<numIndex index="0">LLL:EXT:piwikintegration/pi1/locallang.xml:flexform_viewDataTable_table</numIndex>
+										<numIndex index="1">table</numIndex>
+										<numIndex index="2">../typo3conf/piwik/piwik/themes/default/images/table.png</numIndex>
+									</numIndex>
+									<numIndex index="3" type="array">
+										<numIndex index="0">LLL:EXT:piwikintegration/pi1/locallang.xml:flexform_viewDataTable_cloud</numIndex>
+										<numIndex index="1">cloud</numIndex>
+										<numIndex index="2">../typo3conf/piwik/piwik/themes/default/images/tagcloud.png</numIndex>
+									</numIndex>
+									<numIndex index="4" type="array">
+										<numIndex index="0">LLL:EXT:piwikintegration/pi1/locallang.xml:flexform_viewDataTable_graphPie</numIndex>
+										<numIndex index="1">graphPie</numIndex>
+										<numIndex index="2">../typo3conf/piwik/piwik/themes/default/images/chart_pie.png</numIndex>
+									</numIndex>
+									<numIndex index="5" type="array">
+										<numIndex index="0">LLL:EXT:piwikintegration/pi1/locallang.xml:flexform_viewDataTable_graphVerticalBar</numIndex>
+										<numIndex index="1">graphVerticalBar</numIndex>
+										<numIndex index="2">../typo3conf/piwik/piwik/themes/default/images/chart_bar.png</numIndex>
+									</numIndex>
+									<numIndex index="6" type="array">
+										<numIndex index="0">LLL:EXT:piwikintegration/pi1/locallang.xml:flexform_viewDataTable_graphEvolution</numIndex>
+										<numIndex index="1">graphEvolution</numIndex>
+									</numIndex>
+								</items>
+								<iconsInOptionTags>1</iconsInOptionTags>
+								<minitems>0</minitems>
+								<maxitems>1</maxitems>
+							</config>
+						</TCEforms>
+					</viewDataTable>
 					<div_height>
 						<TCEforms>
 							<label>LLL:EXT:piwikintegration/pi1/locallang.xml:flexform_div_height</label>
