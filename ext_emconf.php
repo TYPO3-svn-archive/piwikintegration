@@ -12,10 +12,10 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Piwik Backend integration',
-	'description' => 'Uses EXT:pwik to inserts Data in the HTML header and gives BE-Users the right to see the data for their sites. Autoupdate of Piwik will work as TYPO3-Admin!',
+	'description' => 'Uses EXT:piwik to inserts Data in the HTML header and gives BE-Users the right to see the data for their sites. Autoupdate of Piwik will work as TYPO3-Admin!',
 	'category' => 'module',
 	'shy' => 0,
-	'version' => '1.1.4',
+	'version' => '2.0.0',
 	'dependencies' => '',
 	'conflicts' => '',
 	'priority' => '',
@@ -34,7 +34,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'CGLcompliance_note' => '',
 	'constraints' => array(
 		'depends' => array(
-			'php'   => '4.0.0-6.0.0',
+			'php'   => '5.2.0-6.0.0',
 			'typo3' => '4.0.0-4.3.99',
 		),
 		'conflicts' => array(

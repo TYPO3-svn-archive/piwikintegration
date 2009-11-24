@@ -15,6 +15,7 @@
 			<label index="flexform_div_height">Height of the div in FE</label>
 			<label index="flexform_viewDataTable">initial chart type displayed</label>
 			
+			<label index="flexform_viewDataTable_default">Default</label>
 			<label index="flexform_viewDataTable_tableAllColumns">Table all Columns</label>
 			<label index="flexform_viewDataTable_tableGoals">Table Goals</label>
 			<label index="flexform_viewDataTable_table">Table</label>
