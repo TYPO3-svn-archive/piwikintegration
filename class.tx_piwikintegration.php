@@ -34,7 +34,7 @@ class tx_piwikintegration	 {
     /**
      * main processing method
      */
-    function contentPostProc_all(&$params, &$reference){
+    function contentPostProc_output(&$params, &$reference){
         $this->piwikHelper = new tx_piwikintegration_helper();
 		// process the page with these options
         $content       = $params['pObj']->content;
@@ -57,7 +57,7 @@ class tx_piwikintegration	 {
 		$piwikCode     = str_replace('&quot;','"',$piwikCode);
 		$piwikCode     = str_replace('<br />','',$piwikCode);
 
-        $params['pObj']->content = str_replace('</body>',$piwikCode.'</body>',$params['pObj']->content);
+        $params['pObj']->content = str_replace('</body>','<!-- EXT:piwikintegration independent mode, disable independent mode, if you have 2 trackingcode snippets! -->'.$piwikCode.'<!-- /EXT:piwikintegration --></body>',$params['pObj']->content);
 
     }
 }
