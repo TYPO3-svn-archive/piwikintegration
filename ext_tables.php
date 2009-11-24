@@ -14,10 +14,21 @@ t3lib_extMgm::addStaticFile($_EXTKEY,'static/piwik_integration/', 'Piwik Integra
 $tempColumns = array (
 	'tx_piwikintegration_api_code' => array (		
 		'exclude' => 0,		
-		'label' => 'LLL:EXT:piwikintegration/locallang_db.xml:be_users.tx_piwikintegration_api_code',		
-		'config' => array (
-			'type' => 'none',
-		)
+		'label'   => 'LLL:EXT:piwikintegration/locallang_db.xml:be_users.tx_piwikintegration_api_code',		
+		'config'  => array (
+			'type'    => 'input',
+			'eval'    => 'unique,uniqueInPid',
+			'wizards' => array (
+				 '_PADDING' => 1,
+				 '_VERTICAL' => 1,
+				 'renewAPIKey' => array (
+				 	'type'     => 'userFunc',
+				 	'userFunc' => 'EXT:piwikintegration/class.tx_piwikintegration_be_users.php:tx_piwikintegration_be_users->tx_piwikintegration_api_code_wizard',
+				 	'icon'     => 'import_update.gif',
+				 	'title'    => 'Refresh API Key',
+				 ),
+			),
+		),
 	),
 );
 

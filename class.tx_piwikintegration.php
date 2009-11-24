@@ -29,7 +29,7 @@
  * @author    Kay Strobach <typo3@kay-strobach.de>
  */
 require_once('class.tx_piwikintegration_helper.php');
-class tx_piwikintegration	 {
+class tx_piwikintegration {
 
     /**
      * main processing method
