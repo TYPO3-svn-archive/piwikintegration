@@ -12,7 +12,7 @@ $TYPO3_CONF_VARS['EXTCONF']['templavoila']['mod1']['renderPreviewContentClass'][
 
 if(TYPO3_MODE=='FE') {
 	$_EXTCONF = unserialize($_EXTCONF);
-	if($_EXTCONF['enableModule']) {
+	if($_EXTCONF['enableIndependentMode']) {
 		require_once(t3lib_extMgm::extPath('piwikintegration').'class.tx_piwikintegration.php');
 		$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-output'][] = 'tx_piwikintegration->contentPostProc_output'; 
 	}
