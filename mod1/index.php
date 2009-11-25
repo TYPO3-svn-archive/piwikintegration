@@ -167,7 +167,9 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 				return;
 			} elseif(!$this->piwikHelper->checkPiwikInstalled()) {
 				$this->piwikHelper->makePiwikInstalled();
-				$this->content.='<meta http-equiv="refresh" content="1" />Piwik is now installed, wait a moment, to let me reload the page ;) ';
+				$this->content ='<html><head><meta http-equiv="refresh" content="1" /></head><body>Piwik is now installed, wait a moment, to let me reload the page ;) </body></html>';
+				//need to die here because of a bug in TYPO3 4.2, the reload will reset the autoloading and all will work fine
+				die($this->content);
 			} elseif($this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid'])) {
 				$this->piwikHelper->correctUserRightsForPid($this->pageinfo['uid']);
 				

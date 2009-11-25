@@ -54,6 +54,10 @@
 		 * @return	void
 		 */
 		function makePiwikDownloadAndExtract() {
+			if(!is_writeable(PATH_site.'typo3conf/')) {
+				die('Installation is invalid, typo3conf for creating the piwik app folder');
+			}
+
 			//download piwik into typo3temp
 			//can be hardcoded, because latest piwik is always on the same url ;) thanks guys
 				$saveTo = t3lib_div::getFileAbsFileName('typo3temp/piwiklatest.zip');
@@ -86,6 +90,9 @@
 		 * @return	[type]		...
 		 */
 		function makePiwikPatched() {
+			if(!is_writeable(PATH_site.'typo3conf/piwik/piwik/')) {
+				die('Installation is invalid, typo3conf/piwik/piwik was not writeable for applying the patches');
+			}
 			//recursive directory copy is not supported under windows ... so i implement is myself!!!
 			$source = t3lib_extMgm::extPath('piwikintegration').'piwik_patches/';
 			$dest   = PATH_site.'typo3conf/piwik/piwik/';
@@ -105,13 +112,13 @@
 						'data'   => basename($shortEntry),
 						'target' => dirname($dest.$shortEntry),
 					);
-					mkdir($dest.$shortEntry);
+					@mkdir($dest.$shortEntry);
 				} elseif(is_file($entry)) {
 					$cmd['copy'][] = array(
 						'data'   => $entry,
 						'target' => $dest.$shortEntry,
 					);
-					copy($entry,$dest.$shortEntry);
+					@copy($entry,$dest.$shortEntry);
 				}
 			}
 			#copy(t3lib_extMgm::extRelPath('piwikintegration').'piwik_patches/config/config.ini.php',PATH_site.'typo3conf/piwik/piwik/config/config.ini.php');
