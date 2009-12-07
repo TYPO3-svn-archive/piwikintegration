@@ -99,7 +99,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 		
 				// initialize doc
 			$this->doc = t3lib_div::makeInstance('template');
-			$this->doc->setModuleTemplate(t3lib_extMgm::extPath('piwikintegration') . 'mod1//mod_template.html');
+			$this->doc->setModuleTemplate(t3lib_extMgm::extPath('piwikintegration') . 'mod1/mod_template.html');
 			$this->doc->backPath = $BACK_PATH;
 			$docHeaderButtons = $this->getButtons();
 	
@@ -150,7 +150,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 		 */
 		function printContent()	{
 	
-			$this->content.=$this->doc->endPage();
+			#$this->content.=$this->doc->endPage();
 			echo $this->content;
 		}
 	

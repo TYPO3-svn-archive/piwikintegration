@@ -1,0 +1,47 @@
+/* global */
+body {
+	background-color:#EFEFF4;
+	font-family:Verdana,Arial,Helvetica,sans-serif;
+}
+/* tobbar */
+#topBars{
+	background-color:#FBFBFC;
+}
+#topBars div{
+	background-color:#FBFBFC;
+}
+/* widgets */
+.widget {
+	border:1px solid black;
+}
+.widgetTop {
+	background-color:#F8F9FB;
+	color:black;
+	border-bottom:none;
+	font-size:10pt;
+}
+.widgetName {
+	font-size:10pt;
+}
+.widgetContent, .sortable {
+	background-color:#EFEFF4;
+	color:black;
+}
+
+/* menu */
+ul#typo3menu {
+	background-color:#FBFBFC;
+}
+ul#typo3menu ul{
+	border:1px solid black;
+}
+#typo3menu a , #typo3menu span{
+	background-color:#FBFBFC;
+}
+#typo3menu a:hover {
+	background-color:#EFEFF4;
+}
+#typo3menu #logo {
+	padding-left:0;
+}
+/* global */

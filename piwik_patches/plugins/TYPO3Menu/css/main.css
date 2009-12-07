@@ -1,0 +1,58 @@
+ul#typo3menu  {
+	width:100%;
+	height:50%;
+	float:none;
+	clear:both;
+	list-style:none;
+	padding:0;
+	z-index:99;
+}
+ul#typo3menu li{
+	float:left;
+	background-color:#CFDEFF;
+	padding:0px;
+	font-size:10pt;
+}
+ul#typo3menu span{
+	font-size:10pt;
+	color:#1133AA;
+}
+ul#typo3menu span#logo {
+	background-color:white;
+}
+ul#typo3menu li ul{
+	position:absolute;
+	z-index:99;
+}
+
+ul#typo3menu li ul li {
+	float:none;
+}
+ul#typo3menu li ul li b{
+	padding:5px;
+}
+#typo3menu ul li ul li ul li {
+	padding-left:10px;
+}
+#typo3menu a {
+	text-decoration:none;
+	color:#1133AA;
+	display:block;
+	padding:10px;
+}
+#typo3menu a:hover {
+	background-color:#C9D5FF;
+}
+
+ul#typo3menu span#periodString {
+	margin-left:0px;
+	padding-top:0px;
+	padding:10px;
+	font-size:10pt;
+}
+ul#typo3menu span#periodString span{
+	font-size:10pt;
+}
+ul#typo3menu span#languageSelection ul{
+	display:block;
+}

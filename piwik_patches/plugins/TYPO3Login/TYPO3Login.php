@@ -60,5 +60,6 @@ class Piwik_TYPO3Login extends Piwik_Plugin
 		$auth->setLogin($defaultLogin);
 		$auth->setTokenAuth($defaultTokenAuth);
 	}
+
 }
 ?>
