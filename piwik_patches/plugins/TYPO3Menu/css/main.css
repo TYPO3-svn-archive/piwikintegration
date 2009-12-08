@@ -9,7 +9,6 @@ ul#typo3menu  {
 }
 ul#typo3menu li{
 	float:left;
-	background-color:#CFDEFF;
 	padding:0px;
 	font-size:10pt;
 }
@@ -36,9 +35,11 @@ ul#typo3menu li ul li b{
 }
 #typo3menu a {
 	text-decoration:none;
-	color:#1133AA;
+	color:white;
 	display:block;
-	padding:10px;
+	padding:4px;
+	padding-left:7px;
+	padding-right:7px;
 }
 #typo3menu a:hover {
 	background-color:#C9D5FF;
@@ -47,12 +48,12 @@ ul#typo3menu li ul li b{
 ul#typo3menu span#periodString {
 	margin-left:0px;
 	padding-top:0px;
-	padding:10px;
+	padding:4px;
 	font-size:10pt;
 }
 ul#typo3menu span#periodString span{
 	font-size:10pt;
 }
 ul#typo3menu span#languageSelection ul{
-	display:block;
+	position:inline!important;
 }

@@ -1,21 +1,24 @@
 $(document).ready(function(){
 		
 	//create ul for menu
-		$('#topBars').append('<div><ul id="typo3menu"><li><a href="#">General</a></li></ul></div>');
-		
-	//fetch the topbar	
-		$('#typo3menu li:first-child').append(
-			$('.topBarElem:has(a)').children().wrap('<li></li>').parent().wrapAll('<ul></ul>').parent()
-		);
+		$('#topBars').prepend('<div><ul id="typo3menu"></ul></div>');
+	
 	//fetch the Piwik logo
 		$('#typo3menu').prepend(
-			$('#logo').wrap('<li></li>').parent()
+			$('#logo a').children().wrapAll('<a id="logo"></a>').parent().wrapAll('<li></li>').parent()
+		);	
+	//fetch the topbar	
+		$('#typo3menu li').append(
+			$('.topBarElem:has(a)').children().wrap('<li></li>').parent().wrapAll('<ul></ul>').parent()
 		);
-	
 	//fetch the widgetbar
 		$('#typo3menu').append(
 			$('ul.nav').children()
 		);
+
+	
+	
+	
 	
 	//make menu
 		//unbind old menu
@@ -45,5 +48,6 @@ $(document).ready(function(){
 		$('.nav').remove();
 		//$('#topLeftBar').remove();
 		$('#header').remove();
+		$('.sf-sub-indicator').remove();
 	
 });

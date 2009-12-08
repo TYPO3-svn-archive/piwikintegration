@@ -6,42 +6,70 @@ body {
 /* tobbar */
 #topBars{
 	background-color:#FBFBFC;
+	background-image:url(../pics/login-box-header.png);
+	overflow:visble;
+	padding-left:10px;
 }
 #topBars div{
 	background-color:#FBFBFC;
+	background-image:url(../pics/login-box-header.png);
+	width:*;
+}
+div#topLeftBar {
+	display:inline;
+	width:200px;
+	overflow:auto;
 }
 /* widgets */
 .widget {
-	border:1px solid black;
+	border:1px solid #737373;
 }
 .widgetTop {
 	background-color:#F8F9FB;
 	color:black;
 	border-bottom:none;
 	font-size:10pt;
+	background-image:url(../pics/login-box-header.png);
 }
 .widgetName {
 	font-size:10pt;
 }
-.widgetContent, .sortable {
+.sortable {
 	background-color:#EFEFF4;
+}
+.widgetContent {
+	background-color:white;
 	color:black;
 }
-
 /* menu */
 ul#typo3menu {
-	background-color:#FBFBFC;
+	background-color:transparent;
+}
+ul#typo3menu a{
+	color:white;
+	font-weight:bold;
+	border-right:1px solid #B5BBC7;
+}
+ul#typo3menu ul a{
+	color:#737373;
+	font-weight:bold;
+}
+ul#typo3menu ul a:hover{
+	color:white;
+}
+ul#typo3menu li{
+	background-color:transparent
 }
 ul#typo3menu ul{
-	border:1px solid black;
-}
-#typo3menu a , #typo3menu span{
-	background-color:#FBFBFC;
-}
-#typo3menu a:hover {
+	border:1px solid #B5BBC7;
+	border-top:none;
 	background-color:#EFEFF4;
 }
-#typo3menu #logo {
+ul#typo3menu a:hover {
+	background-color:#A4ACBA;
+}
+ul#typo3menu #logo {
 	padding-left:0;
 }
 /* global */
+
