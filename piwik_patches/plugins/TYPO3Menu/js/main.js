@@ -41,6 +41,7 @@ $(document).ready(function(){
 			$('ul#typo3menu li').removeClass('sfHover');
 			$(this).addClass('sfHover');
 			$('ul#typo3menu li:has(.sfHover)').addClass('sfHover');
+			modifyHeader();
 		});
 	
 		//hide items
@@ -52,7 +53,17 @@ $(document).ready(function(){
 	//remove now senseless elements
 		$('.nav').remove();
 		//$('#topLeftBar').remove();
-		$('#header').remove();
 		$('.sf-sub-indicator').remove();
-	
+	//add header information
+		modifyHeader();
 });
+
+function modifyHeader() {
+	$('#header').children().remove();
+	$('#header').append(
+		$('ul#typo3menu li.sfHover').clone().children().wrapAll('<h2></h2>').parent()
+	);
+	$('#header a').after(' <span>&gt;</span> ');
+	$('#header ul').remove();
+	$('#header h2 :last-child').remove();
+}
