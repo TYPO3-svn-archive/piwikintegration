@@ -37,6 +37,10 @@ $(document).ready(function(){
 		$('ul#typo3menu li').bind('mouseleave',function(e) {
 			$(this).children('ul').slideUp('fast');
 		});
+		$('ul#typo3menu li').bind('click',function(e) {
+			$('ul#typo3menu li').removeClass('sfHover');
+			$(this).addClass('sfHover');
+		});
 	
 		//hide items
 			$('ul#typo3menu li ul').hide();

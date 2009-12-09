@@ -71,5 +71,8 @@ ul#typo3menu a:hover {
 ul#typo3menu #logo {
 	padding-left:0;
 }
+ul#typo3menu li.sfHover a{
+	color:rgb(107, 50, 11)!important;
+}
 /* global */
 
