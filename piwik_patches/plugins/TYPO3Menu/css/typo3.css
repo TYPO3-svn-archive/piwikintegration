@@ -72,7 +72,13 @@ ul#typo3menu #logo {
 	padding-left:0;
 }
 ul#typo3menu li.sfHover a{
-	color:rgb(107, 50, 11)!important;
+	color:rgb(107, 50, 11);
+}
+ul#typo3menu li.sfHover li a{
+	color:#737373;
+}
+ul#typo3menu li.sfHover li.sfHover a{
+	color:rgb(107, 50, 11);
 }
 /* global */
 

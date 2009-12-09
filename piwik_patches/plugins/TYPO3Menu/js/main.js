@@ -40,6 +40,7 @@ $(document).ready(function(){
 		$('ul#typo3menu li').bind('click',function(e) {
 			$('ul#typo3menu li').removeClass('sfHover');
 			$(this).addClass('sfHover');
+			$('ul#typo3menu li:has(.sfHover)').addClass('sfHover');
 		});
 	
 		//hide items
