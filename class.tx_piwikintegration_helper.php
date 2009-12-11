@@ -94,11 +94,18 @@
 				$installDir = t3lib_div::getFileAbsFileName('typo3conf/piwik/');
 				t3lib_div::mkdir_deep(PATH_site,'typo3conf/piwik/');
 			//extract archive
-				$zip = new ZipArchive();
-				$zip->open($saveTo);
-				$zip->extractTo($installDir);
-				$zip->close();
-				unset($zip);
+				if(class_exists('ZipArchive')) {
+					$zip = new ZipArchive();
+					$zip->open($saveTo);
+					$zip->extractTo($installDir);
+					$zip->close();
+					unset($zip);
+				} elseif(!(TYPO3_OS=='WIN' || $GLOBALS['TYPO3_CONF_VARS']['BE']['disable_exec_function']))	{
+					$cmd = $GLOBALS['TYPO3_CONF_VARS']['BE']['unzip_path'].'unzip -qq "'.$saveTo.'" -d "'.$installDir.'"';
+					exec($cmd);
+				} else {
+					die('There is no valid unzip wrapper, i need either the class ZipArchiv from php or a *nix system with unset path set.');
+				}
 			//unlink archiv to save space in typo3temp ;)
 				t3lib_div::unlink_tempfile($saveTo);
 		}
