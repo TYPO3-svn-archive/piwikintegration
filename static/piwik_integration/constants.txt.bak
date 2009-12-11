@@ -1,4 +1,0 @@
-config.tx_piwik {
-  piwik_host   = typo3conf/piwik/piwik/
-  piwik_idsite = 1
-}

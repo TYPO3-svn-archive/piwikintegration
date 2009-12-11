@@ -2,14 +2,13 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006 - 2007 Ingo Renner <typo3@ingo-renner.com>
+*  (c) 2009 	Kay Strobach (typo3@kay-strobach.de),
+*
 *  All rights reserved
 *
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
+*  This script is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
+*  the Free Software Foundation; version 2 of the License.
 *
 *  The GNU General Public License can be found at
 *  http://www.gnu.org/copyleft/gpl.html.
@@ -21,7 +20,12 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-
+/**
+ * @author  Kay Strobach <typo3@kay-strobach.de>
+ * @link http://kay-strobach.de
+ * @license http://www.gnu.org/licenses/gpl-3.0.html Gpl v3 or later
+ * 
+ */
 require_once(PATH_tslib.'class.tslib_pibase.php');
 require_once(t3lib_extMgm::extPath('piwikintegration').'class.tx_piwikintegration_helper.php');
 

@@ -1,4 +1,32 @@
 <?php
+/***************************************************************
+*  Copyright notice
+*
+*  (c) 2009 	Kay Strobach (typo3@kay-strobach.de),
+*
+*  All rights reserved
+*
+*  This script is free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; version 2 of the License.
+*
+*  The GNU General Public License can be found at
+*  http://www.gnu.org/copyleft/gpl.html.
+*
+*  This script is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  This copyright notice MUST APPEAR in all copies of the script!
+***************************************************************/
+/**
+ * @author  Kay Strobach <typo3@kay-strobach.de>
+ * @link http://kay-strobach.de
+ * @license http://www.gnu.org/licenses/gpl-3.0.html Gpl v3 or later
+ * 
+ */
+ 
 	#ini_set('display_errors',1);
 	class tx_piwikintegration_helper {
 		var $piwik_id = array();
@@ -81,7 +109,13 @@
 		 * @return	[type]		...
 		 */
 		function checkPiwikPatched() {
-
+			$_EXTKEY = 'piwikintegration';
+			@include(t3lib_extMgm::extPath('piwikintegration').'ext_emconf.php');
+			@include(PATH_site.'typo3conf/piwik/piwik/piwikintegration.php');
+			if($EM_CONF['piwikintegration']['version'] != $piwikPatchVersion) {
+				return false;
+			}
+			return true;
 		}
 
 		/**
@@ -89,7 +123,7 @@
 		 *
 		 * @return	[type]		...
 		 */
-		function makePiwikPatched() {
+		function makePiwikPatched($exclude=array()) {
 			if(!is_writeable(PATH_site.'typo3conf/piwik/piwik/')) {
 				die('Installation is invalid, typo3conf/piwik/piwik was not writeable for applying the patches');
 			}
@@ -106,30 +140,29 @@
 			);
 			foreach($t as $entry) {
 				$shortEntry = str_replace($source,'',$entry);
-				if($shortEntry!='' && $shortEntry!='.')
-				if(is_dir($entry)) {		
-					$cmd['newfolder'][] = array(
-						'data'   => basename($shortEntry),
-						'target' => dirname($dest.$shortEntry),
-					);
-					@mkdir($dest.$shortEntry);
-				} elseif(is_file($entry)) {
-					$cmd['copy'][] = array(
-						'data'   => $entry,
-						'target' => $dest.$shortEntry,
-					);
-					@copy($entry,$dest.$shortEntry);
+				if($shortEntry!='' && $shortEntry!='.') {
+					if(!in_array($shortEntry, $exclude)) {
+						if(is_dir($entry)) {		
+							$cmd['newfolder'][] = array(
+								'data'   => basename($shortEntry),
+								'target' => dirname($dest.$shortEntry),
+							);
+							@mkdir($dest.$shortEntry);
+						} elseif(is_file($entry)) {
+							$cmd['copy'][] = array(
+								'data'   => $entry,
+								'target' => $dest.$shortEntry,
+							);
+							@copy($entry,$dest.$shortEntry);
+						}
+					}
 				}
 			}
-			#copy(t3lib_extMgm::extRelPath('piwikintegration').'piwik_patches/config/config.ini.php',PATH_site.'typo3conf/piwik/piwik/config/config.ini.php');
-			#global $FILEMOUNTS, $TYPO3_CONF_VARS, $BE_USER;
-			#$this->fileProcessor = t3lib_div::makeInstance('t3lib_extFileFunctions');
-			#$this->fileProcessor->init($FILEMOUNTS, $TYPO3_CONF_VARS['BE']['fileExtensions']);
-			#$this->fileProcessor->init_actionPerms($BE_USER->user['fileoper_perms']);
-			#$this->fileProcessor->init_actionPerms(31);
-			#$this->fileProcessor->start($cmd);
-			#$this->fileProcessor->processData();
-			#$this->fileProcessor->printLogErrorMessages();
+			//store information about the last patch process
+			$_EXTKEY = 'piwikintegration';
+			@include(t3lib_extMgm::extPath('piwikintegration').'ext_emconf.php');
+			$data = '<?php $piwikPatchVersion = "'.$EM_CONF['piwikintegration']['version'].'"; '.chr(63).'>';
+			file_put_contents(PATH_site.'typo3conf/piwik/piwik/piwikintegration.php',$data);
 		}
 
 		/**
@@ -175,6 +208,7 @@
 			$plugins     = $piwikConfig->Plugins->toArray();
 			$key_login   = array_search('Login'     ,$plugins);
 			$key_t3login = array_search('TYPO3Login',$plugins);
+			$key_t3menu  = array_search('TYPO3Menu' ,$plugins);
 			//unload login
 			if($key_login!==false) {
 				unset($plugins[$key_login]);
@@ -183,7 +217,12 @@
 				if($key_t3login===false) {
 					$plugins[]='TYPO3Login';
 				}
-				$piwikConfig->Plugins = $plugins;
+			//load interface modifications
+				if($key_t3menu===false) {
+					$plugins[]='TYPO3Menu';
+				}
+			//write Config back
+			$piwikConfig->Plugins = $plugins;
 			
 			//create PiwikTables, check wether base tables already exist 
 				Piwik::createDatabaseObject();

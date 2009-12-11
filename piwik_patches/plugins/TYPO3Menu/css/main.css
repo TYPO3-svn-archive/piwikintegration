@@ -1,4 +1,33 @@
-ul#typo3menu  {
+/***************************************************************
+*  Copyright notice
+*
+*  (c) 2009 	Kay Strobach (typo3@kay-strobach.de),
+*
+*  All rights reserved
+*
+*  This script is free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; version 2 of the License.
+*
+*  The GNU General Public License can be found at
+*  http://www.gnu.org/copyleft/gpl.html.
+*
+*  This script is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  This copyright notice MUST APPEAR in all copies of the script!
+***************************************************************/
+/**
+ * @author  Kay Strobach <typo3@kay-strobach.de>
+ * @link http://kay-strobach.de
+ * @license http://www.gnu.org/licenses/gpl-3.0.html Gpl v3 or later
+ * 
+ * @package Piwik_TYPO3Menu
+ */
+ 
+ul.horizontalmenu  {
 	width:100%;
 	height:50%;
 	float:none;
@@ -7,33 +36,33 @@ ul#typo3menu  {
 	padding:0;
 	z-index:99;
 }
-ul#typo3menu li{
+ul.horizontalmenu li{
 	float:left;
 	padding:0px;
 	font-size:10pt;
 }
-ul#typo3menu span{
+ul.horizontalmenu span{
 	font-size:10pt;
 	color:#1133AA;
 }
-ul#typo3menu span#logo {
+ul.horizontalmenu span#logo {
 	background-color:white;
 }
-ul#typo3menu li ul{
+ul.horizontalmenu li ul{
 	position:absolute;
-	z-index:99;
+	z-index:999;
 }
 
-ul#typo3menu li ul li {
+ul.horizontalmenu li ul li {
 	float:none;
 }
-ul#typo3menu li ul li b{
+ul.horizontalmenu li ul li b{
 	padding:5px;
 }
-#typo3menu ul li ul li ul li {
+.horizontalmenu ul li ul li ul li {
 	padding-left:10px;
 }
-#typo3menu a {
+.horizontalmenu a {
 	text-decoration:none;
 	color:white;
 	display:block;
@@ -41,19 +70,28 @@ ul#typo3menu li ul li b{
 	padding-left:7px;
 	padding-right:7px;
 }
-#typo3menu a:hover {
+.horizontalmenu a:hover {
 	background-color:#C9D5FF;
 }
 
-ul#typo3menu span#periodString {
+ul.horizontalmenu span#periodString {
 	margin-left:0px;
 	padding-top:0px;
 	padding:4px;
 	font-size:10pt;
 }
-ul#typo3menu span#periodString span{
+ul.horizontalmenu span#periodString span{
 	font-size:10pt;
 }
-ul#typo3menu span#languageSelection ul{
+ul.horizontalmenu span#languageSelection ul{
 	position:inline!important;
+}
+ul.horizontalmenu #typo3datepicker, .ui-datepicker{
+	z-index:99;
+}
+ul.horizontalmenu span#typo3datepicker a{
+	padding:1px;
+}
+ul.horizontalmenu span#typo3datepicker span {
+	padding:0px;
 }

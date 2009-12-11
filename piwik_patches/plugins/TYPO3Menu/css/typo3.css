@@ -1,3 +1,33 @@
+/***************************************************************
+*  Copyright notice
+*
+*  (c) 2009 	Kay Strobach (typo3@kay-strobach.de),
+*
+*  All rights reserved
+*
+*  This script is free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; version 2 of the License.
+*
+*  The GNU General Public License can be found at
+*  http://www.gnu.org/copyleft/gpl.html.
+*
+*  This script is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  This copyright notice MUST APPEAR in all copies of the script!
+***************************************************************/
+/**
+ * @author  Kay Strobach <typo3@kay-strobach.de>
+ * @link http://kay-strobach.de
+ * @license http://www.gnu.org/licenses/gpl-3.0.html Gpl v3 or later
+ * 
+ * @package Piwik_TYPO3Menu
+ */
+
+
 /* global */
 body {
 	background-color:#EFEFF4;
@@ -15,10 +45,17 @@ body {
 	background-image:url(../pics/login-box-header.png);
 	width:*;
 }
-div#topLeftBar {
+div#topLeftBar, div#topRightBar {
 	display:inline;
-	width:200px;
-	overflow:auto;
+	overflow:visible;
+	margin:0px;
+	padding-top:0px;
+}
+div#topRightBar a {
+	padding-top:0px;
+}
+div#topLeftBar {
+	width:0px;
 }
 /* widgets */
 .widget {
@@ -42,42 +79,42 @@ div#topLeftBar {
 	color:black;
 }
 /* menu */
-ul#typo3menu {
+ul.horizontalmenu {
 	background-color:transparent;
 }
-ul#typo3menu a{
+ul.horizontalmenu li{
+	background-color:transparent
+}
+ul.horizontalmenu a, ul.horizontalmenu span#date{
 	color:white;
 	font-weight:bold;
 	border-right:1px solid #B5BBC7;
 }
-ul#typo3menu ul a{
+ul.horizontalmenu ul a{
 	color:#737373;
 	font-weight:bold;
 }
-ul#typo3menu ul a:hover{
+ul.horizontalmenu ul a:hover{
 	color:white;
 }
-ul#typo3menu li{
-	background-color:transparent
-}
-ul#typo3menu ul{
+ul.horizontalmenu ul{
 	border:1px solid #B5BBC7;
 	border-top:none;
 	background-color:#EFEFF4;
 }
-ul#typo3menu a:hover {
+ul.horizontalmenu a:hover {
 	background-color:#A4ACBA;
 }
-ul#typo3menu #logo {
+ul.horizontalmenu #logo {
 	padding-left:0;
 }
-ul#typo3menu li.sfHover a{
+ul.horizontalmenu li.sfHover a{
 	color:rgb(107, 50, 11);
 }
-ul#typo3menu li.sfHover li a{
+ul.horizontalmenu li.sfHover li a{
 	color:#737373;
 }
-ul#typo3menu li.sfHover li.sfHover a{
+ul.horizontalmenu li.sfHover li.sfHover a{
 	color:rgb(107, 50, 11);
 }
 /* global */
@@ -90,4 +127,8 @@ ul#typo3menu li.sfHover li.sfHover a{
 #header h2 a{
 	text-decoration:none;
 	color:#737373;
+}
+.hover{
+	background-color:#CDEACA;
+	border-color:#58B548;
 }

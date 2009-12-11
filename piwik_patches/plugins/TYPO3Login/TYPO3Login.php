@@ -1,29 +1,46 @@
 <?php
-	/**
-	* Piwik - Open source web analytics
-	* 
-	* @link http://piwik.org
-    * @license http://www.gnu.org/licenses/gpl-3.0.html Gpl v3 or later
-    * @version $Id: ExamplePlugin.php 838 2008-12-17 17:26:15Z matt $
-	* 
-	* @package Piwik_TYPO3Login
-	*/
-	/**
-	 * need to set database settings before creating database object. 
-	 */	 	
-
+/***************************************************************
+*  Copyright notice
+*
+*  (c) 2009 	Kay Strobach (typo3@kay-strobach.de),
+*
+*  All rights reserved
+*
+*  This script is free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; version 2 of the License.
+*
+*  The GNU General Public License can be found at
+*  http://www.gnu.org/copyleft/gpl.html.
+*
+*  This script is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  This copyright notice MUST APPEAR in all copies of the script!
+***************************************************************/
+/**
+ * @author  Kay Strobach <typo3@kay-strobach.de>
+ * @link http://kay-strobach.de
+ * @license http://www.gnu.org/licenses/gpl-3.0.html Gpl v3 or later
+ * 
+ * @package Piwik_TYPO3Login
+ */
+ 
 require "TYPO3Login/Auth.php";
 
 class Piwik_TYPO3Login extends Piwik_Plugin
 {
 	public function getInformation()
 	{
+		include(PIWIK_INCLUDE_PATH.'/piwikintegration.php');
 		return array(
 			'name' => 'TYPO3Login',
-			'description' => 'HTTP_AUTH Login plugin. It uses the HTTP-based auth to grant access to users on piwik.',
+			'description' => 'TYPO3 Auth Login plugin. It uses the TYPO3 session and permission data to grant access to users on piwik.',
 			'author' => 'Kay Strobach',
 			'homepage' => 'http://kay-strobach.de/',
-		    'version' => '0.1',
+		    'version' => $piwikPatchVersion,
 			);
 	}
 
