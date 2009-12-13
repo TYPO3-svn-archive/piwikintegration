@@ -30,15 +30,20 @@
  */
 require_once('class.tx_piwikintegration_helper.php');
 class tx_piwikintegration {
-
+	function init(&$params, &$reference) {
+		//init helper object
+		$this->piwikHelper = new tx_piwikintegration_helper();
+		// process the page with these options
+		$this->extConf = $params['pObj']->config['config']['tx_piwik.'];
+		//read base url
+		$this->baseUrl = $params['pObj']->config['config']['baseURL'];
+	}
     /**
      * main processing method
      */
     function contentPostProc_output(&$params, &$reference){
-        $this->piwikHelper = new tx_piwikintegration_helper();
-		// process the page with these options
+        $this->init($params,$reference);
         $content       = $params['pObj']->content;
-		$this->extConf = $params['pObj']->config['config']['tx_piwik.'];
 		$beUserLogin   = $params['pObj']->beUserLogin;
 		
 		//check wether there is a BE User loggged in, if yes avoid to display the tracking code!
@@ -58,8 +63,34 @@ class tx_piwikintegration {
 		$piwikCode     = str_replace('<br />','',$piwikCode);
 
         $params['pObj']->content = str_replace('</body>','<!-- EXT:piwikintegration independent mode, disable independent mode, if you have 2 trackingcode snippets! -->'.$piwikCode.'<!-- /EXT:piwikintegration --></body>',$params['pObj']->content);
-
-    }
+	}
+    /**
+     * check wether the siteid exists or not!
+     */
+     function contentPostProc_all(&$params, &$reference){
+		$this->init($params,$reference);
+		$erg = $GLOBALS['TYPO3_DB']->exec_SELECTquery (
+			'*',
+			'tx_piwikintegration_site',
+			'idsite='.intval($this->extConf['piwik_idsite'])
+		);
+		$numRows = $GLOBALS['TYPO3_DB']->sql_num_rows($erg);
+		//check wether siteid exists
+		if($numRows==0) {
+			//if not -> create
+			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+				'tx_piwikintegration_site',
+				array(
+					'idsite'   => intval($this->extConf['piwik_idsite']),
+					'name'     => 'ID '.intval($this->extConf['piwik_idsite']),
+					'main_url' => $this->baseUrl, 
+				)
+			);
+		} elseif($numRows>1) {
+			//more than once -> error
+			die('piwik idsite table is inconsistent');
+		}
+	} 
 }
 
 if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/piwikintegration/class.tx_piwikintegration.php"])    {
