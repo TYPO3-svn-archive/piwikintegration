@@ -1,4 +1,4 @@
 # cat=basic/enable; type=boolean; label=EXP. - independent mode: Enable independent mode of piwikintegration, that means, the JS is rendered without additional extensions, if not enabled an additional extension is needed to render the fe output for piwik - it's suggested to use EXT:piwik for FE-Rendering 
 enableIndependentMode = 0
-# cat=basic/enable; type=boolean; label=Enabled heavy logging for the piwik cronjob - should be off in production environments 
+# cat=basic/enable; type=boolean; label=Enable heavy logging for the piwik cronjob - should be off in production environments 
 enableSchedulerLoging = 0
