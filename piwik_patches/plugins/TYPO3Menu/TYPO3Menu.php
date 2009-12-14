@@ -64,4 +64,8 @@ class Piwik_TYPO3Menu extends Piwik_Plugin
 		echo "<link rel='stylesheet' type='text/css' href='plugins/TYPO3Menu/css/typo3.css'>\n";
 	}
 }
+//XClass to avoid errors in extmanager of TYPO3 - senseless so far 
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/piwik_patches/plugins/TYPO3Menu/TYPO3Menu.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/piwik_patches/plugins/TYPO3Menu/TYPO3Menu.php']);
+}
 ?>

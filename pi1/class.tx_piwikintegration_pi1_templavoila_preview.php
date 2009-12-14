@@ -69,4 +69,9 @@ class tx_piwikintegration_pi1_templavoila_preview {
 		}
 	}
 }
+
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/pi1/class.tx_piwikintegration_pi1_templavoila_preview.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/pi1/class.tx_piwikintegration_pi1_templavoila_preview.php']);
+}
+
 ?>

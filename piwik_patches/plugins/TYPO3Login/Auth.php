@@ -100,4 +100,9 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 		$this->token_auth = $token_auth;
 	}
 }
+//XClass to avoid errors in extmanager of TYPO3 - senseless so far 
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/piwik_patches/plugins/TYPO3Login/Auth.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/piwik_patches/plugins/TYPO3Login/Auth.php']);
+}
+
 ?>

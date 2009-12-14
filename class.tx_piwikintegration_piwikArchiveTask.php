@@ -120,4 +120,8 @@ class tx_piwikintegration_piwikArchiveTask extends tx_scheduler_Task {
 		}
 	}
 }
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/class.tx_piwikintegration_piwikArchiveTask.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/class.tx_piwikintegration_piwikArchiveTask.php']);
+}
+
 ?>
