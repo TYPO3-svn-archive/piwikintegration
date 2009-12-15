@@ -40,11 +40,12 @@ class tx_piwikintegration_piwikArchiveTask extends tx_scheduler_Task {
 		ini_set('max_execution_time',0);
 		//find piwik
 		$piwikScriptPath = dirname(dirname(__FILE__)).'/../piwik/piwik';
-		define('PIWIK_INCLUDE_PATH', $piwikScriptPath);
-		define('PIWIK_ENABLE_DISPATCH', false);
-		define('PIWIK_ENABLE_ERROR_HANDLER', false);
-		require_once PIWIK_INCLUDE_PATH . "/index.php";
-		require_once PIWIK_INCLUDE_PATH . "/core/API/Request.php";
+		define('PIWIK_INCLUDE_PATH'         , $piwikScriptPath);
+		define('PIWIK_ENABLE_DISPATCH'      , false);
+		define('PIWIK_ENABLE_ERROR_HANDLER' , false);
+		define('PIWIK_DISPLAY_ERRORS'       , false);
+		include_once PIWIK_INCLUDE_PATH . "/index.php";
+		include_once PIWIK_INCLUDE_PATH . "/core/API/Request.php";
 		Piwik_FrontController::getInstance()->init();
 
 		$piwikConfig = parse_ini_file($piwikScriptPath.'/config/config.ini.php');
