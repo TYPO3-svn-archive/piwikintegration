@@ -20,17 +20,22 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 /**
+ * Class for adding css and js code to piwik
+ *
  * @author  Kay Strobach <typo3@kay-strobach.de>
  * @link http://kay-strobach.de
  * @license http://www.gnu.org/licenses/gpl-3.0.html Gpl v3 or later
- * 
  * @package Piwik_TYPO3Menu
  */
-
-
 class Piwik_TYPO3Menu extends Piwik_Plugin
 {
+	/**
+	 * get extension information
+	 *
+	 * @return	array		with information
+	 */
 	public function getInformation()
 	{
 		include(PIWIK_INCLUDE_PATH.'/piwikintegration.php');
@@ -43,14 +48,24 @@ class Piwik_TYPO3Menu extends Piwik_Plugin
 			);
 	}
 
+	/**
+	 * returns registered hooks
+	 *
+	 * @return	array		array of hooks
+	 */
 	public function getListHooksRegistered()
 	{
-		return array( 
+		return array(
 			'template_js_import' => 'js',
 			'template_css_import' => 'css',
 		);
 	}
 
+	/**
+	 * echo the needed javascript
+	 *
+	 * @return	void
+	 */
 	function js()
 	{
 		if($_GET['module']=='CoreHome') {
@@ -58,13 +73,18 @@ class Piwik_TYPO3Menu extends Piwik_Plugin
 		}
 	}
 
+	/**
+	 * echo the needed stylesheets
+	 *
+	 * @return	void
+	 */
 	function css()
 	{
 		echo "<link rel='stylesheet' type='text/css' href='plugins/TYPO3Menu/css/main.css'>\n";
 		echo "<link rel='stylesheet' type='text/css' href='plugins/TYPO3Menu/css/typo3.css'>\n";
 	}
 }
-//XClass to avoid errors in extmanager of TYPO3 - senseless so far 
+//XClass to avoid errors in extmanager of TYPO3 - senseless so far
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/piwik_patches/plugins/TYPO3Menu/TYPO3Menu.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/piwik_patches/plugins/TYPO3Menu/TYPO3Menu.php']);
 }

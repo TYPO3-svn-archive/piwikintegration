@@ -20,16 +20,22 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+require_once(t3lib_extMgm::extPath('scheduler', 'class.tx_scheduler_task.php'));
 /**
+ * scheduler task class
+ * 
  * @author  Kay Strobach <typo3@kay-strobach.de>
  * @link http://kay-strobach.de
  * @license http://www.gnu.org/licenses/gpl-3.0.html Gpl v3 or later
- * 
+ *
  */
-
-require_once(t3lib_extMgm::extPath('scheduler', 'class.tx_scheduler_task.php'));
 class tx_piwikintegration_piwikArchiveTask extends tx_scheduler_Task {
-	public function execute() { 
+	/**
+	 * execute the piwik archive task
+	 *
+	 * @return	boolean  always returns true
+	 */
+	public function execute() {
 		//set execution time
 		ini_set('max_execution_time',0);
 		//find piwik
@@ -40,10 +46,10 @@ class tx_piwikintegration_piwikArchiveTask extends tx_scheduler_Task {
 		require_once PIWIK_INCLUDE_PATH . "/index.php";
 		require_once PIWIK_INCLUDE_PATH . "/core/API/Request.php";
 		Piwik_FrontController::getInstance()->init();
-		
+
 		$piwikConfig = parse_ini_file($piwikScriptPath.'/config/config.ini.php');
 
-		//log		
+		//log
 		$this->writeLog(
 			'EXT:piwikintegration cronjob'
 		);
@@ -71,7 +77,7 @@ class tx_piwikintegration_piwikArchiveTask extends tx_scheduler_Task {
 		$this->writeLog(
 			'EXT:piwikintegration got '.count($piwikSiteIds).' siteid´s and piwik token, start archiving '
 		);
-		
+
 		//create Archive in piwik
 		$periods = array(
 			'day',
@@ -100,12 +106,20 @@ class tx_piwikintegration_piwikArchiveTask extends tx_scheduler_Task {
 				);
 			}
 		}
-		//log		
+		//log
 		$this->writeLog(
 			'EXT:piwikintegration cronjob ended'
 		);
 		return true;
 	}
+
+	/**
+	 * write something into the logfile
+	 *
+	 * @param	string		$message: message for the log
+	 * @param	mixed		$data: mixed data to store in the log
+	 * @return	void
+	 */
 	function writeLog($message,$data='') {
 		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['piwikintegration']);
 		if($conf['enableSchedulerLoging']) {

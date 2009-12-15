@@ -17,6 +17,9 @@
 			<label index="dashboard_keywords">Keywords</label>
 			<label index="dashboard_frequencyoverview">Frequency</label>
 			<label index="dashboard_countries">Countries</label>
+			
+			<label index="selectpage_tip">Hint</label>
+			<label index="selectpage_description">Please choose a page from the tree on the left, which has at least a template with the setup config.tx_piwik.piwik_idsite set. See manual for more details.</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="title">Statistik</label>
@@ -31,6 +34,8 @@
 			<label index="dashboard_frequencyoverview">Frequenzverhalten</label>
 			<label index="dashboard_countries">Länder</label>
 
+			<label index="selectpage_tip">Tipp</label>
+			<label index="selectpage_description">Bitte wählen Sie eine Seite aus dem Seitenbaum, auf der mindestens config.tx_piwik.piwik_idsite gesetzt ist. Im Handbuch gibt es dazu mehr Hinweise.</label>
 		</languageKey>
 	</data>
 </T3locallang>

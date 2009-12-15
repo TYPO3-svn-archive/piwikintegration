@@ -20,24 +20,35 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+require_once "UsersManager/API.php";
 /**
+ * Provide authentification service against TYPO3 for piwik
+ *
  * @author  Kay Strobach <typo3@kay-strobach.de>
  * @link http://kay-strobach.de
  * @license http://www.gnu.org/licenses/gpl-3.0.html Gpl v3 or later
- * 
  * @package Piwik_TYPO3Login
  */
-require_once "UsersManager/API.php";
-
 class Piwik_TYPO3Login_Auth implements Piwik_Auth
 {
 	protected $login = null;
 	protected $token_auth = null;
-	
+
+	/**
+	 * returns extension name
+	 *
+	 * @return	string		extensionname
+	 */
 	public function getName()
 	{
 	        return 'TYPO3Login';
 	}
+
+	/**
+	 * authenticate the user
+	 *
+	 * @return	object		Piwik_Auth_Result
+	 */
 	public function authenticate()
 	{
 		$rootLogin = Zend_Registry::get('config')->superuser->login;
@@ -85,22 +96,34 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 		if($this->login == 'anonymous') {
 			return new Piwik_Auth_Result(Piwik_Auth_Result::SUCCESS, 'anonymous', NULL );
 		}
-		
+
 		// no valid user
 		return new Piwik_Auth_Result( Piwik_Auth_Result::FAILURE, $this->login, $this->token_auth );
 	}
 
+	/**
+	 * set login name of the current session
+	 *
+	 * @param	string		$login: login username
+	 * @return	void
+	 */
 	public function setLogin($login)
 	{
 		$this->login = $login;
 	}
-	
+
+	/**
+	 * set authentification token
+	 *
+	 * @param	string		$token_auth: piwik token
+	 * @return	void
+	 */
 	public function setTokenAuth($token_auth)
 	{
 		$this->token_auth = $token_auth;
 	}
 }
-//XClass to avoid errors in extmanager of TYPO3 - senseless so far 
+//XClass to avoid errors in extmanager of TYPO3 - senseless so far
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/piwik_patches/plugins/TYPO3Login/Auth.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/piwik_patches/plugins/TYPO3Login/Auth.php']);
 }

@@ -55,7 +55,7 @@ div#topRightBar a {
 	padding-top:0px;
 }
 div#topLeftBar {
-	width:0px;
+	-width:0px;
 }
 /* widgets */
 .widget {

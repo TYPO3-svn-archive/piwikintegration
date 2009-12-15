@@ -20,16 +20,21 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 /**
+ * Helper class for piwik related stuff
+ *
  * @author  Kay Strobach <typo3@kay-strobach.de>
  * @link http://kay-strobach.de
  * @license http://www.gnu.org/licenses/gpl-3.0.html Gpl v3 or later
- * 
  */
- 
-#ini_set('display_errors',1);
 class tx_piwikintegration_helper {
 	var $piwik_id = array();
+	/**
+	 * init piwik, setup constants, include libs
+	 *
+	 * @return	void
+	 */
 	function initPiwik() {
 		//load files from piwik
 		if(!defined('PIWIK_INCLUDE_PATH'))
@@ -42,12 +47,12 @@ class tx_piwikintegration_helper {
 			define('PIWIK_INCLUDE_SEARCH_PATH',
 				  PIWIK_INCLUDE_PATH . '/core'
 				. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/libs'
-				. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/plugins' 
+				. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/plugins'
 				. PATH_SEPARATOR . get_include_path());
 			@ini_set('include_path', PIWIK_INCLUDE_SEARCH_PATH);
 			@set_include_path(PIWIK_INCLUDE_SEARCH_PATH);
 		}
-		set_include_path(PIWIK_INCLUDE_PATH 
+		set_include_path(PIWIK_INCLUDE_PATH
 					. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/libs/'
 					. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/plugins/'
 					. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/core/'
@@ -57,6 +62,14 @@ class tx_piwikintegration_helper {
 		require_once('core/Config.php');
 		require_once('core/PluginsManager.php');
 	}
+
+	/**
+	 * check wether piwik is installed
+	 * true:  installed
+	 * false: not installed	 	 
+	 *
+	 * @return	void
+	 */
 	function checkPiwikInstalled() {
 		if(file_exists(t3lib_div::getFileAbsFileName('typo3conf/piwik/piwik/config/config.ini.php'))) {
 			return true;
@@ -66,7 +79,7 @@ class tx_piwikintegration_helper {
 	}
 
 	/**
-	 * Manages the Piwik installation
+	 * run through the Piwik installation
 	 *
 	 * @return	void
 	 */
@@ -75,9 +88,9 @@ class tx_piwikintegration_helper {
 		$this->makePiwikPatched();
 		$this->makePiwikConfigured();
 	}
-	
+
 	/**
-	 * Manages the Piwik installation
+	 * Download and extract piwik
 	 *
 	 * @return	void
 	 */
@@ -111,9 +124,11 @@ class tx_piwikintegration_helper {
 	}
 
 	/**
-	 * [Describe function...]
+	 * Check wether piwik is installed or not
+	 * true:  piwikintegration.php version number is the same as the ext version
+	 * false: different versions
 	 *
-	 * @return	[type]		...
+	 * @return	boolean     
 	 */
 	function checkPiwikPatched() {
 		$_EXTKEY = 'piwikintegration';
@@ -126,9 +141,10 @@ class tx_piwikintegration_helper {
 	}
 
 	/**
-	 * [Describe function...]
+	 * automatically patch piwik
 	 *
-	 * @return	[type]		...
+	 * @param	array		$exclude: list of files from the patched_files folder which should be ignored
+	 * @return	void
 	 */
 	function makePiwikPatched($exclude=array()) {
 		if(!is_writeable(PATH_site.'typo3conf/piwik/piwik/')) {
@@ -149,7 +165,7 @@ class tx_piwikintegration_helper {
 			$shortEntry = str_replace($source,'',$entry);
 			if($shortEntry!='' && $shortEntry!='.') {
 				if(!in_array($shortEntry, $exclude)) {
-					if(is_dir($entry)) {		
+					if(is_dir($entry)) {
 						$cmd['newfolder'][] = array(
 							'data'   => basename($shortEntry),
 							'target' => dirname($dest.$shortEntry),
@@ -173,9 +189,9 @@ class tx_piwikintegration_helper {
 	}
 
 	/**
-	 * [Describe function...]
+	 * automatically configure piwik
 	 *
-	 * @return	[type]		...
+	 * @return	void
 	 */
 	function makePiwikConfigured() {
 		global $typo_db_host,
@@ -185,15 +201,15 @@ class tx_piwikintegration_helper {
 		$this->initPiwik();
 		//makeConfigObject
 		Piwik::createConfigObject(PIWIK_INCLUDE_PATH.'config/config.ini.php');
-		$piwikConfig = Zend_Registry::get('config'); 
-		
+		$piwikConfig = Zend_Registry::get('config');
+
 		//userdata
 		$superuser = $piwikConfig->superuser->toArray();
 		$superuser['login']    = md5(microtime());
 		$superuser['password'] = md5(microtime());
 		#$piwikConfig->superuser = new Zend_Config($superuser);
 		$piwikConfig->superuser = $superuser;
-		
+
 		//Database
 		$database = $piwikConfig->database->toArray();
 		$database['host']          = TYPO3_db_host;
@@ -204,13 +220,13 @@ class tx_piwikintegration_helper {
 		$database['adapter']       = "PDO_MYSQL";
 		#$piwikConfig->database = new Zend_Config($database);
 		$piwikConfig->database = $database;
-		
+
 		//General
 		$general = $piwikConfig->General->toArray();
 		$general['show_website_selector_in_user_interface'] = 0;
 		#$piwikConfig->General = new Zend_Config($general);
 		$piwikConfig->General = $general;
-		
+
 		//force Load of TYPO3Login! and deny Login
 		$plugins     = $piwikConfig->Plugins->toArray();
 		$key_login   = array_search('Login'     ,$plugins);
@@ -230,8 +246,8 @@ class tx_piwikintegration_helper {
 			}
 		//write Config back
 		$piwikConfig->Plugins = $plugins;
-		
-		//create PiwikTables, check wether base tables already exist 
+
+		//create PiwikTables, check wether base tables already exist
 			Piwik::createDatabaseObject();
 			$tablesInstalled = Piwik::getTablesInstalled();
 			$tablesToInstall = Piwik::getTablesNames();
@@ -239,18 +255,16 @@ class tx_piwikintegration_helper {
 				Piwik::createTables();
 				Piwik::createAnonymousUser();
 				$updater = new Piwik_Updater();
+				//set Piwikversion
 				$updater->recordComponentSuccessfullyUpdated('core', Piwik_Version::VERSION);
 			}
-			
-		
-		//set Piwikversion
 	}
 	/**
 	 * This function makes a page statistics accessable for a user
-	 * 	call it with $this->pageinfo['uid'] as param from a backend module
+	 * call it with $this->pageinfo['uid'] as param from a backend module
 	 *
-	 * @param	[type]		$uid: ...
-	 * @return	[type]		...
+	 * @param	integer		$uid: pid for which the user will get access
+	 * @return	void
 	 */
 	function correctUserRightsForPid($uid) {
 		if($uid <= 0 || $uid!=intval($uid)) {
@@ -283,10 +297,10 @@ class tx_piwikintegration_helper {
 	}
 	/**
 	 * returns the piwik site id for a given page
-	 * 	call it with $this->pageinfo['uid'] as param from a backend module
+	 * call it with $this->pageinfo['uid'] as param from a backend module
 	 *
 	 * @param	integer		$uid: Page ID
-	 * @return	integer
+	 * @return	integer     piwik site id
 	 */
 	function getPiwikSiteIdForPid($uid) {
 		if($uid <= 0 || $uid!=intval($uid)) {
@@ -338,14 +352,34 @@ class tx_piwikintegration_helper {
 		$this->piwik_id[$uid] = $id;
 		return $this->piwik_id[$uid];
 	}
+
+	/**
+	 * returns js trackingcode for a given idsite
+	 *
+	 * @param	integer		$siteId: idsite of piwik
+	 * @return	string		trackingcode
+	 */
 	function getPiwikJavaScriptCodeForSite($siteId) {
 		$this->initPiwik();
 		$content=Piwik::getJavascriptCode($siteId, $this->getPiwikBaseURL());
 		return $content;
 	}
+
+	/**
+	 * returns js trackingcode for a given pid
+	 *
+	 * @param	integer		$uid: uid of a page in TYPO3
+	 * @return	string		trackingcode for a given uid
+	 */
 	function getPiwikJavaScriptCodeForPid($uid) {
 		return $this->getPiwikJavaScriptCodeForSite($this->getPiwikSiteIdForPid($uid));
 	}
+
+	/**
+	 * returns piwikBaseURL
+	 *
+	 * @return	string		path to piwik url
+	 */
 	function getPiwikBaseURL() {
 		if(TYPO3_MODE == 'BE') {
 			$this->initPiwik();
@@ -359,9 +393,22 @@ class tx_piwikintegration_helper {
 		#$path = 'http://localhost/t3alpha4.3/typo3conf/piwik/piwik/';
 		return $path;
 	}
+
+	/**
+	 * get widgetlist for a given pid
+	 *
+	 * @param	integer		$uid: pageuid
+	 * @return	array		of widgets
+	 */
 	function getPiwikWidgetsForPid($uid) {
 		return $this->getPiwikWidgets($this->getPiwikSiteIdForPid($uid));
 	}
+
+	/**
+	 * get complete widgetlist
+	 *
+	 * @return	array		of widgets
+	 */
 	function getPiwikWidgets() {
 		$this->initPiwik();
 		$controller = Piwik_FrontController::getInstance();
@@ -369,11 +416,19 @@ class tx_piwikintegration_helper {
 		$widgets = Piwik_GetWidgetsList();
 		return $widgets;
 	}
+
+	/**
+	 * get widgets for flexform
+	 *
+	 * @param	pointer		$$PA: pointers
+	 * @param	pointer		$fobj: pointers
+	 * @return	void
+	 */
 	static function getWidgetsForFlexForm(&$PA,&$fobj) {
 		$PA['items'] = array();
 		$piwikhelper = new tx_piwikintegration_helper();
 		$widgets=$piwikhelper->getPiwikWidgets();
-		
+
 		foreach($widgets as $pluginCat => $plugin) {
 			foreach($plugin as $widget) {
 				$PA['items'][] = array(
@@ -384,6 +439,14 @@ class tx_piwikintegration_helper {
 			}
 		}
 	}
+
+	/**
+	 * get sites for flexform
+	 *
+	 * @param	pointer		$PA: pointers
+	 * @param	pointer		$fobj: pointers
+	 * @return	void
+	 */
 	static function getSitesForFlexForm(&$PA,&$fobj) {
 		//fetch anonymous accessable idsites
 		$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
@@ -391,7 +454,7 @@ class tx_piwikintegration_helper {
 			'tx_piwikintegration_access',
 			'login="anonymous"'
 		);
-		
+
 		//build array for selecting more information
 		$sites = array();
 		foreach($erg as $site) {
@@ -406,7 +469,7 @@ class tx_piwikintegration_helper {
 			'name, main_url, idsite'
 		);
 		$PA['items'] = array();
-		
+
 		//render items
 		while(($site = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($erg)) !== false) {
 			$PA['items'][] = array(

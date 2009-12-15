@@ -21,24 +21,34 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
+ * Controller for TYPO3Login
+ * 
  * @author  Kay Strobach <typo3@kay-strobach.de>
  * @link http://kay-strobach.de
  * @license http://www.gnu.org/licenses/gpl-3.0.html Gpl v3 or later
- * 
  * @package Piwik_TYPO3Login
  */
- 
-class Piwik_TYPO3Login_Controller extends Piwik_Controller 
+class Piwik_TYPO3Login_Controller extends Piwik_Controller
 {
+	/**
+	 * redirect to dashboard as we have no view
+	 *
+	 * @return	void
+	 */
 	function index()
 	{
 		header('Location: index.php');
 	}
+	/**
+	 * redirect to dashboard as we have no view
+	 *
+	 * @return	void
+	 */
 	function logout() {
 		header('Location: index.php');
 	}
 }
-//XClass to avoid errors in extmanager of TYPO3 - senseless so far 
+//XClass to avoid errors in extmanager of TYPO3 - senseless so far
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/piwik_patches/plugins/TYPO3Login/Controller.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/piwik_patches/plugins/TYPO3Login/Controller.php']);
 }

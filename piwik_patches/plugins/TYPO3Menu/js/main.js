@@ -52,6 +52,7 @@ $(document).ready(function(){
 			$('#periodString #periods a').wrap('<li></li>').parent().wrapAll('<ul></ul>').parent()
 		);
 		$('#date').parent().next().prepend('<li><span id="typo3datepicker"></span></li>');
+		$('#date img').remove();
 		$("#datepicker").remove();
 		$('#periods').remove();
 	//add new datepicker based on the piwik datepicker to ensure that it is visible
@@ -122,22 +123,21 @@ $(document).ready(function(){
 				_pk_translate('CoreHome_MonthDecember_js')]
 		});
 	//rebuild admin menu
-		ul = $('<ul class="horizontalmenu"></ul>');
+		ul = $('<ul class="horizontalmenu"><li><a></a></li></ul>');
+		//add username as root
+		ul.children('li').children('a').append(
+			$('#topRightBar strong').text()
+		)
 		//handle logout
-		ul.append(
-			$('#topRightBar a:last-child').wrap('<li></li>').parent()
-		)
-		ul.children('li').children('a').prepend(
-			$('#topRightBar strong')
-		)
-		ul.children('li').children('a').prepend(
-			$('<span>&nbsp;</span>')
+		ul.children('li').append(
+			$('#topRightBar a:last-child').wrap('<li></li>').parent().wrapAll('<ul></ul>').parent()
 		);
 		//handle other stuff
-		ul.prepend(
+		ul.children('li').children('ul').append(
 			$('#topRightBar a').wrap('<li></li>').parent()
 		);
 		$('#topRightBar').html(ul);
+		$('#topRightBar ul li ul').css('left',0);
 	//make menu working
 		//unbind old menu
 			$('ul.horizontalmenu li').unbind('mouseenter');
@@ -148,11 +148,11 @@ $(document).ready(function(){
 				$(this).children('ul').css('left'       ,pos['left'])
 				$(this).children('ul').css('top'        ,pos['top']+$(this).height());
 				$(this).children('ul').css('visibility' ,'visible');
-				$(this).children('ul').slideDown(100);
+				$(this).children('ul').slideDown(120);
 			});
 		//close event
 			$('ul.horizontalmenu li').bind('mouseleave',function(e) {
-				$(this).children('ul').slideUp(100);
+				$(this).children('ul').slideUp(120);
 			});
 			$('ul.horizontalmenu li').bind('click',function(e) {
 				$('ul.horizontalmenu li').removeClass('sfHover');
@@ -168,6 +168,7 @@ $(document).ready(function(){
 		$('#topLeftBar').html(
 			$('#languageSelection')
 		);
+		$('#topRightBar a:first-child').width(80);
 		$('.sf-sub-indicator').remove();
 	//add header information
 		modifyHeader();

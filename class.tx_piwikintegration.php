@@ -20,15 +20,15 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+require_once('class.tx_piwikintegration_helper.php');
 /**
- * Hooks for the 'piwik' extension.
- * 
- * This file is partly based on the piwik extension of Frank Nägler  
+ * Outputprocessing hook functions for the piwikintegration extension.
+ *
+ * This file is partly based on the piwik extension of Frank Nägler
  *
  * @author    Frank Nägler <typo3@naegler.net>
  * @author    Kay Strobach <typo3@kay-strobach.de>
  */
-require_once('class.tx_piwikintegration_helper.php');
 class tx_piwikintegration {
 	function init(&$params, &$reference) {
 		//init helper object
@@ -39,24 +39,29 @@ class tx_piwikintegration {
 		$this->baseUrl = $params['pObj']->config['config']['baseURL'];
 	}
     /**
-     * main processing method
-     */
+	 * handler for non cached output processing to insert piwik tracking code
+	 * if in independent mode
+	 *
+	 * @param	pointer    $$params: passed params from the hook
+	 * @param	pointer    $reference: to the parent object
+	 * @return	void       void
+	 */
     function contentPostProc_output(&$params, &$reference){
         $this->init($params,$reference);
         $content       = $params['pObj']->content;
 		$beUserLogin   = $params['pObj']->beUserLogin;
-		
+
 		//check wether there is a BE User loggged in, if yes avoid to display the tracking code!
 		if($beUserLogin == 1) {
 			return;
 		}
-		
+
 		//check wether needed parameters are set properly
 		if (!($this->extConf['piwik_idsite']) || !($this->extConf['piwik_host'])) {
 			return;
 		}
-		
-		$piwikCode     = $this->piwikHelper->getPiwikJavaScriptCodeForSite($this->extConf['piwik_idsite']); 
+
+		$piwikCode     = $this->piwikHelper->getPiwikJavaScriptCodeForSite($this->extConf['piwik_idsite']);
 		$piwikCode     = str_replace('&gt;','>',$piwikCode);
 		$piwikCode     = str_replace('&lt;','<',$piwikCode);
 		$piwikCode     = str_replace('&quot;','"',$piwikCode);
@@ -65,8 +70,13 @@ class tx_piwikintegration {
         $params['pObj']->content = str_replace('</body>','<!-- EXT:piwikintegration independent mode, disable independent mode, if you have 2 trackingcode snippets! -->'.$piwikCode.'<!-- /EXT:piwikintegration --></body>',$params['pObj']->content);
 	}
     /**
-     * check wether the siteid exists or not!
-     */
+	 * handler for cached output processing to assure that the siteid is created
+	 * in piwik	 
+	 *
+	 * @param	pointer    $$params: passed params from the hook
+	 * @param	pointer    $reference: to the parent object
+	 * @return	void       void
+	 */
      function contentPostProc_all(&$params, &$reference){
 		$this->init($params,$reference);
 		$erg = $GLOBALS['TYPO3_DB']->exec_SELECTquery (
@@ -83,14 +93,14 @@ class tx_piwikintegration {
 				array(
 					'idsite'   => intval($this->extConf['piwik_idsite']),
 					'name'     => 'ID '.intval($this->extConf['piwik_idsite']),
-					'main_url' => $this->baseUrl, 
+					'main_url' => $this->baseUrl,
 				)
 			);
 		} elseif($numRows>1) {
 			//more than once -> error
 			die('piwik idsite table is inconsistent');
 		}
-	} 
+	}
 }
 
 if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/piwikintegration/class.tx_piwikintegration.php"])    {

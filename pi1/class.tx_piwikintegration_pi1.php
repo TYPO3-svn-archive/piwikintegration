@@ -20,21 +20,15 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-/**
- * @author  Kay Strobach <typo3@kay-strobach.de>
- * @link http://kay-strobach.de
- * @license http://www.gnu.org/licenses/gpl-3.0.html Gpl v3 or later
- * 
- */
 require_once(PATH_tslib.'class.tslib_pibase.php');
 require_once(t3lib_extMgm::extPath('piwikintegration').'class.tx_piwikintegration_helper.php');
 
-
 /**
- * main class for the tt_address plugin, outputs addresses either by direct
- * selection or by selection via groups or a combination of both
- *
- * @author Ingo Renner <typo3@ingo-renner.com>
+ * Frontend plugin for piwikintegration
+ * 
+ * @author  Kay Strobach <typo3@kay-strobach.de>
+ * @link http://kay-strobach.de
+ * @license http://www.gnu.org/licenses/gpl-3.0.html Gpl v3 or later
  */
 class tx_piwikintegration_pi1 extends tslib_pibase {
 	var $prefixId      = 'tx_piwikintegration_pi1';		// Same as class name
@@ -42,6 +36,14 @@ class tx_piwikintegration_pi1 extends tslib_pibase {
 	var $extKey        = 'tx_piwikintegration_pi1';	// The extension key.
 	var $pi_checkCHash = true;
 
+	/**
+	 * Main function of the module. Write the content to $this->content
+	 *
+     * @param	string	$content: string with current content
+	 * @param	array	$conf: array with configuration
+	 * 	 
+	 * @return	void
+	 */
 	function main($content, $conf) {
 		$content = $this->init($conf);
 		return $this->pi_wrapInBaseClass($content);

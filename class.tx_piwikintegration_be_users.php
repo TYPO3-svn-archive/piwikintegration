@@ -21,13 +21,22 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
+ * Class to add wizard to be form
+ * 
  * @author  Kay Strobach <typo3@kay-strobach.de>
  * @link http://kay-strobach.de
  * @license http://www.gnu.org/licenses/gpl-3.0.html Gpl v3 or later
  * 
  */
 class tx_piwikintegration_be_users {
-	function tx_piwikintegration_api_code_wizard($PA, $fobj) {
+    /**
+	 * adds the wizard to the be_users table piwik api key field
+	 *
+	 * @param	pointer    $PA: passed params from the hook
+	 * @param	pointer    $fObj: form object pointer
+	 * @return	void       void
+	 */
+	function tx_piwikintegration_api_code_wizard(&$PA, &$fobj) {
 		  $onClick = 'date = new Date(); document.'.$PA['formName'].'[\''.$PA['itemName'].'\'].value=MD5(date.getTime()+document.location.href);'
 			.implode('',$PA['fieldChangeFunc'])    // Necessary to tell TCEforms that the value is updated.
 			.'return false;';		
