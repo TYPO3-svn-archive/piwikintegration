@@ -11,7 +11,7 @@
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="piwikArchiveTask.name">Piwik Archivierungs Cron Job</label>
-			<label index="piwikArchiveTask.description">Führe den mmit Piwik gelieferten Cron Job aus.</label>
+			<label index="piwikArchiveTask.description">Führe den mit Piwik gelieferten Cron Job aus.</label>
 		</languageKey>
 
 	</data>
