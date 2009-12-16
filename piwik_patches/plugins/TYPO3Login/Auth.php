@@ -51,7 +51,23 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 	 */
 	public function authenticate()
 	{
+		/**
+		 * authenticate against the piwik configuration file for emergency access or installer or cronjob!
+		 */		 		
 		$rootLogin = Zend_Registry::get('config')->superuser->login;
+		$rootPassword = Zend_Registry::get('config')->superuser->password;
+		$rootToken = Piwik_UsersManager_API::getTokenAuth($rootLogin, $rootPassword);
+
+		if($this->login == $rootLogin
+			&& $this->token_auth == $rootToken)
+		{
+			return new Piwik_Auth_Result(Piwik_Auth_Result::SUCCESS_SUPERUSER_AUTH_CODE, $this->login, $this->token_auth );
+		}
+
+		if($this->token_auth === $rootToken)
+		{
+			return new Piwik_Auth_Result(Piwik_Auth_Result::SUCCESS_SUPERUSER_AUTH_CODE, $rootLogin, $rootToken );
+		}
 		/**
 		 * TYPO3 cookie
 		 */

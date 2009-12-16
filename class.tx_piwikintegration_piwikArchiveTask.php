@@ -39,16 +39,19 @@ class tx_piwikintegration_piwikArchiveTask extends tx_scheduler_Task {
 		//set execution time
 		ini_set('max_execution_time',0);
 		//find piwik
+		
 		$piwikScriptPath = dirname(dirname(__FILE__)).'/../piwik/piwik';
 		define('PIWIK_INCLUDE_PATH'         , $piwikScriptPath);
 		define('PIWIK_ENABLE_DISPATCH'      , false);
 		define('PIWIK_ENABLE_ERROR_HANDLER' , false);
 		define('PIWIK_DISPLAY_ERRORS'       , false);
+		ini_set('display_errors',0);
 		include_once PIWIK_INCLUDE_PATH . "/index.php";
 		include_once PIWIK_INCLUDE_PATH . "/core/API/Request.php";
+		
 		Piwik_FrontController::getInstance()->init();
 
-		$piwikConfig = parse_ini_file($piwikScriptPath.'/config/config.ini.php');
+		$piwikConfig = parse_ini_file($piwikScriptPath.'/config/config.ini.php',true);
 
 		//log
 		$this->writeLog(
@@ -69,16 +72,16 @@ class tx_piwikintegration_piwikArchiveTask extends tx_scheduler_Task {
 		$request = new Piwik_API_Request('
 			module=API
 			&method=SitesManager.getSitesWithAdminAccess
-			&token_auth='.$TOKEN_AUTH.'"
+			&token_auth='.$TOKEN_AUTH.'
 			&format=php
 			&serialize=0'
 		);
 		$piwikSiteIds = $request->process();
+
 		//log
 		$this->writeLog(
-			'EXT:piwikintegration got '.count($piwikSiteIds).' siteid´s and piwik token, start archiving '
+			'EXT:piwikintegration got '.count($piwikSiteIds).' siteids and piwik token ('.$TOKEN_AUTH.'), start archiving '
 		);
-
 		//create Archive in piwik
 		$periods = array(
 			'day',
