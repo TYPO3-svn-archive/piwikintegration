@@ -87,7 +87,7 @@ class tx_piwikintegration_piwikArchiveTask extends tx_scheduler_Task {
 			'day',
 			'week',
 			'month',
-			#'year',
+			'year',
 		);
 		//iterate through sites
 		//can be done with allSites, but this cannot create the logentries
