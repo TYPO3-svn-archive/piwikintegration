@@ -190,7 +190,8 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 						$widgets  = array (
 							'visitors'          => '<div id="widgetIframe"><iframe width="100%" height="350" src="../typo3conf/piwik/piwik/index.php?module=Widgetize&action=iframe&columns[]=nb_visits&moduleToWidgetize=VisitsSummary&actionToWidgetize=getEvolutionGraph&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
 							'frequencyoverview' => '<div id="widgetIframe"><iframe width="100%" height="350" src="../typo3conf/piwik/piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=VisitFrequency&actionToWidgetize=getSparklines&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
-							'pages'             => '<div id="widgetIframe"><iframe width="100%" height="350" src="../typo3conf/piwik/piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=Actions&actionToWidgetize=getActions&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
+							//16.01.2010 Florian Strauß	via email						
+							'pages'             => '<div id="widgetIframe"><iframe width="100%" height="350" src="../typo3conf/piwik/piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=Actions&actionToWidgetize=getPageUrls&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
 							'keywords'          => '<div id="widgetIframe"><iframe width="100%" height="350" src="../typo3conf/piwik/piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=Referers&actionToWidgetize=getKeywords&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
 
 
@@ -275,7 +276,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 			$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_web_func', '', $GLOBALS['BACK_PATH']);
 
 				// SAVE button
-			$buttons['save'] = '<input type="image" class="c-inputButton" name="submit" value="Update"' . t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'], 'gfx/savedok.gif', '') . ' title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:rm.saveDoc', 1) . '" />';
+			#$buttons['save'] = '<input type="image" class="c-inputButton" name="submit" value="Update"' . t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'], 'gfx/savedok.gif', '') . ' title="' . $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:rm.saveDoc', 1) . '" />';
 
 
 				// Shortcut
