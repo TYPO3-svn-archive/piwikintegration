@@ -334,7 +334,7 @@ class tx_piwikintegration_helper {
 			$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 				'*',
 				'tx_piwikintegration_site',
-				'idsite="'.intval($id),
+				'idsite = '.intval($id),
 				'',
 				'',
 				'0,1'
