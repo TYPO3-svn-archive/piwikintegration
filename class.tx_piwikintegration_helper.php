@@ -197,7 +197,8 @@ class tx_piwikintegration_helper {
 		global $typo_db_host,
 		       $typo_db_username,
 		       $typo_db_password,
-		       $typo_db;
+		       $typo_db,
+			   $BE_USER;
 		$this->initPiwik();
 		//makeConfigObject
 		Piwik::createConfigObject(PIWIK_INCLUDE_PATH.'config/config.ini.php');
@@ -207,7 +208,7 @@ class tx_piwikintegration_helper {
 		$superuser = $piwikConfig->superuser->toArray();
 		$superuser['login']    = md5(microtime());
 		$superuser['password'] = md5(microtime());
-		//$superuser['email']    = $BE_USER->data['email']
+		$superuser['email']    = $GLOBALS["BE_USER"]->user['email'];
 		
 		$piwikConfig->superuser = $superuser;
 
