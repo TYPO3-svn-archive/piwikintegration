@@ -207,7 +207,8 @@ class tx_piwikintegration_helper {
 		$superuser = $piwikConfig->superuser->toArray();
 		$superuser['login']    = md5(microtime());
 		$superuser['password'] = md5(microtime());
-		#$piwikConfig->superuser = new Zend_Config($superuser);
+		//$superuser['email']    = $BE_USER->data['email']
+		
 		$piwikConfig->superuser = $superuser;
 
 		//Database

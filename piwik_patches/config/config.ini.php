@@ -3,7 +3,7 @@
 [superuser]
 login = "497ee6d41df1a6e6bbcda59270ea4643"
 password = "02ee87cc26fce572e309a1a411be563d"
-email = "kay.strobach@jrk-dresden.de"
+email = "example@example.com"
 
 [database]
 host = "localhost"
