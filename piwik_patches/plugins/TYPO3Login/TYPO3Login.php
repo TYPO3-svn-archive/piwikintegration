@@ -20,7 +20,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-require "TYPO3Login/Auth.php";
+require PIWIK_INCLUDE_PATH.'/plugins/TYPO3Login/Auth.php';
 
 /**
  * Class for authentification plugin

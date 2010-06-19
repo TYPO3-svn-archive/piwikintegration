@@ -20,7 +20,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-require_once "UsersManager/API.php";
+require_once PIWIK_INCLUDE_PATH.'/plugins/UsersManager/API.php';
 /**
  * Provide authentification service against TYPO3 for piwik
  *
