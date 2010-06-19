@@ -96,13 +96,19 @@ class tx_piwikintegration_helper {
 	 */
 	function makePiwikDownloadAndExtract() {
 		if(!is_writeable(PATH_site.'typo3conf/')) {
-			die('Installation is invalid, typo3conf for creating the piwik app folder');
+			die('Installation is invalid, typo3conf must be writeable for creating the piwik app folder');
 		}
 
 		//download piwik into typo3temp
 		//can be hardcoded, because latest piwik is always on the same url ;) thanks guys
 			$saveTo = t3lib_div::getFileAbsFileName('typo3temp/piwiklatest.zip');
 			t3lib_div::writeFileToTypo3tempDir($saveTo,t3lib_div::getURL('http://piwik.org/latest.zip'));
+			if(@filesize($saveTo)===FALSE) {
+				die('Installation invalid, typo3temp '.$saveTo.' can´t be created for some reason');
+			}
+			if(@filesize($saveTo)<10) {
+				die('Installation invalid, typo3temp'.$saveTo.' is smaller than 10 bytes, download definitly failed');
+			}
 		//make dir for extraction
 			$installDir = t3lib_div::getFileAbsFileName('typo3conf/piwik/');
 			t3lib_div::mkdir_deep(PATH_site,'typo3conf/piwik/');
@@ -117,7 +123,7 @@ class tx_piwikintegration_helper {
 				$cmd = $GLOBALS['TYPO3_CONF_VARS']['BE']['unzip_path'].'unzip -qq "'.$saveTo.'" -d "'.$installDir.'"';
 				exec($cmd);
 			} else {
-				die('There is no valid unzip wrapper, i need either the class ZipArchiv from php or a *nix system with unset path set.');
+				die('There is no valid unzip wrapper, i need either the class ZipArchiv from php or a *nix system with unzip path set.');
 			}
 		//unlink archiv to save space in typo3temp ;)
 			t3lib_div::unlink_tempfile($saveTo);

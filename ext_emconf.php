@@ -15,7 +15,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'Uses EXT:piwik to inserts Data in the HTML header and gives BE-Users the right to see the data for their sites. Autoupdate of Piwik will work as TYPO3-Admin!',
 	'category' => 'module',
 	'shy' => 0,
-	'version' => '2.2.3',
+	'version' => '2.3.0',
 	'dependencies' => '',
 	'conflicts' => '',
 	'priority' => '',
@@ -35,7 +35,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'constraints' => array(
 		'depends' => array(
 			'php' => '5.2.0-6.0.0',
-			'typo3' => '4.0.0-4.3.99',
+			'typo3' => '4.0.0-4.4.99',
 		),
 		'conflicts' => array(
 		),
