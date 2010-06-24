@@ -39,30 +39,41 @@ class tx_piwikintegration_helper {
 	 */
 	function initPiwik() {
 		//load files from piwik
-		if(!defined('PIWIK_INCLUDE_PATH'))
-		{
-			define('PIWIK_INCLUDE_PATH', PATH_site.'typo3conf/piwik/piwik/');
-			define('PIWIK_USER_PATH'   , PATH_site.'typo3conf/piwik/piwik/');
-		}
-		if(!defined('PIWIK_INCLUDE_SEARCH_PATH'))
-		{
-			define('PIWIK_INCLUDE_SEARCH_PATH',
-				  PIWIK_INCLUDE_PATH . '/core'
-				. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/libs'
-				. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/plugins'
-				. PATH_SEPARATOR . get_include_path());
-			@ini_set('include_path', PIWIK_INCLUDE_SEARCH_PATH);
-			@set_include_path(PIWIK_INCLUDE_SEARCH_PATH);
-		}
-		set_include_path(PIWIK_INCLUDE_PATH
-					. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/libs/'
-					. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/plugins/'
-					. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/core/'
+			if(!defined('PIWIK_INCLUDE_PATH'))
+			{
+				define('PIWIK_INCLUDE_PATH', PATH_site.'typo3conf/piwik/piwik/');
+				define('PIWIK_USER_PATH'   , PATH_site.'typo3conf/piwik/piwik/');
+			}
+			if(!defined('PIWIK_INCLUDE_SEARCH_PATH'))
+			{
+				define('PIWIK_INCLUDE_SEARCH_PATH',
+					  PIWIK_INCLUDE_PATH . '/core'
+					. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/libs'
+					. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/plugins'
 					. PATH_SEPARATOR . get_include_path());
-		require_once PIWIK_INCLUDE_PATH .'/core/Loader.php';
-		require_once('core/Piwik.php');
-		require_once('core/Config.php');
-		require_once('core/PluginsManager.php');
+				@ini_set('include_path', PIWIK_INCLUDE_SEARCH_PATH);
+				@set_include_path(PIWIK_INCLUDE_SEARCH_PATH);
+			}
+			set_include_path(PIWIK_INCLUDE_PATH
+						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/libs/'
+						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/plugins/'
+						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/core/'
+						. PATH_SEPARATOR . get_include_path());
+			require_once PIWIK_INCLUDE_PATH .'/core/Loader.php';
+			require_once('core/Piwik.php');
+			require_once('core/Config.php');
+			require_once('core/PluginsManager.php');
+		//create config object
+			Piwik::createConfigObject(PIWIK_INCLUDE_PATH.'config/config.ini.php');
+		
+		//define Table prefix for internal use
+			$this->tableDbPrefix = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['piwikintegration']);
+			$this->tableDbPrefix = $this->tableDbPrefix['databaseTablePrefix'];
+			if($this->tableDbPrefix != '') {
+				$this->tableDbPrefix.= '.';
+			}
+			$this->tablePrefix = $this->tableDbPrefix.'tx_piwikintegration_';
+		
 	}
 	/**
 	 * Starts config object and some other stuff.
@@ -237,7 +248,6 @@ class tx_piwikintegration_helper {
 			   $BE_USER;
 		$this->initPiwik();
 		//makeConfigObject
-		Piwik::createConfigObject(PIWIK_INCLUDE_PATH.'config/config.ini.php');
 		$piwikConfig = Zend_Registry::get('config');
 
 		//userdata
@@ -254,7 +264,7 @@ class tx_piwikintegration_helper {
 		$database['username']      = TYPO3_db_username;
 		$database['password']      = TYPO3_db_password;
 		$database['dbname']        = TYPO3_db;
-		$database['tables_prefix'] = "tx_piwikintegration_";
+		$database['tables_prefix'] = $this->tablePrefix;
 		$database['adapter']       = "PDO_MYSQL";
 		#$piwikConfig->database = new Zend_Config($database);
 		$piwikConfig->database = $database;
@@ -317,7 +327,7 @@ class tx_piwikintegration_helper {
 
 		$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'*',
-			'tx_piwikintegration_userr',
+			$this->tablePrefix.'user',
 			'login="'.$beUserName.'"',
 			'',
 			'',
@@ -325,7 +335,7 @@ class tx_piwikintegration_helper {
 			);
 		if(count($erg)!=1) {
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-					'tx_piwikintegration_user',
+					$this->tablePrefix.'user',
 					array(
 						'login'          => $beUserName,
 						'alias'          => $GLOBALS['BE_USER']->user['realName'] ? $GLOBALS['BE_USER']->user['realName'] : $beUserName,
@@ -335,7 +345,7 @@ class tx_piwikintegration_helper {
 				);
 		} else {
 			$GLOBALS['TYPO3_DB']->exec_Updatequery(
-					'tx_piwikintegration_user',
+					$this->tablePrefix.'user',
 					'login = "'.mysql_escape_string($beUserName).'"',
 					array(
 						'alias' => $GLOBALS['BE_USER']->user['realName'] ? $GLOBALS['BE_USER']->user['realName'] : $beUserName,
@@ -350,7 +360,7 @@ class tx_piwikintegration_helper {
 		if($GLOBALS['BE_USER']->user['admin']!=1) {
 			$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 					'*',
-					'tx_piwikintegration_access',
+					$this->tablePrefix.'access',
 					'login="'.$beUserName.'" AND idsite='.$this->getPiwikSiteIdForPid($uid),
 					'',
 					'',
@@ -358,7 +368,7 @@ class tx_piwikintegration_helper {
 			);
 			if(count($erg)==0) {
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-					'tx_piwikintegration_access',
+					$this->tablePrefix.'access',
 					array(
 						'login' => $beUserName,
 						'idsite'=> $this->getPiwikSiteIdForPid($uid),
@@ -406,7 +416,7 @@ class tx_piwikintegration_helper {
 		//check wether site already exists in piwik db
 			$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 				'*',
-				'tx_piwikintegration_site',
+				$this->tablePrefix.'site',
 				'idsite = '.intval($id),
 				'',
 				'',
@@ -422,7 +432,7 @@ class tx_piwikintegration_helper {
 				$timezone = Piwik_GetOption('SitesManager_DefaultTimezone') ? Piwik_GetOption('SitesManager_DefaultTimezone') : 'UTC';
 				
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-					'tx_piwikintegration_site',
+					$this->tablePrefix.'site',
 					array(
 						'idsite'     => $id,
 						'main_url'   => 'http://'.$_SERVER["SERVER_NAME"],
@@ -535,7 +545,7 @@ class tx_piwikintegration_helper {
 		//fetch anonymous accessable idsites
 		$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'idsite',
-			'tx_piwikintegration_access',
+			$this->tablePrefix.'access',
 			'login="anonymous"'
 		);
 
@@ -547,7 +557,7 @@ class tx_piwikintegration_helper {
 		$accessableSites = implode(',',$sites);
 		$erg = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'idsite,name,main_url',
-			'tx_piwikintegration_site',
+			$this->tablePrefix.'site',
 			'idsite IN('.$accessableSites.')',
 			'',
 			'name, main_url, idsite'
@@ -587,6 +597,42 @@ class tx_piwikintegration_helper {
 	}
 	function showMessageAndDie($type,$title,$message,$reload=false) {
 		die(showMessage($type,$title,$message,$reload));
+	}
+	function emSaveConstants($par) {
+		if($par['extKey'] == 'piwikintegration' && t3lib_div::_POST('submit')) {			
+			$newconf = t3lib_div::_POST();
+			$newconf = $newconf['data'];
+			//init piwik to get table prefix
+				$this->initPiwik();
+			//walk through changes
+			if($this->tableDbPrefix!==$newconf['databaseTablePrefix']) {
+				//create shortVars
+					if($newconf['databaseTablePrefix'] == '') {
+						$newDbPrefix          = '';
+						$newDbPrefixForRename = TYPO3_db.'.';
+					} else {
+						$newDbPrefix          = $newconf['databaseTablePrefix'].'.';
+						$newDbPrefixForRename = $newconf['databaseTablePrefix'].'.';
+					}
+				//get tablenames and rename tables
+					$suffix='';
+					if($this->tableDbPrefix!='') {
+						$suffix = ' FROM '.substr($this->tableDbPrefix,0,-1);
+					}
+					$erg = $GLOBALS['TYPO3_DB']->admin_query('SHOW TABLES'.$suffix);
+					while(false !==($row=$GLOBALS['TYPO3_DB']->sql_fetch_row($erg))) {
+						if(substr($row[0],0,20)=='tx_piwikintegration_') {
+							$GLOBALS['TYPO3_DB']->admin_query('RENAME TABLE '.$this->tableDbPrefix.$row[0].' TO '.$newDbPrefixForRename.$row[0]);
+						}
+					}
+				//change config
+					$piwikConfig = Zend_Registry::get('config');
+					$database = $piwikConfig->database->toArray();
+					$database['dbname']        = substr($newDbPrefixForRename,0,-1);
+					$database['tables_prefix'] = "tx_piwikintegration_";
+					$piwikConfig->database = $database;
+			}
+		}
 	}
 }
 

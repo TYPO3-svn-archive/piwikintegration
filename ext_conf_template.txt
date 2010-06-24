@@ -1,3 +1,5 @@
+# cat=basic/settings; type=string; label=Prefix for Database. Please note, saving causes TYPO3 to try to move the tables to the database you provided, if that fails move is canceld and Piwik will not work. Empty field means Piwikdata is stored in TYPO3 database - don't use compare whitout knowing what you do ... The dot is automatically added just provide a databasename{value}.{tablename}
+databaseTablePrefix = 
 # cat=basic/enable; type=boolean; label=EXPERIMENTAL independent mode: Enable independent mode of piwikintegration, that means, the JS is rendered without additional extensions, if not enabled an additional extension is needed to render the fe output for piwik - it's suggested to use EXT:piwik for FE-Rendering 
 enableIndependentMode = 0
 # cat=basic/enable; type=boolean; label=EXPERIMENTAL scheduler task: Enable EXPERIMENTAL scheduler task integration  
