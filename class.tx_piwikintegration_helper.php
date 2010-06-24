@@ -1,4 +1,6 @@
 <?php
+#ini_set('display_errors',1);
+#error_reporting(E_ALL);
 /***************************************************************
 *  Copyright notice
 *
@@ -62,7 +64,15 @@ class tx_piwikintegration_helper {
 		require_once('core/Config.php');
 		require_once('core/PluginsManager.php');
 	}
-
+	/**
+	 * Starts config object and some other stuff.
+	 */	 	
+	function initPiwikEnvironment() {
+		include_once(PIWIK_INCLUDE_PATH.'/core/Option.php');
+		Piwik::createConfigObject(PIWIK_INCLUDE_PATH.'config/config.ini.php');
+		$piwikConfig = Zend_Registry::get('config');
+		Piwik::createDatabaseObject();
+	}
 	/**
 	 * check wether piwik is installed
 	 * true:  installed
@@ -96,7 +106,11 @@ class tx_piwikintegration_helper {
 	 */
 	function makePiwikDownloadAndExtract() {
 		if(!is_writeable(PATH_site.'typo3conf/')) {
-			die('Installation is invalid, typo3conf must be writeable for creating the piwik app folder');
+			$this->showMessage(
+				'error',
+				'Error',
+				'Installation is invalid, typo3conf must be writeable for creating the piwik app folder'
+			);
 		}
 
 		//download piwik into typo3temp
@@ -104,10 +118,18 @@ class tx_piwikintegration_helper {
 			$saveTo = t3lib_div::getFileAbsFileName('typo3temp/piwiklatest.zip');
 			t3lib_div::writeFileToTypo3tempDir($saveTo,t3lib_div::getURL('http://piwik.org/latest.zip'));
 			if(@filesize($saveTo)===FALSE) {
-				die('Installation invalid, typo3temp '.$saveTo.' can´t be created for some reason');
+				$this->showMessage(
+					'error',
+					'Error',
+					'Installation invalid, typo3temp '.$saveTo.' can´t be created for some reason'
+				);
 			}
 			if(@filesize($saveTo)<10) {
-				die('Installation invalid, typo3temp'.$saveTo.' is smaller than 10 bytes, download definitly failed');
+				$this->showMessage(
+					'error',
+					'Error',
+					'Installation invalid, typo3temp'.$saveTo.' is smaller than 10 bytes, download definitly failed'
+				);
 			}
 		//make dir for extraction
 			$installDir = t3lib_div::getFileAbsFileName('typo3conf/piwik/');
@@ -123,7 +145,11 @@ class tx_piwikintegration_helper {
 				$cmd = $GLOBALS['TYPO3_CONF_VARS']['BE']['unzip_path'].'unzip -qq "'.$saveTo.'" -d "'.$installDir.'"';
 				exec($cmd);
 			} else {
-				die('There is no valid unzip wrapper, i need either the class ZipArchiv from php or a *nix system with unzip path set.');
+				$this->showMessage(
+					'error',
+					'Error',
+					'There is no valid unzip wrapper, i need either the class ZipArchiv from php or a *nix system with unzip path set.'
+				);
 			}
 		//unlink archiv to save space in typo3temp ;)
 			t3lib_div::unlink_tempfile($saveTo);
@@ -154,7 +180,11 @@ class tx_piwikintegration_helper {
 	 */
 	function makePiwikPatched($exclude=array()) {
 		if(!is_writeable(PATH_site.'typo3conf/piwik/piwik/')) {
-			die('Installation is invalid, typo3conf/piwik/piwik was not writeable for applying the patches');
+			$this->showMessageAndDie(
+				'error',
+				'Error',
+				'Installation is invalid, typo3conf/piwik/piwik was not writeable for applying the patches'
+			);
 		}
 		//recursive directory copy is not supported under windows ... so i implement is myself!!!
 		$source = t3lib_extMgm::extPath('piwikintegration').'piwik_patches/';
@@ -278,11 +308,46 @@ class tx_piwikintegration_helper {
 		if($uid <= 0 || $uid!=intval($uid)) {
 			throw new Exception('Problem with uid in tx_piwikintegration_helper.php::correctUserRightsForPid');
 		}
+		$beUserName = $GLOBALS['BE_USER']->user['username'];
 		/**
-		 * ensure, that user is added to database
+		 * ensure, that the user is added to the database
+		 * needed to change user attributes (mail, ...)	
+		 * tx_piwikintegration_user		 	 
+		 */		 		
+
+		$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'*',
+			'tx_piwikintegration_userr',
+			'login="'.$beUserName.'"',
+			'',
+			'',
+			'0,1'
+			);
+		if(count($erg)!=1) {
+			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+					'tx_piwikintegration_user',
+					array(
+						'login'          => $beUserName,
+						'alias'          => $GLOBALS['BE_USER']->user['realName'] ? $GLOBALS['BE_USER']->user['realName'] : $beUserName,
+						'email'          => $GLOBALS['BE_USER']->user['email'],
+						'date_registered'=> date('Y-m-d H:i:s',time()),
+					)
+				);
+		} else {
+			$GLOBALS['TYPO3_DB']->exec_Updatequery(
+					'tx_piwikintegration_user',
+					'login = "'.mysql_escape_string($beUserName).'"',
+					array(
+						'alias' => $GLOBALS['BE_USER']->user['realName'] ? $GLOBALS['BE_USER']->user['realName'] : $beUserName,
+						'email' => $GLOBALS['BE_USER']->user['email'],
+					)
+				);		
+		}
+		/**
+		 * ensure, that user's right are added to the database
+		 * tx_piwikintegration_access		 
 		 */
 		if($GLOBALS['BE_USER']->user['admin']!=1) {
-			$beUserName = $GLOBALS['BE_USER']->user['username'];
 			$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 					'*',
 					'tx_piwikintegration_access',
@@ -297,7 +362,7 @@ class tx_piwikintegration_helper {
 					array(
 						'login' => $beUserName,
 						'idsite'=> $this->getPiwikSiteIdForPid($uid),
-						'access'=> 'view'
+						'access'=> 'view',
 					)
 				);
 			}
@@ -348,12 +413,23 @@ class tx_piwikintegration_helper {
 				'0,1'
 			);
 			if(count($erg)==0) {
+				$this->initPiwik();
+				$this->initPiwikEnvironment();
+
+				//FIX currency for current Piwik version, since 0.6.3
+				$currency = Piwik_GetOption('SitesManager_DefaultCurrency') ? Piwik_GetOption('SitesManager_DefaultCurrency') : 'USD';
+				//FIX timezone for current Piwik version, since 0.6.3
+				$timezone = Piwik_GetOption('SitesManager_DefaultTimezone') ? Piwik_GetOption('SitesManager_DefaultTimezone') : 'UTC';
+				
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
 					'tx_piwikintegration_site',
 					array(
-						'idsite'=> $id,
-						'main_url'=> 'http://'.$_SERVER["SERVER_NAME"],
-						'name'    => 'Customer '.$id,
+						'idsite'     => $id,
+						'main_url'   => 'http://'.$_SERVER["SERVER_NAME"],
+						'name'       => 'Customer '.$id,
+						'timezone'   => $timezone,
+						'currency'   => $currency,
+						'ts_created' => date('Y-m-d H:i:s',time()),
 					)
 				);
 			}
@@ -486,6 +562,31 @@ class tx_piwikintegration_helper {
 				'i/domain.gif',
 			);
 		}
+	}
+	function showMessage($type,$title,$message,$reload=false) {
+		$buffer = '';
+		switch($type) {
+			case 'ok':
+				$buffer.= '<div class="typo3-message message-ok">';
+			break;
+			case 'warning':
+				$buffer.= '<div class="typo3-message message-warning">';
+			break; 
+			default:
+				$buffer.= '<div class="typo3-message message-error">';
+			break;
+		}
+		
+		$buffer.= '<div class="message-header">'.$title.'</div>';
+		$buffer.= '<div class="message-body">'.$message.'</div>';
+		$buffer.= '</div>';
+		if($reload) {
+			$buffer.= '<meta http-equiv="refresh" content="1" />';
+		}
+		return $buffer;
+	}
+	function showMessageAndDie($type,$title,$message,$reload=false) {
+		die(showMessage($type,$title,$message,$reload));
 	}
 }
 

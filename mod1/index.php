@@ -161,14 +161,25 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 		function moduleContent()	{
 			global $BACK_PATH,$TYPO3_CONF_VARS, $BE_USER,$LANG;
 			//check if piwik is installed
-			if(!$this->pageinfo['uid']) {
-				$this->content.='<div class="typo3-message message-warning"><div class="message-header message-left">'.$LANG->getLL('selectpage_tip').'</div>'.$LANG->getLL('selectpage_description').'</div>';
-				return;
-			} elseif(!$this->piwikHelper->checkPiwikInstalled()) {
+			if(!$this->piwikHelper->checkPiwikInstalled()) {
 				$this->piwikHelper->makePiwikInstalled();
-				$this->content ='<html><head><meta http-equiv="refresh" content="1" /></head><body>Piwik is now installed / upgraded, wait a moment, to let me reload the page ;) </body></html>';
+				$this->content.= $this->piwikHelper->showMessage(
+					'ok',
+					'Note',
+					'Piwik is now installed / upgraded, wait a moment, to let me reload the page ;)',
+					true
+				);
+				#$this->content ='<html><head><meta http-equiv="refresh" content="1" /></head><body></body></html>';
 				//need to die here because of a bug in TYPO3 4.2, the reload will reset the autoloading and all will work fine
-				die($this->content);
+				#die($this->content);
+				return;
+			} elseif(!$this->pageinfo['uid']) {
+				$this->content.= $this->piwikHelper->showMessage(
+					'warning',
+					$LANG->getLL('selectpage_tip'),
+					$LANG->getLL('selectpage_description')
+				);
+				return;
 			} elseif($this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid'])) {
 				if(!$this->piwikHelper->checkPiwikPatched()) {
 					//prevent lost configuration and so the forced repair.
