@@ -1,26 +1,31 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2009 	Kay Strobach (typo3@kay-strobach.de),
-*
-*  All rights reserved
-*
-*  This script is free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; version 2 of the License.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
-require_once PIWIK_INCLUDE_PATH.'/plugins/UsersManager/API.php';
+ *  Copyright notice
+ *
+ *  (c) 2009 	Kay Strobach (typo3@kay-strobach.de),
+ *
+ *  All rights reserved
+ *
+ *  This script is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; version 2 of the License.
+ * 
+ *   The GNU General Public License can be found at
+ *   http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+	require_once PIWIK_INCLUDE_PATH.'/plugins/UsersManager/API.php';
+/**
+ *  Fix some problems with external DB usage
+ */ 
+	include      PIWIK_INCLUDE_PATH.'/../../localconf.php';
+	define('TYPO3DB',$typo_db);
 /**
  * Provide authentification service against TYPO3 for piwik
  *
@@ -44,6 +49,14 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 	        return 'TYPO3Login';
 	}
 
+	/**
+	 * return DB Name for TYPO3 needed for external DB use
+	 *
+	 * @return string      DBName with '.'	 
+	 */	 	 	
+	public function getDatabase() {
+		return TYPO3DB.'.';
+	}
 	/**
 	 * authenticate the user
 	 *
@@ -79,13 +92,13 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 		if($beUserCookie!==false) {
 			// fetch UserId, if cookie is set
 			$beUserId = Zend_Registry::get('db')->fetchOne(
-						'SELECT ses_userid FROM be_sessions WHERE ses_id = ?',
+						'SELECT ses_userid FROM '.$this->getDatabase().'be_sessions WHERE ses_id = ?',
 						array($beUserCookie)
 			);
 		} elseif((in_array('token_auth',$_REQUEST)) &&($_REQUEST['token_auth']!='')) {
 			// fetch UserId, if token is set
 			$beUserId = Zend_Registry::get('db')->fetchOne(
-						'SELECT uid FROM be_users WHERE tx_piwikintegration_api_code = ?',
+						'SELECT uid FROM '.$this->getDatabase().'be_users WHERE tx_piwikintegration_api_code = ?',
 						array($_REQUEST['token_auth'])
 			);
 		} else {
@@ -94,12 +107,12 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 		if($beUserId!==false) {
 			// getUserName
 			$beUserName = Zend_Registry::get('db')->fetchOne(
-						'SELECT username FROM be_users WHERE uid = ?',
+						'SELECT username FROM '.$this->getDatabase().'be_users WHERE uid = ?',
 						array($beUserId)
 			);
 			// get isAdmin
 			$beUserIsAdmin = Zend_Registry::get('db')->fetchOne(
-						'SELECT admin FROM be_users WHERE uid = ?',
+						'SELECT admin FROM '.$this->getDatabase().'be_users WHERE uid = ?',
 						array($beUserId)
 			);
 			// is superuser?
