@@ -598,6 +598,23 @@ class tx_piwikintegration_helper {
 	function showMessageAndDie($type,$title,$message,$reload=false) {
 		die(showMessage($type,$title,$message,$reload));
 	}
+	function emMakeDBList($params) {
+		 /* Pull the current fieldname and value from constants */
+        $fieldName  = $params['fieldName'];
+        $fieldValue = $params['fieldValue'];
+        $dbs        = $GLOBALS['TYPO3_DB']->admin_get_dbs();
+		$buffer.='<select name="'.$fieldName.'">';
+        $buffer.='<option value="">---TYPO3DB---</option>';
+		foreach($dbs as $db) {
+			$buffer.= '<option value="'.htmlspecialchars($db).'"';
+			if($db == $fieldValue) {
+				$buffer.=' selected="selected"';
+			}
+			$buffer.= '>'.htmlspecialchars($db).'</option>';
+		}
+        $buffer.='</select>';
+		return $buffer;
+	}
 	function emSaveConstants($par) {
 		if($par['extKey'] == 'piwikintegration' && t3lib_div::_POST('submit')) {			
 			$newconf = t3lib_div::_POST();
