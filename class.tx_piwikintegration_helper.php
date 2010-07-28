@@ -596,7 +596,7 @@ class tx_piwikintegration_helper {
 		return $buffer;
 	}
 	function showMessageAndDie($type,$title,$message,$reload=false) {
-		die(showMessage($type,$title,$message,$reload));
+		die($this->showMessage($type,$title,$message,$reload));
 	}
 	function emMakeDBList($params) {
 		 /* Pull the current fieldname and value from constants */
