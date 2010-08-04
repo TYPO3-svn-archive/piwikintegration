@@ -89,12 +89,20 @@ class tx_piwikintegration {
 			//check wether siteid exists
 			if($numRows==0) {
 				//if not -> create
+				//FIX currency for current Piwik version, since 0.6.3
+				#$currency = Piwik_GetOption('SitesManager_DefaultCurrency') ? Piwik_GetOption('SitesManager_DefaultCurrency') : 'USD';
+				//FIX timezone for current Piwik version, since 0.6.3
+				#$timezone = Piwik_GetOption('SitesManager_DefaultTimezone') ? Piwik_GetOption('SitesManager_DefaultTimezone') : 'UTC';
+				
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
 					'tx_piwikintegration_site',
 					array(
 						'idsite'   => intval($this->extConf['piwik_idsite']),
 						'name'     => 'ID '.intval($this->extConf['piwik_idsite']),
 						'main_url' => $this->baseUrl,
+						#'timezone'   => $timezone,
+						#'currency'   => $currency,
+						'ts_created' => date('Y-m-d H:i:s',time()),
 					)
 				);
 			} elseif($numRows>1) {
