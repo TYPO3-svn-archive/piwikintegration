@@ -79,26 +79,30 @@ class tx_piwikintegration {
 	 */
      function contentPostProc_all(&$params, &$reference){
 		$this->init($params,$reference);
-		$erg = $GLOBALS['TYPO3_DB']->exec_SELECTquery (
-			'*',
-			'tx_piwikintegration_site',
-			'idsite='.intval($this->extConf['piwik_idsite'])
-		);
-		$numRows = $GLOBALS['TYPO3_DB']->sql_num_rows($erg);
-		//check wether siteid exists
-		if($numRows==0) {
-			//if not -> create
-			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+		if($this->extConf['piwik_idsite']!=0) {
+			$erg = $GLOBALS['TYPO3_DB']->exec_SELECTquery (
+				'*',
 				'tx_piwikintegration_site',
-				array(
-					'idsite'   => intval($this->extConf['piwik_idsite']),
-					'name'     => 'ID '.intval($this->extConf['piwik_idsite']),
-					'main_url' => $this->baseUrl,
-				)
+				'idsite='.intval($this->extConf['piwik_idsite'])
 			);
-		} elseif($numRows>1) {
-			//more than once -> error
-			die('piwik idsite table is inconsistent');
+			$numRows = $GLOBALS['TYPO3_DB']->sql_num_rows($erg);
+			//check wether siteid exists
+			if($numRows==0) {
+				//if not -> create
+				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+					'tx_piwikintegration_site',
+					array(
+						'idsite'   => intval($this->extConf['piwik_idsite']),
+						'name'     => 'ID '.intval($this->extConf['piwik_idsite']),
+						'main_url' => $this->baseUrl,
+					)
+				);
+			} elseif($numRows>1) {
+				//more than once -> error
+				die('piwik idsite table is inconsistent');
+			}
+		} else {
+			die('Opps please set config.tx_piwik.idSite ... take a look in the manual please.');
 		}
 	}
 }
