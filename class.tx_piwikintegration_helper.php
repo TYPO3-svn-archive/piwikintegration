@@ -59,6 +59,7 @@ class tx_piwikintegration_helper {
 						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/plugins/'
 						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/core/'
 						. PATH_SEPARATOR . get_include_path());
+			require_once PIWIK_INCLUDE_PATH .'/libs/upgradephp/common.php';
 			require_once PIWIK_INCLUDE_PATH .'/core/Loader.php';
 			require_once('core/Piwik.php');
 			require_once('core/Config.php');
