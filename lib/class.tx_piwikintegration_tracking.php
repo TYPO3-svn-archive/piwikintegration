@@ -83,4 +83,44 @@ class tx_piwikintegration_tracking {
 			die('Opps please set config.tx_piwik.idSite ... take a look in the manual please.');
 		}
 	}
+	/**
+	 * returns js trackingcode for a given idsite
+	 *
+	 * @param	integer		$siteId: idsite of piwik
+	 * @return	string		trackingcode
+	 */
+	function getPiwikJavaScriptCodeForSite($siteId) {
+		tx_piwikintegration_install::getInstaller()->getConfigObject()->initPiwikFrameWork();
+		$content=Piwik::getJavascriptCode($siteId, $this->getPiwikBaseURL());
+		return $content;
+	}
+
+	/**
+	 * returns js trackingcode for a given pid
+	 *
+	 * @param	integer		$uid: uid of a page in TYPO3
+	 * @return	string		trackingcode for a given uid
+	 */
+	function getPiwikJavaScriptCodeForPid($uid) {
+		return $this->getPiwikJavaScriptCodeForSite($this->getPiwikSiteIdForPid($uid));
+	}
+
+	/**
+	 * returns piwikBaseURL
+	 *
+	 * @return	string		path to piwik url
+	 */
+	function getPiwikBaseURL() {
+		if(TYPO3_MODE == 'BE') {
+			tx_piwikintegration_install::getInstaller()->getConfigObject()->initPiwikFrameWork();
+			$path = Piwik_Url::getCurrentUrlWithoutFileName();
+			$path = dirname($path);
+			$path.='/typo3conf/piwik/piwik/';
+		} else {
+			$path = 'http://'.$_SERVER["SERVER_NAME"].dirname($_SERVER['SCRIPT_NAME']).'/typo3conf/piwik/piwik/';
+		}
+		//need to be retrieved different for fe, so that it works ...
+		#$path = 'http://localhost/t3alpha4.3/typo3conf/piwik/piwik/';
+		return $path;
+	}
 }

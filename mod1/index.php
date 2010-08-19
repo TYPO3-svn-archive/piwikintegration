@@ -25,8 +25,8 @@
 $LANG->includeLLFile('EXT:piwikintegration/mod1/locallang.xml');
 require_once(PATH_t3lib . 'class.t3lib_scbase.php');
 require_once(PATH_t3lib . 'class.t3lib_page.php');
-#require_once(t3lib_extMgm::extPath('piwikintegration').'class.tx_piwikintegration.php');
 require_once(t3lib_extMgm::extPath('piwikintegration').'lib/class.tx_piwikintegration_install.php');
+require_once(t3lib_extMgm::extPath('piwikintegration').'lib/class.tx_piwikintegration_div.php');
 $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users has no permission for entry.
 // DEFAULT initialization of a module [END]
 
@@ -49,7 +49,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 		 */
 		function init()	{
 			global $BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$CLIENT,$TYPO3_CONF_VARS;
-			$this->piwikHelper = tx_piwikintegration_install::getInstaller();
+			$this->piwikHelper = t3lib_div::makeInstance('tx_piwikintegration_div');
 			parent::init();
 
 			/*
@@ -161,27 +161,32 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 		function moduleContent()	{
 			global $BACK_PATH,$TYPO3_CONF_VARS, $BE_USER,$LANG;
 			//check if piwik is installed
-			if(!$this->piwikHelper->checkInstallation()) {
-				$this->piwikHelper->makePiwikInstalled();
-				$this->content.= $this->piwikHelper->showMessage(
-					'ok',
-					'Note',
-					'Piwik is now installed / upgraded, wait a moment, to let me reload the page ;)',
-					true
+			if(!tx_piwikintegration_install::getInstaller()->checkInstallation()) {
+				tx_piwikintegration_install::getInstaller()->makePiwikInstalled();
+				$flashMessage = t3lib_div::makeInstance(
+				    't3lib_FlashMessage',
+				    'Piwik installed',
+				    'Piwik is now installed / upgraded, wait a moment, to let me reload the page ;)',
+				    t3lib_FlashMessage::OK
 				);
+				t3lib_FlashMessageQueue::addMessage($flashMessage);
+
 				#$this->content ='<html><head><meta http-equiv="refresh" content="1" /></head><body></body></html>';
 				//need to die here because of a bug in TYPO3 4.2, the reload will reset the autoloading and all will work fine
 				#die($this->content);
 				return;
 			} elseif(!$this->pageinfo['uid']) {
-				$this->content.= $this->piwikHelper->showMessage(
-					'warning',
-					$LANG->getLL('selectpage_tip'),
-					$LANG->getLL('selectpage_description')
-				);
-				return;
+			    $flashMessage = t3lib_div::makeInstance(
+				't3lib_FlashMessage',
+				$LANG->getLL('selectpage_description'),
+				$LANG->getLL('selectpage_tip'),
+				t3lib_FlashMessage::NOTICE
+			    );
+			    t3lib_FlashMessageQueue::addMessage($flashMessage);
+			    #$this->doc->pushFlashMessage($flashMessage);
+			    return;
 			} elseif($this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid'])) {
-				if(!$this->piwikHelper->checkPiwikPatched()) {
+				if(!tx_piwikintegration_install::getInstaller()->checkPiwikPatched()) {
 					//prevent lost configuration and so the forced repair.
 					$exclude = array(
 						'config/config.ini.php',

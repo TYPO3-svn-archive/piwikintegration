@@ -114,7 +114,7 @@ class tx_piwikintegration_install {
 			t3lib_div::unlink_tempfile($zipArchivePath);
 
 	}
-	public function checkPiwikPatches() {
+	public function checkPiwikPatched() {
 		$_EXTKEY = 'piwikintegration';
 		@include(t3lib_extMgm::extPath('piwikintegration').'ext_emconf.php');
 		@include($this->getAbsInstallPath().'/piwik/piwikintegration.php');

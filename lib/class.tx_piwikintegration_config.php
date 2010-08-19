@@ -24,6 +24,8 @@
 class tx_piwikintegration_config {
 	private static $configObject = null;
 	private        $installer    = null;
+	private        $initPiwikFW  = false;
+	private        $initPiwikDB  = false;
 	/**
 	 *
 	 */	 	
@@ -44,6 +46,10 @@ class tx_piwikintegration_config {
 	 *
 	 */
 	function initPiwikFrameWork() {
+		if($this->initPiwikFW) {
+			$this->initPiwikFW = true;
+			return;
+		}
 		//load files from piwik
 			if(!defined('PIWIK_INCLUDE_PATH'))
 			{
@@ -83,6 +89,10 @@ class tx_piwikintegration_config {
 		
 	}
 	function initPiwikDatabase() {
+		if($this->initPiwikDB) {
+			$this->initPiwikDB = true;
+			return;
+		}
 		include_once(PIWIK_INCLUDE_PATH.'/core/Option.php');
 		Piwik::createConfigObject(PIWIK_INCLUDE_PATH.'config/config.ini.php');
 		#$piwikConfig = Zend_Registry::get('config');
@@ -154,5 +164,80 @@ class tx_piwikintegration_config {
 				//set Piwikversion
 				$updater->recordComponentSuccessfullyUpdated('core', Piwik_Version::VERSION);
 			}
+	}
+	/**
+	 * This function makes a page statistics accessable for a user
+	 * call it with $this->pageinfo['uid'] as param from a backend module
+	 *
+	 * @param	integer		$uid: pid for which the user will get access
+	 * @return	void
+	 */
+	function correctUserRightsForPid($uid) {
+		$this->initPiwikFrameWork();
+		if($uid <= 0 || $uid!=intval($uid)) {
+			throw new Exception('Problem with uid in tx_piwikintegration_helper.php::correctUserRightsForPid');
+		}
+		$beUserName = $GLOBALS['BE_USER']->user['username'];
+		/**
+		 * ensure, that the user is added to the database
+		 * needed to change user attributes (mail, ...)	
+		 * tx_piwikintegration_user		 	 
+		 */		 		
+
+		$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'*',
+			$this->tablePrefix.'user',
+			'login="'.$beUserName.'"',
+			'',
+			'',
+			'0,1'
+			);
+		if(count($erg)!=1) {
+			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+					$this->tablePrefix.'user',
+					array(
+						'login'          => $beUserName,
+						'alias'          => $GLOBALS['BE_USER']->user['realName'] ? $GLOBALS['BE_USER']->user['realName'] : $beUserName,
+						'email'          => $GLOBALS['BE_USER']->user['email'],
+						'date_registered'=> date('Y-m-d H:i:s',time()),
+					)
+				);
+		} else {
+			$GLOBALS['TYPO3_DB']->exec_Updatequery(
+					$this->tablePrefix.'user',
+					'login = "'.mysql_escape_string($beUserName).'"',
+					array(
+						'alias' => $GLOBALS['BE_USER']->user['realName'] ? $GLOBALS['BE_USER']->user['realName'] : $beUserName,
+						'email' => $GLOBALS['BE_USER']->user['email'],
+					)
+				);		
+		}
+		/**
+		 * ensure, that user's right are added to the database
+		 * tx_piwikintegration_access		 
+		 */
+		if($GLOBALS['BE_USER']->user['admin']!=1) {
+			$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+					'*',
+					$this->tablePrefix.'access',
+					'login="'.$beUserName.'" AND idsite='.$this->getPiwikSiteIdForPid($uid),
+					'',
+					'',
+					'0,1'
+			);
+			if(count($erg)==0) {
+				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+					$this->tablePrefix.'access',
+					array(
+						'login' => $beUserName,
+						'idsite'=> $this->getPiwikSiteIdForPid($uid),
+						'access'=> 'view',
+					)
+				);
+			}
+		}
+	}
+	function getTablePrefix() {
+		return $this->tablePrefix;
 	}
 }
