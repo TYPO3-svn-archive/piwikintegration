@@ -43,11 +43,11 @@ $_EXTCONF = unserialize($_EXTCONF);
 //load fe hooks
 if(TYPO3_MODE=='FE') {
 	
-	require_once(t3lib_extMgm::extPath('piwikintegration').'class.tx_piwikintegration.php');
+	require_once(t3lib_extMgm::extPath('piwikintegration').'lib/class.tx_piwikintegration_tracking.php');
 	if($_EXTCONF['enableIndependentMode']) {
-		$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-output'][] = 'tx_piwikintegration->contentPostProc_output'; 
+		$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-output'][] = 'tx_piwikintegration_tracking->contentPostProc_output'; 
 	}
-	$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-all'][] = 'tx_piwikintegration->contentPostProc_all'; 
+	$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-all'][] = 'tx_piwikintegration_tracking->contentPostProc_all'; 
 }
 
 //load scheduler class if scheduler is installed
@@ -59,6 +59,6 @@ if(t3lib_extMgm::isLoaded ('scheduler') && $_EXTCONF['enableSchedulerTask']) {
 			'description'      => 'LLL:EXT:' . $_EXTKEY . '/locallang.xml:piwikArchiveTask.description',
 			#'additionalFields' => 'tx_piwikintegration_piwikArchiveTask_AdditionalFieldProvider',
 	);
-	require_once(t3lib_extMgm::extPath('piwikintegration', 'class.tx_piwikintegration_piwikArchiveTask.php'));
+	require_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_scheduler_archive.php'));
 }
 ?>
