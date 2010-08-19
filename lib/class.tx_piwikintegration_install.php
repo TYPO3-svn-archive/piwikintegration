@@ -165,7 +165,7 @@ class tx_piwikintegration_install {
 		file_put_contents($this->getAbsInstallPath().'piwik/piwikintegration.php',$data);
 	}
 	private function configureDownloadedPiwik() {
-		$configObject = $this->getConfigObject();
+		$this->getConfigObject()->makePiwikConfigured();
 	}
 	public function getConfigObject() {
 		if($this->checkInstallation()) {

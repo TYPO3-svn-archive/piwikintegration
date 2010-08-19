@@ -93,6 +93,8 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 				// initialize doc
 			$this->doc = t3lib_div::makeInstance('template');
 			$this->doc->setModuleTemplate(t3lib_extMgm::extPath('piwikintegration') . 'mod1/mod_template.html');
+			$this->doc->getPageRenderer()->loadExtJS();
+			$this->doc->extJScode = file_get_contents(t3lib_extMgm::extPath('piwikintegration') . 'mod1/extjs.js');
 			$this->doc->backPath = $BACK_PATH;
 			$docHeaderButtons = $this->getButtons();
 
@@ -162,7 +164,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 			global $BACK_PATH,$TYPO3_CONF_VARS, $BE_USER,$LANG;
 			//check if piwik is installed
 			if(!tx_piwikintegration_install::getInstaller()->checkInstallation()) {
-				tx_piwikintegration_install::getInstaller()->makePiwikInstalled();
+				tx_piwikintegration_install::getInstaller()->installPiwik();
 				$flashMessage = t3lib_div::makeInstance(
 				    't3lib_FlashMessage',
 				    'Piwik installed',
