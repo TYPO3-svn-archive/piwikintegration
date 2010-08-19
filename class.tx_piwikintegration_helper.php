@@ -1,660 +1,113 @@
 <?php
-#ini_set('display_errors',1);
-#error_reporting(E_ALL);
-/***************************************************************
-*  Copyright notice
-*
-*  (c) 2009 	Kay Strobach (typo3@kay-strobach.de),
-*
-*  All rights reserved
-*
-*  This script is free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; version 2 of the License.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
-
-/**
- * Helper class for piwik related stuff
- *
- * @author  Kay Strobach <typo3@kay-strobach.de>
- * @link http://kay-strobach.de
- * @license http://www.gnu.org/licenses/gpl-3.0.html Gpl v3 or later
- */
-class tx_piwikintegration_helper {
-	var $piwik_id = array();
-	/**
-	 * init piwik, setup constants, include libs
-	 *
-	 * @return	void
-	 */
-	function initPiwik() {
-		//load files from piwik
-			if(!defined('PIWIK_INCLUDE_PATH'))
-			{
-				define('PIWIK_INCLUDE_PATH', PATH_site.'typo3conf/piwik/piwik/');
-				define('PIWIK_USER_PATH'   , PATH_site.'typo3conf/piwik/piwik/');
+	class tx_piwikintegration_helper {
+		var $piwik_id = array();
+		function checkPiwikInstalled() {
+			if(file_exists(t3lib_div::getFileAbsFileName('typo3conf/piwik/'))) {
+				return true;
+			} else {
+				return false;
 			}
-			if(!defined('PIWIK_INCLUDE_SEARCH_PATH'))
-			{
-				define('PIWIK_INCLUDE_SEARCH_PATH',
-					  PIWIK_INCLUDE_PATH . '/core'
-					. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/libs'
-					. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/plugins'
-					. PATH_SEPARATOR . get_include_path());
-				@ini_set('include_path', PIWIK_INCLUDE_SEARCH_PATH);
-				@set_include_path(PIWIK_INCLUDE_SEARCH_PATH);
-			}
-			set_include_path(PIWIK_INCLUDE_PATH
-						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/libs/'
-						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/plugins/'
-						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/core/'
-						. PATH_SEPARATOR . get_include_path());
-			require_once PIWIK_INCLUDE_PATH .'/libs/upgradephp/common.php';
-			require_once PIWIK_INCLUDE_PATH .'/core/Loader.php';
-			require_once('core/Piwik.php');
-			require_once('core/Config.php');
-			require_once('core/PluginsManager.php');
-		//create config object
-			Piwik::createConfigObject(PIWIK_INCLUDE_PATH.'config/config.ini.php');
-		
-		//define Table prefix for internal use
-			$this->tableDbPrefix = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['piwikintegration']);
-			$this->tableDbPrefix = $this->tableDbPrefix['databaseTablePrefix'];
-			if($this->tableDbPrefix != '') {
-				$this->tableDbPrefix.= '.';
-			}
-			$this->tablePrefix = $this->tableDbPrefix.'tx_piwikintegration_';
-		
-	}
-	/**
-	 * Starts config object and some other stuff.
-	 */	 	
-	function initPiwikEnvironment() {
-		include_once(PIWIK_INCLUDE_PATH.'/core/Option.php');
-		Piwik::createConfigObject(PIWIK_INCLUDE_PATH.'config/config.ini.php');
-		$piwikConfig = Zend_Registry::get('config');
-		Piwik::createDatabaseObject();
-	}
-	/**
-	 * check wether piwik is installed
-	 * true:  installed
-	 * false: not installed	 	 
-	 *
-	 * @return	void
-	 */
-	function checkPiwikInstalled() {
-		if(file_exists(t3lib_div::getFileAbsFileName('typo3conf/piwik/piwik/config/config.ini.php'))) {
-			return true;
-		} else {
-			return false;
 		}
-	}
-
-	/**
-	 * run through the Piwik installation
-	 *
-	 * @return	void
-	 */
-	function makePiwikInstalled() {
-		$this->makePiwikDownloadAndExtract();
-		$this->makePiwikPatched();
-		$this->makePiwikConfigured();
-	}
-
-	/**
-	 * Download and extract piwik
-	 *
-	 * @return	void
-	 */
-	function makePiwikDownloadAndExtract() {
-		if(!is_writeable(PATH_site.'typo3conf/')) {
-			$this->showMessage(
-				'error',
-				'Error',
-				'Installation is invalid, typo3conf must be writeable for creating the piwik app folder'
-			);
-		}
-
-		//download piwik into typo3temp
-		//can be hardcoded, because latest piwik is always on the same url ;) thanks guys
-			$saveTo = t3lib_div::getFileAbsFileName('typo3temp/piwiklatest.zip');
-			t3lib_div::writeFileToTypo3tempDir($saveTo,t3lib_div::getURL('http://piwik.org/latest.zip'));
-			if(@filesize($saveTo)===FALSE) {
-				$this->showMessage(
-					'error',
-					'Error',
-					'Installation invalid, typo3temp '.$saveTo.' can´t be created for some reason'
-				);
-			}
-			if(@filesize($saveTo)<10) {
-				$this->showMessage(
-					'error',
-					'Error',
-					'Installation invalid, typo3temp'.$saveTo.' is smaller than 10 bytes, download definitly failed'
-				);
-			}
-		//make dir for extraction
-			$installDir = t3lib_div::getFileAbsFileName('typo3conf/piwik/');
-			t3lib_div::mkdir_deep(PATH_site,'typo3conf/piwik/');
-		//extract archive
-			if(class_exists('ZipArchive')) {
+		function makePiwikInstalled() {
+			//download piwik into typo3temp
+			//can be hardcoded, because latest piwik is always on the same url ;) thanks guys
+				$saveTo = t3lib_div::getFileAbsFileName('typo3temp/piwiklatest.zip');
+				t3lib_div::writeFileToTypo3tempDir($saveTo,t3lib_div::getURL('http://piwik.org/latest.zip'));
+			//make dir for extraction
+				$installDir = t3lib_div::getFileAbsFileName('typo3conf/piwik/');
+				t3lib_div::mkdir_deep(Path_site,'typo3conf/piwik/');
+			//extract archive
 				$zip = new ZipArchive();
 				$zip->open($saveTo);
 				$zip->extractTo($installDir);
 				$zip->close();
 				unset($zip);
-			} elseif(!(TYPO3_OS=='WIN' || $GLOBALS['TYPO3_CONF_VARS']['BE']['disable_exec_function']))	{
-				$cmd = $GLOBALS['TYPO3_CONF_VARS']['BE']['unzip_path'].'unzip -qq "'.$saveTo.'" -d "'.$installDir.'"';
-				exec($cmd);
-			} else {
-				$this->showMessage(
-					'error',
-					'Error',
-					'There is no valid unzip wrapper, i need either the class ZipArchiv from php or a *nix system with unzip path set.'
-				);
+			//unlink archiv to save space in typo3temp ;)
+				t3lib_div::unlink_tempfile($saveTo);
+			//copy patch files in piwikdir
+				t3lib_div::upload_copy_move(t3lib_extMgm::extPath('piwikintegration').'piwik_patches',$installDir.'/piwik');
+		}
+		function checkPiwikPatched() {
+		
+		}
+		function makePiwikPatched() {
+		
+		}
+		function makePiwikConfigured() {
+		
+		}
+		/**
+		 * This function makes a page statistics accessable for a user
+		 *	call it with $this->pageinfo['uid'] as param from a backend module		 
+		 */		 		
+		function correctUserRightsForPid($uid) {
+			if($uid <= 0 || $uid!=intval($uid)) {
+				throw new Exception('Problem with uid in tx_piwikintegration_helper.php::correctUserRightsForPid');
 			}
-		//unlink archiv to save space in typo3temp ;)
-			t3lib_div::unlink_tempfile($saveTo);
-	}
-
-	/**
-	 * Check wether piwik is installed or not
-	 * true:  piwikintegration.php version number is the same as the ext version
-	 * false: different versions
-	 *
-	 * @return	boolean     
-	 */
-	function checkPiwikPatched() {
-		$_EXTKEY = 'piwikintegration';
-		@include(t3lib_extMgm::extPath('piwikintegration').'ext_emconf.php');
-		@include(PATH_site.'typo3conf/piwik/piwik/piwikintegration.php');
-		if($EM_CONF['piwikintegration']['version'] != $piwikPatchVersion) {
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * automatically patch piwik
-	 *
-	 * @param	array		$exclude: list of files from the patched_files folder which should be ignored
-	 * @return	void
-	 */
-	function makePiwikPatched($exclude=array()) {
-		if(!is_writeable(PATH_site.'typo3conf/piwik/piwik/')) {
-			$this->showMessageAndDie(
-				'error',
-				'Error',
-				'Installation is invalid, typo3conf/piwik/piwik was not writeable for applying the patches'
-			);
-		}
-		//recursive directory copy is not supported under windows ... so i implement is myself!!!
-		$source = t3lib_extMgm::extPath('piwikintegration').'piwik_patches/';
-		$dest   = PATH_site.'typo3conf/piwik/piwik/';
-		$cmd    = array();
-		$t = t3lib_div::getAllFilesAndFoldersInPath(
-			array(),
-			$source,
-			'',
-			true,
-			99
-		);
-		foreach($t as $entry) {
-			$shortEntry = str_replace($source,'',$entry);
-			if($shortEntry!='' && $shortEntry!='.') {
-				if(!in_array($shortEntry, $exclude)) {
-					if(is_dir($entry)) {
-						$cmd['newfolder'][] = array(
-							'data'   => basename($shortEntry),
-							'target' => dirname($dest.$shortEntry),
-						);
-						@mkdir($dest.$shortEntry);
-					} elseif(is_file($entry)) {
-						$cmd['copy'][] = array(
-							'data'   => $entry,
-							'target' => $dest.$shortEntry,
-						);
-						@copy($entry,$dest.$shortEntry);
-					}
+			/**
+			 * ensure, that user is added to database
+			 */							
+			if($GLOBALS['BE_USER']->user['admin']!=1) {
+				$beUserName = $GLOBALS['BE_USER']->user['username'];
+				$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+						'*',
+						'tx_piwikintegration_access',
+						'login="'.$beUserName.'" AND idsite='.$this->getPiwikSiteIdForPid($uid),
+						'',
+						'',
+						'0,1'
+				);
+				if(count($erg)==0) {
+					$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+						'tx_piwikintegration_access',
+						array(
+							'login' => $beUserName,
+							'idsite'=> $this->getPiwikSiteIdForPid,
+							'access'=> 'view'
+						)
+					);
 				}
 			}
 		}
-		//store information about the last patch process
-		$_EXTKEY = 'piwikintegration';
-		@include(t3lib_extMgm::extPath('piwikintegration').'ext_emconf.php');
-		$data = '<?php $piwikPatchVersion = "'.$EM_CONF['piwikintegration']['version'].'"; '.chr(63).'>';
-		file_put_contents(PATH_site.'typo3conf/piwik/piwik/piwikintegration.php',$data);
-	}
-
-	/**
-	 * automatically configure piwik
-	 *
-	 * @return	void
-	 */
-	function makePiwikConfigured() {
-		global $typo_db_host,
-		       $typo_db_username,
-		       $typo_db_password,
-		       $typo_db,
-			   $BE_USER;
-		$this->initPiwik();
-		//makeConfigObject
-		$piwikConfig = Zend_Registry::get('config');
-
-		//userdata
-		$superuser = $piwikConfig->superuser->toArray();
-		$superuser['login']    = md5(microtime());
-		$superuser['password'] = md5(microtime());
-		$superuser['email']    = $GLOBALS["BE_USER"]->user['email'];
-		
-		$piwikConfig->superuser = $superuser;
-
-		//Database
-		$database = $piwikConfig->database->toArray();
-		$database['host']          = TYPO3_db_host;
-		$database['username']      = TYPO3_db_username;
-		$database['password']      = TYPO3_db_password;
-		$database['dbname']        = TYPO3_db;
-		$database['tables_prefix'] = $this->tablePrefix;
-		$database['adapter']       = "PDO_MYSQL";
-		#$piwikConfig->database = new Zend_Config($database);
-		$piwikConfig->database = $database;
-
-		//General
-		$general = $piwikConfig->General->toArray();
-		$general['show_website_selector_in_user_interface'] = 0;
-		#$piwikConfig->General = new Zend_Config($general);
-		$piwikConfig->General = $general;
-
-		//force Load of TYPO3Login! and deny Login
-		$plugins     = $piwikConfig->Plugins->toArray();
-		$key_login   = array_search('Login'     ,$plugins);
-		$key_t3login = array_search('TYPO3Login',$plugins);
-		$key_t3menu  = array_search('TYPO3Menu' ,$plugins);
-		//unload login
-		if($key_login!==false) {
-			unset($plugins[$key_login]);
-		}
-		//load typo3login
-			if($key_t3login===false) {
-				$plugins[]='TYPO3Login';
-			}
-		//load interface modifications
-			if($key_t3menu===false) {
-				$plugins[]='TYPO3Menu';
-			}
-		//write Config back
-		$piwikConfig->Plugins = $plugins;
-
-		//create PiwikTables, check wether base tables already exist
-			Piwik::createDatabaseObject();
-			$tablesInstalled = Piwik::getTablesInstalled();
-			$tablesToInstall = Piwik::getTablesNames();
-			if(count($tablesInstalled) == 0) {
-				Piwik::createTables();
-				Piwik::createAnonymousUser();
-				$updater = new Piwik_Updater();
-				//set Piwikversion
-				$updater->recordComponentSuccessfullyUpdated('core', Piwik_Version::VERSION);
-			}
-	}
-	/**
-	 * This function makes a page statistics accessable for a user
-	 * call it with $this->pageinfo['uid'] as param from a backend module
-	 *
-	 * @param	integer		$uid: pid for which the user will get access
-	 * @return	void
-	 */
-	function correctUserRightsForPid($uid) {
-		if($uid <= 0 || $uid!=intval($uid)) {
-			throw new Exception('Problem with uid in tx_piwikintegration_helper.php::correctUserRightsForPid');
-		}
-		$beUserName = $GLOBALS['BE_USER']->user['username'];
 		/**
-		 * ensure, that the user is added to the database
-		 * needed to change user attributes (mail, ...)	
-		 * tx_piwikintegration_user		 	 
+		 *	returns the piwik site id for a given page
+		 *	call it with $this->pageinfo['uid'] as param from a backend module		 
 		 */		 		
-
-		$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-			'*',
-			$this->tablePrefix.'user',
-			'login="'.$beUserName.'"',
-			'',
-			'',
-			'0,1'
-			);
-		if(count($erg)!=1) {
-			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-					$this->tablePrefix.'user',
-					array(
-						'login'          => $beUserName,
-						'alias'          => $GLOBALS['BE_USER']->user['realName'] ? $GLOBALS['BE_USER']->user['realName'] : $beUserName,
-						'email'          => $GLOBALS['BE_USER']->user['email'],
-						'date_registered'=> date('Y-m-d H:i:s',time()),
-					)
-				);
-		} else {
-			$GLOBALS['TYPO3_DB']->exec_Updatequery(
-					$this->tablePrefix.'user',
-					'login = "'.mysql_escape_string($beUserName).'"',
-					array(
-						'alias' => $GLOBALS['BE_USER']->user['realName'] ? $GLOBALS['BE_USER']->user['realName'] : $beUserName,
-						'email' => $GLOBALS['BE_USER']->user['email'],
-					)
-				);		
-		}
-		/**
-		 * ensure, that user's right are added to the database
-		 * tx_piwikintegration_access		 
-		 */
-		if($GLOBALS['BE_USER']->user['admin']!=1) {
-			$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-					'*',
-					$this->tablePrefix.'access',
-					'login="'.$beUserName.'" AND idsite='.$this->getPiwikSiteIdForPid($uid),
-					'',
-					'',
-					'0,1'
-			);
-			if(count($erg)==0) {
-				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-					$this->tablePrefix.'access',
-					array(
-						'login' => $beUserName,
-						'idsite'=> $this->getPiwikSiteIdForPid($uid),
-						'access'=> 'view',
-					)
-				);
+		function getPiwikSiteIdForPid($uid) {
+			if($uid <= 0 || $uid!=intval($uid)) {
+				throw new Exception('Problem with uid in tx_piwikintegration_helper.php::getPiwikSiteIdForPid');
 			}
-		}
-	}
-	/**
-	 * returns the piwik site id for a given page
-	 * call it with $this->pageinfo['uid'] as param from a backend module
-	 *
-	 * @param	integer		$uid: Page ID
-	 * @return	integer     piwik site id
-	 */
-	function getPiwikSiteIdForPid($uid) {
-		if($uid <= 0 || $uid!=intval($uid)) {
-			throw new Exception('Problem with uid in tx_piwikintegration_helper.php::getPiwikSiteIdForPid');
-		}
 
-		if(isset($this->piwik_id[$uid])) {
-			return $this->piwik_id[$uid];
-		}
-		//parse ts template
+			if(isset($this->piwik_id[$uid])) {
+				return $this->piwik_id[$uid];
+			}
 			$template_uid = 0;
 			$pageId = $uid;
 			$tmpl = t3lib_div::makeInstance("t3lib_tsparser_ext");	// Defined global here!
 			$tmpl->tt_track = 0;	// Do not log time-performance information
 			$tmpl->init();
-
+	
 			$tplRow = $tmpl->ext_getFirstTemplate($pageId,$template_uid);
 			if (is_array($tplRow) || 1)	{	// IF there was a template...
 					// Gets the rootLine
 				$sys_page = t3lib_div::makeInstance("t3lib_pageSelect");
 				$rootLine = $sys_page->getRootLine($pageId);
-				$tmpl->runThroughTemplates($rootLine);	// This generates the constants/config + hierarchy info for the template.
-				$tmpl->generateConfig();
+				$tmpl->runThroughTemplates($rootLine,$template_uid);	// This generates the constants/config + hierarchy info for the template.
+				$theConstants = $tmpl->generateConfig_constants();	// The editable constants are returned in an array.
+				$tmpl->ext_categorizeEditableConstants($theConstants);	// The returned constants are sorted in categories, that goes into the $tmpl->categories array
+				$tmpl->ext_regObjectPositions($tplRow["constants"]);		// This array will contain key=[expanded constantname], value=linenumber in template. (after edit_divider, if any)
 			}
-			if($tmpl->setup['config.']['tx_piwik.']['piwik_idsite']) {
-				$id = intval($tmpl->setup['config.']['tx_piwik.']['piwik_idsite']);
+			if($tmpl->setup['constants']['usr_piwik_id']) {
+				$id = intval($tmpl->setup['constants']['usr_piwik_id']);
+			} elseif ($tmpl->setup['constants']['usr_name']) {
+				$id =  intval($tmpl->setup['constants']['usr_name']);
 			} else {
 				$id = 0;
 			}
-		//check wether site already exists in piwik db
-			$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-				'*',
-				$this->tablePrefix.'site',
-				'idsite = '.intval($id),
-				'',
-				'',
-				'0,1'
-			);
-			if(count($erg)==0) {
-				$this->initPiwik();
-				$this->initPiwikEnvironment();
-
-				//FIX currency for current Piwik version, since 0.6.3
-				$currency = Piwik_GetOption('SitesManager_DefaultCurrency') ? Piwik_GetOption('SitesManager_DefaultCurrency') : 'USD';
-				//FIX timezone for current Piwik version, since 0.6.3
-				$timezone = Piwik_GetOption('SitesManager_DefaultTimezone') ? Piwik_GetOption('SitesManager_DefaultTimezone') : 'UTC';
-				
-				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-					$this->tablePrefix.'site',
-					array(
-						'idsite'     => $id,
-						'main_url'   => 'http://'.$_SERVER["SERVER_NAME"],
-						'name'       => 'Customer '.$id,
-						'timezone'   => $timezone,
-						'currency'   => $currency,
-						'ts_created' => date('Y-m-d H:i:s',time()),
-					)
-				);
-			}
-		$this->piwik_id[$uid] = $id;
-		return $this->piwik_id[$uid];
-	}
-
-	/**
-	 * returns js trackingcode for a given idsite
-	 *
-	 * @param	integer		$siteId: idsite of piwik
-	 * @return	string		trackingcode
-	 */
-	function getPiwikJavaScriptCodeForSite($siteId) {
-		$this->initPiwik();
-		$content=Piwik::getJavascriptCode($siteId, $this->getPiwikBaseURL());
-		return $content;
-	}
-
-	/**
-	 * returns js trackingcode for a given pid
-	 *
-	 * @param	integer		$uid: uid of a page in TYPO3
-	 * @return	string		trackingcode for a given uid
-	 */
-	function getPiwikJavaScriptCodeForPid($uid) {
-		return $this->getPiwikJavaScriptCodeForSite($this->getPiwikSiteIdForPid($uid));
-	}
-
-	/**
-	 * returns piwikBaseURL
-	 *
-	 * @return	string		path to piwik url
-	 */
-	function getPiwikBaseURL() {
-		if(TYPO3_MODE == 'BE') {
-			$this->initPiwik();
-			$path = Piwik_Url::getCurrentUrlWithoutFileName();
-			$path = dirname($path);
-			$path.='/typo3conf/piwik/piwik/';
-		} else {
-			$path = 'http://'.$_SERVER["SERVER_NAME"].dirname($_SERVER['SCRIPT_NAME']).'/typo3conf/piwik/piwik/';
-		}
-		//need to be retrieved different for fe, so that it works ...
-		#$path = 'http://localhost/t3alpha4.3/typo3conf/piwik/piwik/';
-		return $path;
-	}
-
-	/**
-	 * get widgetlist for a given pid
-	 *
-	 * @param	integer		$uid: pageuid
-	 * @return	array		of widgets
-	 */
-	function getPiwikWidgetsForPid($uid) {
-		return $this->getPiwikWidgets($this->getPiwikSiteIdForPid($uid));
-	}
-
-	/**
-	 * get complete widgetlist
-	 *
-	 * @return	array		of widgets
-	 */
-	function getPiwikWidgets() {
-		$this->initPiwik();
-		$controller = Piwik_FrontController::getInstance();
-		$controller->init();
-		$widgets = Piwik_GetWidgetsList();
-		return $widgets;
-	}
-
-	/**
-	 * get widgets for flexform
-	 *
-	 * @param	pointer		$$PA: pointers
-	 * @param	pointer		$fobj: pointers
-	 * @return	void
-	 */
-	static function getWidgetsForFlexForm(&$PA,&$fobj) {
-		$PA['items'] = array();
-		$piwikhelper = new tx_piwikintegration_helper();
-		$widgets=$piwikhelper->getPiwikWidgets();
-
-		foreach($widgets as $pluginCat => $plugin) {
-			foreach($plugin as $widget) {
-				$PA['items'][] = array(
-					$pluginCat.' : '.$widget['name'],
-					base64_encode(json_encode($widget['parameters'])),
-					'i/catalog.gif'
-				);
-			}
+			$this->piwik_id[$uid] = $id;
+			return $this->piwik_id[$uid];
 		}
 	}
-
-	/**
-	 * get sites for flexform
-	 *
-	 * @param	pointer		$PA: pointers
-	 * @param	pointer		$fobj: pointers
-	 * @return	void
-	 */
-	static function getSitesForFlexForm(&$PA,&$fobj) {
-		//fetch anonymous accessable idsites
-		$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-			'idsite',
-			$this->tablePrefix.'access',
-			'login="anonymous"'
-		);
-
-		//build array for selecting more information
-		$sites = array();
-		foreach($erg as $site) {
-			$sites[] = $site['idsite'];
-		}
-		$accessableSites = implode(',',$sites);
-		$erg = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'idsite,name,main_url',
-			$this->tablePrefix.'site',
-			'idsite IN('.$accessableSites.')',
-			'',
-			'name, main_url, idsite'
-		);
-		$PA['items'] = array();
-
-		//render items
-		while(($site = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($erg)) !== false) {
-			$PA['items'][] = array(
-				$site['name'] ? $site['name'].' : '.$site['main_url'] : $site['main_url'],
-				$site['idsite'],
-				'i/domain.gif',
-			);
-		}
-	}
-	function showMessage($type,$title,$message,$reload=false) {
-		$buffer = '';
-		switch($type) {
-			case 'ok':
-				$buffer.= '<div class="typo3-message message-ok">';
-			break;
-			case 'warning':
-				$buffer.= '<div class="typo3-message message-warning">';
-			break; 
-			default:
-				$buffer.= '<div class="typo3-message message-error">';
-			break;
-		}
-		
-		$buffer.= '<div class="message-header">'.$title.'</div>';
-		$buffer.= '<div class="message-body">'.$message.'</div>';
-		$buffer.= '</div>';
-		if($reload) {
-			$buffer.= '<meta http-equiv="refresh" content="1" />';
-		}
-		return $buffer;
-	}
-	function showMessageAndDie($type,$title,$message,$reload=false) {
-		die($this->showMessage($type,$title,$message,$reload));
-	}
-	function emMakeDBList($params) {
-		 /* Pull the current fieldname and value from constants */
-        $fieldName  = $params['fieldName'];
-        $fieldValue = $params['fieldValue'];
-        $dbs        = $GLOBALS['TYPO3_DB']->admin_get_dbs();
-		$buffer.='<select name="'.$fieldName.'">';
-        $buffer.='<option value="">---TYPO3DB---</option>';
-		foreach($dbs as $db) {
-			$buffer.= '<option value="'.htmlspecialchars($db).'"';
-			if($db == $fieldValue) {
-				$buffer.=' selected="selected"';
-			}
-			$buffer.= '>'.htmlspecialchars($db).'</option>';
-		}
-        $buffer.='</select>';
-		return $buffer;
-	}
-	function emSaveConstants($par) {
-		if($par['extKey'] == 'piwikintegration' && t3lib_div::_POST('submit')) {			
-			$newconf = t3lib_div::_POST();
-			$newconf = $newconf['data'];
-			//init piwik to get table prefix
-				$this->initPiwik();
-			//walk through changes
-			if($this->tableDbPrefix!==$newconf['databaseTablePrefix']) {
-				//create shortVars
-					if($newconf['databaseTablePrefix'] == '') {
-						$newDbPrefix          = '';
-						$newDbPrefixForRename = TYPO3_db.'.';
-					} else {
-						$newDbPrefix          = $newconf['databaseTablePrefix'].'.';
-						$newDbPrefixForRename = $newconf['databaseTablePrefix'].'.';
-					}
-				//get tablenames and rename tables
-					$suffix='';
-					if($this->tableDbPrefix!='') {
-						$suffix = ' FROM '.substr($this->tableDbPrefix,0,-1);
-					}
-					$erg = $GLOBALS['TYPO3_DB']->admin_query('SHOW TABLES'.$suffix);
-					while(false !==($row=$GLOBALS['TYPO3_DB']->sql_fetch_row($erg))) {
-						if(substr($row[0],0,20)=='tx_piwikintegration_') {
-							$GLOBALS['TYPO3_DB']->admin_query('RENAME TABLE '.$this->tableDbPrefix.$row[0].' TO '.$newDbPrefixForRename.$row[0]);
-						}
-					}
-				//change config
-					$piwikConfig = Zend_Registry::get('config');
-					$database = $piwikConfig->database->toArray();
-					$database['dbname']        = substr($newDbPrefixForRename,0,-1);
-					$database['tables_prefix'] = "tx_piwikintegration_";
-					$piwikConfig->database = $database;
-			}
-		}
-	}
-}
-
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/class.tx_piwikintegration_helper.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/class.tx_piwikintegration_helper.php']);
-}
+	$t = new tx_piwikintegration_helper();
+	$t->makePiwikInstalled(); 
 ?>
