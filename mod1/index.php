@@ -26,7 +26,7 @@ $LANG->includeLLFile('EXT:piwikintegration/mod1/locallang.xml');
 require_once(PATH_t3lib . 'class.t3lib_scbase.php');
 require_once(PATH_t3lib . 'class.t3lib_page.php');
 #require_once(t3lib_extMgm::extPath('piwikintegration').'class.tx_piwikintegration.php');
-require_once(t3lib_extMgm::extPath('piwikintegration').'class.tx_piwikintegration_helper.php');
+require_once(t3lib_extMgm::extPath('piwikintegration').'lib/class.tx_piwikintegration_install.php');
 $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users has no permission for entry.
 // DEFAULT initialization of a module [END]
 
@@ -49,7 +49,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 		 */
 		function init()	{
 			global $BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$CLIENT,$TYPO3_CONF_VARS;
-			$this->piwikHelper = new tx_piwikintegration_helper();
+			$this->piwikHelper = tx_piwikintegration_install::getInstaller();
 			parent::init();
 
 			/*
@@ -161,7 +161,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 		function moduleContent()	{
 			global $BACK_PATH,$TYPO3_CONF_VARS, $BE_USER,$LANG;
 			//check if piwik is installed
-			if(!$this->piwikHelper->checkPiwikInstalled()) {
+			if(!$this->piwikHelper->checkInstallation()) {
 				$this->piwikHelper->makePiwikInstalled();
 				$this->content.= $this->piwikHelper->showMessage(
 					'ok',
