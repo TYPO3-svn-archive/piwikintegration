@@ -1,35 +1,5 @@
 <?php
-/***************************************************************
-*  Copyright notice
-*
-*  (c) 2008     Frank Nägler (typo3@naegler.net),
-*
-*  All rights reserved
-*
-*  This script is free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; version 2 of the License.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
-require_once('class.tx_piwikintegration_helper.php');
-/**
- * Outputprocessing hook functions for the piwikintegration extension.
- *
- * This file is partly based on the piwik extension of Frank Nägler
- *
- * @author    Frank Nägler <typo3@naegler.net>
- * @author    Kay Strobach <typo3@kay-strobach.de>
- */
-class tx_piwikintegration {
+class tx_piwikintegration_tracking {
 	function init(&$params, &$reference) {
 		//init helper object
 		$this->piwikHelper = new tx_piwikintegration_helper();
@@ -114,9 +84,3 @@ class tx_piwikintegration {
 		}
 	}
 }
-
-if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/piwikintegration/class.tx_piwikintegration.php"])    {
-    include_once($TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/piwikintegration/class.tx_piwikintegration.php"]);
-}
-
-?>

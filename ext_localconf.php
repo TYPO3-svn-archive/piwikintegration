@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009 	Kay Strobach (typo3@kay-strobach.de),
+*  (c) 2010 	Kay Strobach (typo3@kay-strobach.de),
 *
 *  All rights reserved
 *
@@ -29,36 +29,50 @@
  
 if (!defined ("TYPO3_MODE"))     die ("Access denied.");
 
-t3lib_extMgm::addPItoST43(
-	$_EXTKEY,
-	'pi1/class.tx_piwikintegration_pi1.php',
-	'_pi1',
-	'list_type',
-	1
-);
-$TYPO3_CONF_VARS['EXTCONF']['templavoila']['mod1']['renderPreviewContentClass'][]     = 'EXT:piwikintegration/pi1/class.tx_piwikintegration_pi1_templavoila_preview.php:tx_piwikintegration_pi1_templavoila_preview';
-$TYPO3_CONF_VARS['SC_OPTIONS']['typo3/mod/tools/em/index.php']['tsStyleConfigForm'][] = 'EXT:piwikintegration/class.tx_piwikintegration_helper.php:tx_piwikintegration_helper->emSaveConstants';
-//unserialize extConf
-$_EXTCONF = unserialize($_EXTCONF);
-//load fe hooks
-if(TYPO3_MODE=='FE') {
-	
-	require_once(t3lib_extMgm::extPath('piwikintegration').'lib/class.tx_piwikintegration_tracking.php');
-	if($_EXTCONF['enableIndependentMode']) {
-		$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-output'][] = 'tx_piwikintegration_tracking->contentPostProc_output'; 
-	}
-	$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-all'][] = 'tx_piwikintegration_tracking->contentPostProc_all'; 
-}
+/*******************************************************************************
+ * Hook für templavoilaPreview
+ */ 
+	$TYPO3_CONF_VARS['EXTCONF']['templavoila']['mod1']['renderPreviewContentClass'][]     = 'EXT:piwikintegration/pi1/class.tx_piwikintegration_pi1_templavoila_preview.php:tx_piwikintegration_pi1_templavoila_preview';
+/*******************************************************************************
+ * Save hook für ExtMgm
+ */ 
+	$TYPO3_CONF_VARS['SC_OPTIONS']['typo3/mod/tools/em/index.php']['tsStyleConfigForm'][] = 'EXT:piwikintegration/lib/class.tx_piwikintegration_extmgm.php:tx_piwikintegration_extmgm->emSaveConstants';
+/*******************************************************************************
+ * unserialize extConf
+ */ 
+	$_EXTCONF = unserialize($_EXTCONF);
 
-//load scheduler class if scheduler is installed
-if(t3lib_extMgm::isLoaded ('scheduler') && $_EXTCONF['enableSchedulerTask']) {
-	//add task to scheduler list
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_piwikintegration_piwikArchiveTask'] = array(
-			'extension'        => $_EXTKEY,
-			'title'            => 'LLL:EXT:' . $_EXTKEY . '/locallang.xml:piwikArchiveTask.name',
-			'description'      => 'LLL:EXT:' . $_EXTKEY . '/locallang.xml:piwikArchiveTask.description',
-			#'additionalFields' => 'tx_piwikintegration_piwikArchiveTask_AdditionalFieldProvider',
+/*******************************************************************************
+ * Add widgets for Frontend
+ */ 
+	t3lib_extMgm::addPItoST43(
+		$_EXTKEY,
+		'pi1/class.tx_piwikintegration_pi1.php',
+		'_pi1',
+		'list_type',
+		1
 	);
-	require_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_scheduler_archive.php'));
-}
+/*******************************************************************************
+ * load fe hooks
+ */ 
+	if(TYPO3_MODE=='FE') {
+		require_once(t3lib_extMgm::extPath('piwikintegration').'lib/class.tx_piwikintegration_tracking.php');
+		if($_EXTCONF['enableIndependentMode']) {
+			$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-output'][] = 'tx_piwikintegration_tracking->contentPostProc_output'; 
+		}
+		$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-all'][] = 'tx_piwikintegration_tracking->contentPostProc_all'; 
+	}
+/******************************************************************************
+ * load scheduler class if scheduler is installed
+ */ 
+	if(t3lib_extMgm::isLoaded ('scheduler') && $_EXTCONF['enableSchedulerTask']) {
+		//add task to scheduler list
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_piwikintegration_piwikArchiveTask'] = array(
+				'extension'        => $_EXTKEY,
+				'title'            => 'LLL:EXT:' . $_EXTKEY . '/locallang.xml:piwikArchiveTask.name',
+				'description'      => 'LLL:EXT:' . $_EXTKEY . '/locallang.xml:piwikArchiveTask.description',
+				#'additionalFields' => 'tx_piwikintegration_piwikArchiveTask_AdditionalFieldProvider',
+		);
+		require_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_scheduler_archive.php'));
+	}
 ?>

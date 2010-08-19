@@ -29,7 +29,7 @@ require_once(t3lib_extMgm::extPath('scheduler', 'class.tx_scheduler_task.php'));
  * @license http://www.gnu.org/licenses/gpl-3.0.html Gpl v3 or later
  *
  */
-class tx_piwikintegration_piwikArchiveTask extends tx_scheduler_Task {
+class tx_piwikintegration_scheduler_archive extends tx_scheduler_Task {
 	/**
 	 * execute the piwik archive task
 	 *
@@ -138,8 +138,8 @@ class tx_piwikintegration_piwikArchiveTask extends tx_scheduler_Task {
 		}
 	}
 }
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/class.tx_piwikintegration_piwikArchiveTask.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/class.tx_piwikintegration_piwikArchiveTask.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/lib/class.tx_piwikintegration_scheduler_archive.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/lib/class.tx_piwikintegration_scheduler_archive.php']);
 }
 
 ?>
