@@ -95,6 +95,11 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 			$this->doc->setModuleTemplate(t3lib_extMgm::extPath('piwikintegration') . 'mod1/mod_template.html');
 			$this->doc->getPageRenderer()->loadExtJS();
 			$this->doc->extJScode = file_get_contents(t3lib_extMgm::extPath('piwikintegration') . 'mod1/extjs.js');
+			
+			$this->doc->extJScode = str_replace('###1###',$LANG->getLL('function1'),$this->doc->extJScode);
+			$this->doc->extJScode = str_replace('###2###',$LANG->getLL('function2'),$this->doc->extJScode);
+			$this->doc->extJScode = str_replace('###3###',$LANG->getLL('function3'),$this->doc->extJScode);
+		
 			$this->doc->backPath = $BACK_PATH;
 			$docHeaderButtons = $this->getButtons();
 
