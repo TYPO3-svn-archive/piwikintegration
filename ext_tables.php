@@ -56,7 +56,7 @@ $tempColumns = array (
 				 '_VERTICAL' => 1,
 				 'renewAPIKey' => array (
 				 	'type'     => 'userFunc',
-				 	'userFunc' => 'EXT:piwikintegration/class.tx_piwikintegration_be_users.php:tx_piwikintegration_be_users->tx_piwikintegration_api_code_wizard',
+				 	#'userFunc' => 'EXT:piwikintegration/class.tx_piwikintegration_be_users.php:tx_piwikintegration_be_users->tx_piwikintegration_api_code_wizard',
 				 	'icon'     => 'import_update.gif',
 				 	'title'    => 'Refresh API Key',
 				 ),

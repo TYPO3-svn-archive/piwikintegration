@@ -257,4 +257,7 @@ class tx_piwikintegration_config {
 		//write Config back
 		$piwikConfig->Plugins = $plugins;
 	}
+	function getJsForUid($uid) {
+		return '--';
+	}
 }

@@ -134,11 +134,15 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 
 		}
 		function getPiwikApi() {
+			global $BE_USER;
+			require_once(t3lib_extMgm::extPath('piwikintegration').'lib/class.tx_piwikintegration_tracking.php');
+			$content.='<h3>Piwik API</h3>';
 			$content.='Your API Code: '.$BE_USER->user['tx_piwikintegration_api_code'].'<br />';
-			#$content.='Your Piwik URL: '.$this->piwikHelper->getPiwikBaseURL();
+			$content.='Your Piwik URL: '.tx_piwikintegration_install::getInstaller()->getBaseUrl().'<br />';
 			$content.='<h3>JavaScriptCode for Piwik</h3>';
-			#$content.='<p><code>'.$this->piwikHelper->getPiwikJavaScriptCodeForPid($this->pageinfo['uid']).'</code></p>';
-			return $content;
+			$tracker = new tx_piwikintegration_tracking();
+			$content.='<p><code style="border:1px solid gray;padding:20px;display:block;">'.$tracker->getPiwikJavaScriptCodeForPid($this->pageinfo['uid']).'</code></p>';
+			return str_replace("\n",'',addslashes(($content)));
 		}
 		/**
 		 * Prints out the module HTML

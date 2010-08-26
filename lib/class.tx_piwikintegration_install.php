@@ -78,6 +78,9 @@ class tx_piwikintegration_install {
 	public function getRelInstallPath() {
 		return $this->installPath;
 	}
+	public function getBaseUrl() {
+		return $this->installPath.'piwik/';
+	}
 	private function downloadLatestPiwik() {
 		//download piwik into typo3temp
 		//can be hardcoded, because latest piwik is always on the same url ;) thanks guys

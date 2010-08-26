@@ -4,3 +4,19 @@
 .x-piwikintegration-btn-settings {
 	background-image:url(information.png);
 }
+.x-piwikintegration-btn-docs-api {
+	background-image:url(notice.png)!important;
+}
+
+.x-piwikintegration-btn-docs-api-1 {
+	background-image:url(default_green.gif)!important;
+}
+.x-piwikintegration-btn-docs-api-2 {
+	background-image:url(default_purple.gif)!important;
+}
+.x-piwikintegration-btn-docs-api-3 {
+	background-image:url(default_red.gif)!important;
+}
+.x-piwikintegration-btn-docs-api-4{
+	background-image:url(default_yellow.gif)!important;
+}
