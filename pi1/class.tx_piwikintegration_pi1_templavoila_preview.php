@@ -24,7 +24,7 @@
  * [CLASS/FUNCTION INDEX of SCRIPT]
  */
 
-require_once(t3lib_extMgm::extPath('piwikintegration').'class.tx_piwikintegration_helper.php');
+require_once(t3lib_extMgm::extPath('piwikintegration').'lib/class.tx_piwikintegration_div.php');
 
 /**
  * Renders the preview in templavoila
@@ -69,10 +69,10 @@ class tx_piwikintegration_pi1_templavoila_preview {
 			unset($this->extConf['widget']['module']);
 			unset($this->extConf['widget']['action']);
 
-			$helper = new tx_piwikintegration_helper();
-			$obj.= '<object width="100%" type="text/html" height="'.intval($this->extConf['height']).'" data="';
+			#$helper = new tx_piwikintegration_helper();
+			$obj.= '<div style="width:'.$this->extConf['height'].'px;"><object width="100%" type="text/html" height="'.intval($this->extConf['height']).'" data="';
 			$obj.= '../../../../typo3conf/piwik/piwik/index.php?module=Widgetize&action=iframe'.t3lib_div::implodeArrayForUrl('',$this->extConf['widget']);
-			$obj.= '&disableLink=1"></object>';
+			$obj.= '&disableLink=1"></object></div>';
 
 			$content.=$obj;
 

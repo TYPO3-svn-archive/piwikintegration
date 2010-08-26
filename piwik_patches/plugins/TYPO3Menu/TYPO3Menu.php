@@ -56,11 +56,23 @@ class Piwik_TYPO3Menu extends Piwik_Plugin
 	public function getListHooksRegistered()
 	{
 		return array(
-			'template_js_import' => 'js',
-			'template_css_import' => 'css',
+			'AssetManager.getCssFiles' => 'getCssFiles',
+			'AssetManager.getJsFiles' => 'getJsFiles'
 		);
 	}
-
+	function getCssFiles( $notification )
+	{		
+		$cssFiles = &$notification->getNotificationObject();
+		$cssFiles[] = "plugins/TYPO3Menu/css/main.css";
+		$cssFiles[] = "plugins/TYPO3Menu/css/typo3.css";
+	}
+	function getJsFiles( $notification )
+	{
+		$jsFiles = &$notification->getNotificationObject();
+		if($_GET['module']=='CoreHome') {
+			$jsFiles[] = "plugins/TYPO3Menu/js/main.js";
+		}
+	}
 	/**
 	 * echo the needed javascript
 	 *

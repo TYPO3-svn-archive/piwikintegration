@@ -33,29 +33,12 @@ body {
 	background-color:#EFEFF4;
 	font-family:Verdana,Arial,Helvetica,sans-serif;
 }
-/* tobbar */
-#topBars{
-	background-color:#FBFBFC;
-	background-image:url(../pics/login-box-header.png);
-	overflow:visble;
-	padding-left:10px;
+#topBars #topLeftBar,#topBars #topRightBar{
+	font-size:6px;
+	background-color:#EFEFF4;
 }
-#topBars div{
-	background-color:#FBFBFC;
-	background-image:url(../pics/login-box-header.png);
-	width:*;
-}
-div#topLeftBar, div#topRightBar {
-	display:inline;
-	overflow:visible;
-	margin:0px;
-	padding-top:0px;
-}
-div#topRightBar a {
-	padding-top:0px;
-}
-div#topLeftBar {
-	-width:0px;
+#topBars span.topBarElem {
+	padding:0 4px;
 }
 /* widgets */
 .widget {
@@ -77,58 +60,4 @@ div#topLeftBar {
 .widgetContent {
 	background-color:white;
 	color:black;
-}
-/* menu */
-ul.horizontalmenu {
-	background-color:transparent;
-}
-ul.horizontalmenu li{
-	background-color:transparent
-}
-ul.horizontalmenu a, ul.horizontalmenu span#date{
-	color:white;
-	font-weight:bold;
-	border-right:1px solid #B5BBC7;
-}
-ul.horizontalmenu ul a{
-	color:#737373;
-	font-weight:bold;
-}
-ul.horizontalmenu ul a:hover{
-	color:white;
-}
-ul.horizontalmenu ul{
-	border:1px solid #B5BBC7;
-	border-top:none;
-	background-color:#EFEFF4;
-}
-ul.horizontalmenu a:hover {
-	background-color:#A4ACBA;
-}
-ul.horizontalmenu #logo {
-	padding-left:0;
-}
-ul.horizontalmenu li.sfHover a{
-	color:rgb(107, 50, 11);
-}
-ul.horizontalmenu li.sfHover li a{
-	color:#737373;
-}
-ul.horizontalmenu li.sfHover li.sfHover a{
-	color:rgb(107, 50, 11);
-}
-/* global */
-
-#header h2 {
-	color:#737373;
-	padding-left:20px;
-	padding-top:6px;
-}
-#header h2 a{
-	text-decoration:none;
-	color:#737373;
-}
-.hover{
-	background-color:#CDEACA;
-	border-color:#58B548;
 }

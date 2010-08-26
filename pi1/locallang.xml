@@ -30,15 +30,22 @@
 			<label index="flexform_period_month">month</label>
 			<label index="flexform_period_year">year</label>
 			<label index="flexform_period">period</label>
-			
-			
+			<label index="flexform_period_yesterday">yesterday</label>
 			
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="piwikintegration_pi1">Piwik Widgets</label>
 			<label index="pi1_wizard_title">Piwik Widgets</label>
 			<label index="pi1_wizard_description">Fügt einen Widget von Piwik in die Webseite ein.</label>
+
 			<label index="flexform_sheet_sDef">Piwik Widget Einstellungen</label>
+
+			<label index="flexform_period_day">Tag</label>
+			<label index="flexform_period_week">Woche</label>
+			<label index="flexform_period_month">Monat</label>
+			<label index="flexform_period_year">Jahr</label>
+			<label index="flexform_period">Zeitraum</label>
+			<label index="flexform_period_yesterday">Gestern</label>
 		</languageKey>
 	</data>
 </T3locallang>

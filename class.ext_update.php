@@ -9,15 +9,29 @@ class ext_update {
 		$func = trim(t3lib_div::_GP('func'));
 		if(t3lib_div::_GP('do_update')) {
 			if (method_exists($this, $func)) {
-				$buffer.= '<b>'.$this->$func().'</b>';
+				$flashMessage = t3lib_div::makeInstance(
+					't3lib_FlashMessage',
+					$this->$func(),
+					'',
+					t3lib_FlashMessage::OK
+			    );
+				$buffer.= $flashMessage->render();
 			} else {
 				$buffer.=$LANG->getLL('methodNotFound');
 			}
 		}
+		
+		$flashMessage = t3lib_div::makeInstance(
+					't3lib_FlashMessage',
+					$LANG->getLL('installedPiwikNeeded'),
+					'',
+					t3lib_FlashMessage::INFO
+			    );
+		$buffer.= $flashMessage->render();
 		$buffer.= '<h2>'.$LANG->getLL('header.installation').'</h2>';
 		$buffer.= '<dl class="typo3-tstemplate-ceditor-constant">';
-		$buffer.= $this->getButton('installPiwik');
-		$buffer.= $this->getButton('updatePiwik');
+		$buffer.= $this->getButton('installPiwik',false);
+		$buffer.= $this->getButton('updatePiwik',false);
 		$buffer.= $this->getButton('patchPiwik');
 		$buffer.= $this->getButton('configurePiwik');
 		$buffer.= $this->getButton('removePiwik');
@@ -25,6 +39,7 @@ class ext_update {
 		$buffer.= '<h2>'.$LANG->getLL('header.tools').'</h2>';
 		$buffer.= '<dl class="typo3-tstemplate-ceditor-constant">';
 		$buffer.= $this->getButton('truncatePiwikDB');
+		$buffer.= $this->getButton('reInitPiwikDB');
 		$buffer.= $this->getButton('showPiwikConfig');
 		$buffer.= $this->getButton('enableSuggestedPlugins');
 		$buffer.= '</dl>';
@@ -64,8 +79,9 @@ class ext_update {
 		$installer->getConfigObject()->makePiwikConfigured();
 		return 'Piwik is configured now';
 	}
-	function getButton($func) {
+	function getButton($func,$piwikNeeded=true) {
 		global $LANG;
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
 		$params = array('do_update' => 1, 'func' => $func);
 		$onClick = "document.location='" . t3lib_div::linkThisScript($params) . "'; return false;";
 		
@@ -74,17 +90,38 @@ class ext_update {
 		$button.= '<dd>'.$LANG->getLL('desc.'.$func).'</dd>';
 		$button.= '<dd><div class="typo3-tstemplate-ceditor-row">';
 			//<a href="javascript:' . htmlspecialchars($onClick) . '">'.$LANG->getLL('DoIt').'</a>
-			if(method_exists($this, $func)) {
-				$button.= '<input type="submit" value="' . $LANG->getLL('button.DoIt') . '" onclick="' . htmlspecialchars($onClick) . '">';
-			} else {
-				$button.= 'N/A';
+			try{
+				if($piwikNeeded) {
+					tx_piwikintegration_install::getInstaller()->getConfigObject();
+				}
+				if(method_exists($this, $func)) {
+					$button.= '<input type="submit" value="' . $LANG->getLL('button.DoIt') . '" onclick="' . htmlspecialchars($onClick) . '">';
+				} else {
+					$button.= 'N/A';
+				}
+			} catch(Exception $e) {
+				$button.='Piwik Libraries not available';
 			}
 			
 		$button.='</div></dd>';
 		return $button;
 	}
-	/*function truncatePiwikDB() {
-		
+	function truncatePiwikDB() {
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
+		$path   = tx_piwikintegration_install::getInstaller()->getConfigObject()->initPiwikDatabase();
+		$tablesInstalled = Piwik::getTablesInstalled();
+		$buffer = 'Dropped Tables:';
+		foreach($tablesInstalled as $table) {
+			$GLOBALS['TYPO3_DB']->admin_query('DROP TABLE `'.$table.'`');
+			 $buffer.= $table.', ';
+		}
+		return $buffer;
+	}
+	function reInitPiwikDB() {
+		$this->truncatePiwikDB();
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
+		$path   = tx_piwikintegration_install::getInstaller()->getConfigObject()->installDatabase();
+		return 'Tables dropped an recreated';
 	}//*/
 	function showPiwikConfig() {
 		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));

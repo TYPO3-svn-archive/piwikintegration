@@ -56,7 +56,7 @@ class tx_piwikintegration_install {
 	 *
 	 */
 	public function checkInstallation() {
-		if(file_exists(t3lib_div::getFileAbsFileName($this->installPath))) {
+		if(file_exists(t3lib_div::getFileAbsFileName($this->installPath.'piwik/index.php'))) {
 			return true;
 		} else {
 			return false;

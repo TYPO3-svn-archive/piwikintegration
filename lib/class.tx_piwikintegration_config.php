@@ -89,6 +89,7 @@ class tx_piwikintegration_config {
 		
 	}
 	function initPiwikDatabase($noLoadConfig = false) {
+		$this->initPiwikFrameWork();
 		if($this->initPiwikDB) {
 			$this->initPiwikDB = true;
 			return;
@@ -129,16 +130,19 @@ class tx_piwikintegration_config {
 		$this->enablePlugin('TYPO3Menu');
 		
 		//create PiwikTables, check wether base tables already exist
-			$this->initPiwikDatabase(true);
-			$tablesInstalled = Piwik::getTablesInstalled();
-			$tablesToInstall = Piwik::getTablesNames();
-			if(count($tablesInstalled) == 0) {
-				Piwik::createTables();
-				Piwik::createAnonymousUser();
-				$updater = new Piwik_Updater();
-				//set Piwikversion
-				$updater->recordComponentSuccessfullyUpdated('core', Piwik_Version::VERSION);
-			}
+		$this->installDatabase();
+	}
+	function installDatabase() {
+		$this->initPiwikDatabase(true);
+		$tablesInstalled = Piwik::getTablesInstalled();
+		$tablesToInstall = Piwik::getTablesNames();
+		if(count($tablesInstalled) == 0) {
+			Piwik::createTables();
+			Piwik::createAnonymousUser();
+			$updater = new Piwik_Updater();
+			//set Piwikversion
+			$updater->recordComponentSuccessfullyUpdated('core', Piwik_Version::VERSION);
+		}
 	}
 	/**
 	 * This function makes a page statistics accessable for a user
