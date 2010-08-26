@@ -8,10 +8,56 @@
 		<languageKey index="default" type="array">
 			<label index="piwikArchiveTask.name">Piwik Archive Cron Job</label>
 			<label index="piwikArchiveTask.description">Run the tasks shipped with piwik.org</label>
+
+			<label index="methodNotFound">method not found - perhaps not implemented</label>
+
+			<label index="header.installation">installation</label>
+			<label index="header.tools">Tools</label>
+
+			<label index="action.installPiwik">reinstall piwik</label>
+			<label index="action.updatePiwik">update piwik</label>
+			<label index="action.patchPiwik">patch piwik</label>
+			<label index="action.removePiwik">remove piwik</label>
+			<label index="action.configurePiwik">configure piwik</label>
+			<label index="action.truncatePiwikDB">truncate database</label>
+			<label index="action.enableSuggestedPlugins">Enable Suggested Plugins</label>
+			<label index="action.showPiwikConfig">Show Piwik Configfile</label> 
+			<label index="desc.showPiwikConfig">Shows the configurationfile of piwik.</label>
+			<label index="desc.installPiwik">Download, Unzip, Patch, Configure Piwik</label>
+			<label index="desc.updatePiwik">Download, Unzip, Patch Piwk</label>
+			<label index="desc.patchPiwik">Patch Piwik</label>
+			<label index="desc.removePiwik">Remove Piwik directory</label>
+			<label index="desc.configurePiwik">Configure Piwik</label>
+			<label index="desc.truncatePiwikDB">Drop Piwikdata from Database</label>
+			<label index="desc.enableSuggestedPlugins">Enable Shipped Plugins, Suggested Plugins and disable senseless stuff</label>
+			<label index="button.DoIt">Do It</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="piwikArchiveTask.name">Piwik Archivierungs Cron Job</label>
 			<label index="piwikArchiveTask.description">Führe den mit Piwik gelieferten Cron Job aus.</label>
+
+			<label index="methodNotFound">Methode nicht gefunden - evt. noch nicht implmentiert?</label>
+
+			<label index="header.installation">Installation</label>
+			<label index="header.tools">Werkzeuge</label>
+
+			<label index="action.installPiwik">   Piwik neu installieren</label>
+			<label index="action.updatePiwik">    Piwik aktualisieren</label>
+			<label index="action.patchPiwik">     Piwik patchen</label>
+			<label index="action.removePiwik">    Piwik löschen</label>
+			<label index="action.configurePiwik"> Piwik konfigurieren</label>
+			<label index="action.truncatePiwikDB">Datenbank leeren</label>
+			<label index="action.enableSuggestedPlugins">Aktiviere sinnvolle Plugins</label>
+			<label index="action.showPiwikConfig">Zeige Piwik Konfigurationsdatei</label>
+			<label index="desc.showPiwikConfig">Zeigt die Konfigurationsdatei von Piwik an</label>
+			<label index="desc.installPiwik">Download, Unzip, Patch, Konfiguriere Piwik</label>
+			<label index="desc.updatePiwik">Download, Unzip, Patch Piwk</label>
+			<label index="desc.patchPiwik">Patch Piwik</label>
+			<label index="desc.removePiwik">Lösche Piwik Verzeichnis</label>
+			<label index="desc.configurePiwik">Konfiguriere Piwik</label>
+			<label index="desc.truncatePiwikDB">Lösche Piwikdaten aus der Datenbank</label>
+			<label index="desc.enableSuggestedPlugins">Aktviere mitgelieferte Plugins, empfohlene Plugins und deaktiviere nicht nötige Plugins</label>
+			<label index="button.DoIt">Ausführen</label>
 		</languageKey>
 
 	</data>

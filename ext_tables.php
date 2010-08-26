@@ -30,13 +30,18 @@
 if (!defined ('TYPO3_MODE')) {
 	die ('Access denied.');
 }
+/*******************************************************************************
+ * Add Backend Module and Ext.Direct for it
+ */ 
+	if (TYPO3_MODE == 'BE') {
+		t3lib_extMgm::addModulePath('web_txpiwikintegrationM1', t3lib_extMgm::extPath($_EXTKEY) . 'mod1/');
+			
+		t3lib_extMgm::addModule('web', 'txpiwikintegrationM1', '', t3lib_extMgm::extPath($_EXTKEY) . 'mod1/');
+	}
 
-if (TYPO3_MODE == 'BE') {
-	t3lib_extMgm::addModulePath('web_txpiwikintegrationM1', t3lib_extMgm::extPath($_EXTKEY) . 'mod1/');
-		
-	t3lib_extMgm::addModule('web', 'txpiwikintegrationM1', '', t3lib_extMgm::extPath($_EXTKEY) . 'mod1/');
-}
-
+/*******************************************************************************
+ * Static file
+ */ 
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/piwik_integration/', 'Piwik Integration');
 
 $tempColumns = array (

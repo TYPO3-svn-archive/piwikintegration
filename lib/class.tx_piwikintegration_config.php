@@ -88,13 +88,15 @@ class tx_piwikintegration_config {
 			$this->tablePrefix = $this->tableDbPrefix.'tx_piwikintegration_';
 		
 	}
-	function initPiwikDatabase() {
+	function initPiwikDatabase($noLoadConfig = false) {
 		if($this->initPiwikDB) {
 			$this->initPiwikDB = true;
 			return;
 		}
 		include_once(PIWIK_INCLUDE_PATH.'/core/Option.php');
-		Piwik::createConfigObject(PIWIK_INCLUDE_PATH.'config/config.ini.php');
+		if($noLoadConfig===true) {
+			Piwik::createConfigObject(PIWIK_INCLUDE_PATH.'config/config.ini.php');
+		}
 		#$piwikConfig = Zend_Registry::get('config');
 		Piwik::createDatabaseObject();
 	}
@@ -105,56 +107,29 @@ class tx_piwikintegration_config {
 		       $typo_db,
 			   $BE_USER;
 		$this->initPiwikFrameWork();
-		//makeConfigObject
-		$piwikConfig = Zend_Registry::get('config');
-
 		//userdata
-		$superuser = $piwikConfig->superuser->toArray();
-		$superuser['login']    = md5(microtime());
-		$superuser['password'] = md5(microtime());
-		$superuser['email']    = $GLOBALS["BE_USER"]->user['email'];
-		
-		$piwikConfig->superuser = $superuser;
+		$this->setOption('superuser','login'        ,md5(microtime()));
+		$this->setOption('superuser','password'     ,md5(microtime()));
+		$this->setOption('superuser','email'        ,$GLOBALS["BE_USER"]->user['email']);
 
 		//Database
-		$database = $piwikConfig->database->toArray();
-		$database['host']          = TYPO3_db_host;
-		$database['username']      = TYPO3_db_username;
-		$database['password']      = TYPO3_db_password;
-		$database['dbname']        = TYPO3_db;
-		$database['tables_prefix'] = $this->tablePrefix;
-		$database['adapter']       = "PDO_MYSQL";
-		#$piwikConfig->database = new Zend_Config($database);
-		$piwikConfig->database = $database;
+		$this->setOption('database' ,'host'         ,TYPO3_db_host);
+		$this->setOption('database' ,'username'     ,TYPO3_db_username);
+		$this->setOption('database' ,'password'     ,TYPO3_db_password);
+		$this->setOption('database' ,'dbname'       ,TYPO3_db);
+		$this->setOption('database' ,'tables_prefix',$this->tablePrefix);
+		$this->setOption('database' ,'adapter'      ,"PDO_MYSQL");
 
 		//General
-		$general = $piwikConfig->General->toArray();
-		$general['show_website_selector_in_user_interface'] = 0;
-		#$piwikConfig->General = new Zend_Config($general);
-		$piwikConfig->General = $general;
+		$this->setOption('General'  ,'show_website_selector_in_user_interface',0);
 
-		//force Load of TYPO3Login! and deny Login
-		$plugins     = $piwikConfig->Plugins->toArray();
-		$key_login   = array_search('Login'     ,$plugins);
-		$key_t3login = array_search('TYPO3Login',$plugins);
-		$key_t3menu  = array_search('TYPO3Menu' ,$plugins);
-		//unload login
-		if($key_login!==false) {
-			unset($plugins[$key_login]);
-		}
-		//load typo3login
-			if($key_t3login===false) {
-				$plugins[]='TYPO3Login';
-			}
-		//load interface modifications
-			if($key_t3menu===false) {
-				$plugins[]='TYPO3Menu';
-			}
-		//write Config back
-		$piwikConfig->Plugins = $plugins;
-
+		//set Plugins
+		$this->disablePlugin('Login');
+		$this->enablePlugin('TYPO3Login');
+		$this->enablePlugin('TYPO3Menu');
+		
 		//create PiwikTables, check wether base tables already exist
-			Piwik::createDatabaseObject();
+			$this->initPiwikDatabase(true);
 			$tablesInstalled = Piwik::getTablesInstalled();
 			$tablesToInstall = Piwik::getTablesNames();
 			if(count($tablesInstalled) == 0) {
@@ -239,5 +214,43 @@ class tx_piwikintegration_config {
 	}
 	function getTablePrefix() {
 		return $this->tablePrefix;
+	}
+	function setOption($sectionName,$option,$value) {
+		$this->initPiwikFrameWork();
+		$piwikConfig = Zend_Registry::get('config');
+		$section     = $piwikConfig->$sectionName->toArray();
+		$section[$option] = $value;
+		$piwikConfig->$sectionName = $section;
+	}
+	function getOption($section,$option) {
+		$this->initPiwikFrameWork();
+		$piwikConfig = Zend_Registry::get('config');
+		$section     = $piwikConfig->$sectionName->toArray();
+		return $section[$option];
+	}
+	function enablePlugin($plugin) {
+		$this->initPiwikFrameWork();
+		//makeConfigObject
+		$piwikConfig = Zend_Registry::get('config');
+		$plugins     = $piwikConfig->Plugins->toArray();
+		//load typo3login
+		if(array_search($plugin,$plugins)===false) {
+			$plugins[]=$plugin;
+		}
+		//write Config back
+		$piwikConfig->Plugins = $plugins;
+	}
+	function disablePlugin($plugin) {
+		$this->initPiwikFrameWork();
+		//makeConfigObject
+		$piwikConfig = Zend_Registry::get('config');
+		$plugins     = $piwikConfig->Plugins->toArray();
+		//unload plugin
+		$key = array_search($plugin,$plugins);
+		if($key===false) {
+			unset($plugins[$key]);
+		}
+		//write Config back
+		$piwikConfig->Plugins = $plugins;
 	}
 }

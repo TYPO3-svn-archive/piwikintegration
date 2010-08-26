@@ -88,41 +88,26 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 			// Access check!
 			// The page will show only if there is a valid page and if this page may be viewed by the user
 			$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id,$this->perms_clause);
-			$access = is_array($this->pageinfo) ? 1 : 0;
-
-				// initialize doc
+			$access = is_array($this->pageinfo) ? 1 : 0;			// initialize doc
 			$this->doc = t3lib_div::makeInstance('template');
+			$this->doc->backPath = $BACK_PATH;
+
+			$set = t3lib_div::_GP('SET');
+
 			$this->doc->setModuleTemplate(t3lib_extMgm::extPath('piwikintegration') . 'mod1/mod_template.html');
 			$this->doc->getPageRenderer()->loadExtJS();
+			$this->doc->getPageRenderer()->addCssFile(t3lib_extMgm::extRelPath('piwikintegration') . 'mod1/ext-icons.css');
 			$this->doc->extJScode = file_get_contents(t3lib_extMgm::extPath('piwikintegration') . 'mod1/extjs.js');
 			
-			$this->doc->extJScode = str_replace('###1###',$LANG->getLL('function1'),$this->doc->extJScode);
-			$this->doc->extJScode = str_replace('###2###',$LANG->getLL('function2'),$this->doc->extJScode);
-			$this->doc->extJScode = str_replace('###3###',$LANG->getLL('function3'),$this->doc->extJScode);
-		
-			$this->doc->backPath = $BACK_PATH;
-			$docHeaderButtons = $this->getButtons();
-
+			$this->doc->extJScode = str_replace('###1###'       ,$LANG->getLL('function1'),$this->doc->extJScode);
+			$this->doc->extJScode = str_replace('###2###'       ,$LANG->getLL('function2'),$this->doc->extJScode);
+			$this->doc->extJScode = str_replace('###3###'       ,$LANG->getLL('function3'),$this->doc->extJScode);
+			$this->doc->extJScode = str_replace('###piwikAPI###',$this->getPiwikApi()     ,$this->doc->extJScode);
 			if (($this->id && $access) || ($BE_USER->user['admin'] && !$this->id))	{
 
 					// Draw the form
 				$this->doc->form = '<form action="" method="post" enctype="multipart/form-data" name="editForm">';
 
-					// JavaScript
-				$this->doc->JScode = '
-					<script language="javascript" type="text/javascript">
-						script_ended = 0;
-						/**
-						 * jump url function for location changer
-						 * @param	string		URL: url where to jump to
-						 * 						 
-						 * @return	void
-						 */
-						function jumpToUrl(URL)	{
-							document.location = URL;
-						}
-					</script>
-				';
 				$this->doc->postCode='
 					<script language="javascript" type="text/javascript">
 						script_ended = 1;
@@ -130,7 +115,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 					</script>
 				';
 					// Render content:
-				$this->moduleContent();
+				$this->checkEnvironment();
 			} else {
 					// If no access or if ID == zero
 				$docHeaderButtons['save'] = '';
@@ -138,9 +123,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 			}
 
 				// compile document
-			$markers['FUNC_MENU'] = t3lib_BEfunc::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function']);
 			$markers['CONTENT'] = $this->content;
-
 					// Build the <body> for the module
 			$this->content = $this->doc->startPage($LANG->getLL('title'));
 			$this->content.= $this->doc->moduleBody($this->pageinfo, $docHeaderButtons, $markers);
@@ -148,14 +131,19 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 			$this->content = $this->doc->insertStylesAndJS($this->content);
 
 		}
-
+		function getPiwikApi() {
+			$content.='Your API Code: '.$BE_USER->user['tx_piwikintegration_api_code'].'<br />';
+			#$content.='Your Piwik URL: '.$this->piwikHelper->getPiwikBaseURL();
+			$content.='<h3>JavaScriptCode for Piwik</h3>';
+			#$content.='<p><code>'.$this->piwikHelper->getPiwikJavaScriptCodeForPid($this->pageinfo['uid']).'</code></p>';
+			return $content;
+		}
 		/**
 		 * Prints out the module HTML
 		 *
 		 * @return	void
 		 */
 		function printContent()	{
-
 			#$this->content.=$this->doc->endPage();
 			echo $this->content;
 		}
@@ -165,9 +153,10 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 		 *
 		 * @return	void
 		 */
-		function moduleContent()	{
+		function checkEnvironment()	{
 			global $BACK_PATH,$TYPO3_CONF_VARS, $BE_USER,$LANG;
 			//check if piwik is installed
+			
 			if(!tx_piwikintegration_install::getInstaller()->checkInstallation()) {
 				tx_piwikintegration_install::getInstaller()->installPiwik();
 				$flashMessage = t3lib_div::makeInstance(
@@ -184,10 +173,10 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 				return;
 			} elseif(!$this->pageinfo['uid']) {
 			    $flashMessage = t3lib_div::makeInstance(
-				't3lib_FlashMessage',
-				$LANG->getLL('selectpage_description'),
-				$LANG->getLL('selectpage_tip'),
-				t3lib_FlashMessage::NOTICE
+					't3lib_FlashMessage',
+					$LANG->getLL('selectpage_description'),
+					$LANG->getLL('selectpage_tip'),
+					t3lib_FlashMessage::NOTICE
 			    );
 			    t3lib_FlashMessageQueue::addMessage($flashMessage);
 			    #$this->doc->pushFlashMessage($flashMessage);
@@ -200,88 +189,11 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 					);
 					$this->piwikHelper->makePiwikPatched($exclude);
 				}
-
-				$this->piwikHelper->correctUserRightsForPid($this->pageinfo['uid']);
-				switch((string)$this->MOD_SETTINGS['function'])	{
-					case 1:
-						$date    = 'yesterday';
-						$content.= '<style type="text/css">';
-							$content.='.widgetIframe    {width:400px;display:inline;float:left;border:1px solid #B2B9C5; margin:5px;background-color:white; clear:none;}
-									   .dashboardcol    {width:410px;float:left;}
-									   .widgetIframe h2 {background-color:white; display:inline;margin:5px;}';
-						$content.='</style>';
-						$widgets  = array (
-							'visitors'          => '<div id="widgetIframe"><iframe width="100%" height="350" src="../typo3conf/piwik/piwik/index.php?module=Widgetize&action=iframe&columns[]=nb_visits&moduleToWidgetize=VisitsSummary&actionToWidgetize=getEvolutionGraph&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
-							'frequencyoverview' => '<div id="widgetIframe"><iframe width="100%" height="350" src="../typo3conf/piwik/piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=VisitFrequency&actionToWidgetize=getSparklines&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
-							//16.01.2010 Florian Strauß	via email						
-							'pages'             => '<div id="widgetIframe"><iframe width="100%" height="350" src="../typo3conf/piwik/piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=Actions&actionToWidgetize=getPageUrls&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
-							'keywords'          => '<div id="widgetIframe"><iframe width="100%" height="350" src="../typo3conf/piwik/piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize=Referers&actionToWidgetize=getKeywords&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'&period=day&date='.$date.'&disableLink=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>',
-
-
-						);
-						$content.='<div class="dashboard">';
-						$i        = 0;
-						$cols     = 2;
-						$colsData = array();
-						foreach($widgets as $widgetHeader => $widget) {
-							$colsData[$i].='<div class="widgetIframe">';
-							$colsData[$i].='<h2>'.htmlspecialchars($LANG->getLL('dashboard_'.$widgetHeader)).'</h2>';
-							$colsData[$i].=$widget;
-							$colsData[$i].='</div>';
-							$i++;
-							if($i>=$cols) {
-								$i = 0;
-							}
-						}
-						foreach($colsData as $col) {
-							$content.='<div class="dashboardcol">';
-							$content.=$col;
-							$content.='</div>';
-						}
-						$content.='</div>';
-						#$this->content.=$this->doc->section($LANG->getLL('function1'),$content,0,1);
-						$this->content.=$content;
-					break;
-					case 2:
-
-						/**
-						 * display iframe with piwik
-						 */
-						$this->content.='<object id="piwik" type="text/html" data="../typo3conf/piwik/piwik/index.php?module=CoreHome&action=index&period=week&date=yesterday&idSite='.$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid']).'" width="100%" height="100%" style="top:0px;left:0px;position:absolute;"><p>Oops! That didn´t work...</p></object>';
-						#die($this->content);
-					break;
-					case 3:
-						if(t3lib_div::_GET('refreshAPICode')=='1') {
-							$newCode = md5(microtime());
-							$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-								'be_users',
-								'uid='.intval($BE_USER->user['uid']),
-								array(
-									'tx_piwikintegration_api_code' => $newCode,
-								)
-							);
-							$BE_USER->user['tx_piwikintegration_api_code'] = $newCode;
-						}
-						$content.='Your API Code: '.$BE_USER->user['tx_piwikintegration_api_code'].' <a href="?id='.intval(t3lib_div::_GET('id')).'&M=web_txpiwikintegrationM1&SET[function]=3&refreshAPICode=1">[renew]</a><br />';
-						$content.='Your Piwik URL: '.$this->piwikHelper->getPiwikBaseURL();
-						$content.='<h3>JavaScriptCode for Piwik</h3>';
-						$content.='<p><code>'.$this->piwikHelper->getPiwikJavaScriptCodeForPid($this->pageinfo['uid']).'</code></p>';
-
-						#$widgets=$this->piwikHelper->getPiwikWidgetsForPid($this->pageinfo['uid']);
-						#foreach($widgets as $plugin) {
-						#	foreach($plugin as $widget) {
-						#		#$content.= '<div id="widgetIframe"><iframe width="100%" height="350" src="http://localhost/t3alpha4.3/typo3conf/piwik/piwik/index.php?module=Widgetize&action=iframe&moduleToWidgetize='.$widget['parameters']['module'].'&actionToWidgetize='.$widget['parameters']['action'].'&idSite=1&period=week&date=2009-11-20&disableLink=1" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>';
-						#		#$content.= Piwik_FrontController::getInstance()->fetchDispatch( $widget['parameters']['module'], $widget['parameters']['action'], $widget['parameters'])."<br>";
-						#
-						#	}
-						#}
-						#t3lib_div::debug($widgets);
-						$this->content.=$this->doc->section($LANG->getLL('function3'),$content,0,1);
-					break;
-				}
+				return true;
 			} else {
 				$this->content.='<div class="typo3-message message-warning"><div class="message-header message-left">'.$LANG->getLL('selectpage_tip').'</div>'.$LANG->getLL('selectpage_description').'</div>';
 			}
+			return false;
 		}
 		/**
 		 * Create the panel of buttons for submitting the form or otherwise perform operations.
