@@ -18,4 +18,5 @@ var piwikViewport = new Ext.Viewport({
 			iconCls: 'x-piwikintegration-btn-settings'
 		}]
 	}]
-}); 
+});
+Ext.get('typo3-docbody').remove(); 

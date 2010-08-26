@@ -97,12 +97,15 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 			$this->doc->setModuleTemplate(t3lib_extMgm::extPath('piwikintegration') . 'mod1/mod_template.html');
 			$this->doc->getPageRenderer()->loadExtJS();
 			$this->doc->getPageRenderer()->addCssFile(t3lib_extMgm::extRelPath('piwikintegration') . 'mod1/ext-icons.css');
-			$this->doc->extJScode = file_get_contents(t3lib_extMgm::extPath('piwikintegration') . 'mod1/extjs.js');
+			if($this->content = $this->checkEnvironment()) {
+				$this->content = '';
+				$this->doc->extJScode = file_get_contents(t3lib_extMgm::extPath('piwikintegration') . 'mod1/extjs.js');
+				$this->doc->extJScode = str_replace('###1###'       ,$LANG->getLL('function1'),$this->doc->extJScode);
+				$this->doc->extJScode = str_replace('###2###'       ,$LANG->getLL('function2'),$this->doc->extJScode);
+				$this->doc->extJScode = str_replace('###3###'       ,$LANG->getLL('function3'),$this->doc->extJScode);
+				$this->doc->extJScode = str_replace('###piwikAPI###',$this->getPiwikApi()     ,$this->doc->extJScode);
+			}
 			
-			$this->doc->extJScode = str_replace('###1###'       ,$LANG->getLL('function1'),$this->doc->extJScode);
-			$this->doc->extJScode = str_replace('###2###'       ,$LANG->getLL('function2'),$this->doc->extJScode);
-			$this->doc->extJScode = str_replace('###3###'       ,$LANG->getLL('function3'),$this->doc->extJScode);
-			$this->doc->extJScode = str_replace('###piwikAPI###',$this->getPiwikApi()     ,$this->doc->extJScode);
 			if (($this->id && $access) || ($BE_USER->user['admin'] && !$this->id))	{
 
 					// Draw the form
@@ -115,7 +118,6 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 					</script>
 				';
 					// Render content:
-				$this->checkEnvironment();
 			} else {
 					// If no access or if ID == zero
 				$docHeaderButtons['save'] = '';

@@ -11,10 +11,11 @@ The content of this document is related to TYPO3
 - a GNU/GPL CMS/Framework available from www.typo3.org
 
 Table of Contents
-EXT: Readable name of your extension	1
+EXT:piwikintegration	1
 What does it do	3
+Important notes for Piwik 0.9 and current Piwikintegration	3
 Screenshots	3
-Administrative functions in backendmodule	5
+Administrative functions in backendmodule	4
 Scheduler integration	5
 Supported languages for BE module	5
 Installation	6
@@ -48,7 +49,13 @@ Known Problems	15
 What does it do
 This extension implements Piwik tracking in TYPO3-based websites.
 Piwik is a new open source (GPL license) web analytics product. It gives interesting reports on your website visitors, your popular pages, the search engines keywords they used, the language they speak… and so much more. To learn more about Piwik, go to http://www.piwik.org.
-This extension is a addon to the extension of EXT:piwik which provides a Backendmodule and integration functionality to TYPO3
+This extension is an addon to the extension of EXT:piwik which provides a Backendmodule and integration functionality to TYPO3
+Support can only be provided via the newsgroup piwik on the TYPO3 newsserver.
+Please post Bugs on forge.typo3.org in the project piwikintegration.
+Important notes for Piwik 0.9 and current Piwikintegration
+From this release there heavy changes under the hood.
+That means, that the scheduler won't work. And it's not tested!
+You can't change the Database where Piwik stores the data.
 Screenshots
 Piwik in Backend
 Module without the skin extension
@@ -57,6 +64,7 @@ Module with Piwik skin extension TYPO3Menu (default in automatic installation)
 
 
 EXT:templavoila with preview
+
 
 Piwik wiget in TYPO3 frontend
 
@@ -70,8 +78,8 @@ Administrative functions(not included yet): Here you can download GeoIPDatabase 
 Scheduler integration
 In TYPO3 4.3 there is a new extension called Scheduler (found in Admin tools / Scheduler). With that extension installed you can [what does the Piwik Archive Cron Job do and why should I use it?]. Use it like this:
 
-1.Create a new task by clicking on the New icon
-2.Setup an intervall like daily (=86400 seconds)
+1. Create a new task by clicking on the New icon
+2. Setup an intervall like daily (=86400 seconds)
 If you select the Piwik task and hit Execute selected tasks, you do not need to wait to see the statistics.
 Have a look on http://piwik.org/docs/setup-auto-archiving/ to get more information on speeding up piwik. (ignore the cronjob, as this is executed by the Scheduler).
 Please have a look on these options in the Piwik configuration, with the following setting you force piwik to create the statistics with the cronjob and not while opening Piwik in the browser, that will speedup using piwik.
@@ -86,31 +94,31 @@ To get the full list of available languages for the original Piwik application, 
 Installation
 Automated Installation (recommend)
 To integrate piwikintegration into your TYPO3 installation follow these steps:
-1.Install the extension via TER, piwik is not included!
-2.Also install and enable the EXT:piwik which is suggested, to get the trackingcode automatically.
+1. Install the extension via TER, piwik is not included!
+2. Also install and enable the EXT:piwik which is suggested, to get the trackingcode automatically.
 You do not need to configure EXT:piwik since it is already configured with the static template of EXT:piwikintegration (see below).
 Have a look in http://typo3.org/extensions/repository/view/piwik/current/ for setting up advanced options of EXT:piwik. You do not need to do this here.
-3.Enable the extension EXT:piwikintegration.
-4.Add the static template of EXT:piwikintegration (choose Web -> Template -> [page where you have your template] -> Info/Modify -> Edit whole template record -> Includes) This will enable a single idsite and add the needed ts-configuration for EXT:piwik, as described above.
-5.Open the statistik module (Web -> Statistics ) and click on the page, or a subpage, where you added the static template:
-1.The backendmodule now recognizes, that Piwik is not installed (by checking, if the config file exists).
-2.The backendmodule will now download, extract and install the latest Piwik release into typo3conf/piwik. This could take a while.
-3.The backendmodule will now reload and you will now able to use Piwik via the Direct Statistics Access dropdown box.
-6.(If you like to use GeoIPDatabase use the admin functions of the module and download the database from maxmind.)[This function is currently not available.]
+3. Enable the extension EXT:piwikintegration.
+4. Add the static template of EXT:piwikintegration (choose Web -> Template -> [page where you have your template] -> Info/Modify -> Edit whole template record -> Includes) This will enable a single idsite and add the needed ts-configuration for EXT:piwik, as described above.
+5. Open the statistik module (Web -> Statistics ) and click on the page, or a subpage, where you added the static template:
+1. The backendmodule now recognizes, that Piwik is not installed (by checking, if the config file exists).
+2. The backendmodule will now download, extract and install the latest Piwik release into typo3conf/piwik. This could take a while.
+3. The backendmodule will now reload and you will now able to use Piwik via the Direct Statistics Access dropdown box.
+6. (If you like to use GeoIPDatabase use the admin functions of the module and download the database from maxmind.)[This function is currently not available.]
 That's all you need to start tracking your visitors. See EXT:piwik manual for more config options and description of it's parameters.
 Manual installation (draft may not be complete, not recommend)
 To integrate piwikintegration into your TYPO3 installation follow these steps:
-1.Install the extension via TER, piwik is not included!
-2.Install and enable the EXT:piwik which is suggested, to get the Trackingcode automatically.
+1. Install the extension via TER, piwik is not included!
+2. Install and enable the EXT:piwik which is suggested, to get the Trackingcode automatically.
 You do not need to configure EXT:piwik it's configured with the static template of EXT:piwikintegration (see below).
 Have a look in http://typo3.org/extensions/repository/view/piwik/current/ for setting up advanced options of EXT:piwik. You do not need to do this here.
 You do not need to install EXT:piwik, if you integrate the trackingcode on your own. But you need to setup up the siteid like described in http://typo3.org/extensions/repository/view/piwik/current/ in the EXT:piwik manual. This is needed, because EXT:piwikintegration uses the same setup as EXT:piwik
-3.Install and enable the plugin EXT:piwikintegration.
-4.Copy Piwik in typo3conf/piwik/piwik so that the index.php is accessable via typo3conf/piwik/piwik/index.php
-5.Setup Piwik with the same database parameters as you use for your TYPO3 installation. You need to set the prefix to “tx_piwikintegration_“ as this is required for EXT:piwikintegration.
-6.Open the statistik module, click on the page, or a subpage, where you have added the static template. The backendmodule should now recognize that Piwik is correctly installed (by checking if the config file exists). This will show the overview page.
-7.Don't forget to install the TYPO3* plugins in Piwik application (Web -> Statistics -> Direct Statistics Access -> Admin -> Plugins), especially the TYPO3Auth plugin is mandatory for authentification against the TYPO3 session. If this works you can disable the Login plugin.
-8.If you like to use GeoIPDatabase use the admin functions of the module and download the database from maxmind.
+3. Install and enable the plugin EXT:piwikintegration.
+4. Copy Piwik in typo3conf/piwik/piwik so that the index.php is accessable via typo3conf/piwik/piwik/index.php
+5. Setup Piwik with the same database parameters as you use for your TYPO3 installation. You need to set the prefix to “tx_piwikintegration_“ as this is required for EXT:piwikintegration.
+6. Open the statistik module, click on the page, or a subpage, where you have added the static template. The backendmodule should now recognize that Piwik is correctly installed (by checking if the config file exists). This will show the overview page.
+7. Don't forget to install the TYPO3* plugins in Piwik application (Web -> Statistics -> Direct Statistics Access -> Admin -> Plugins), especially the TYPO3Auth plugin is mandatory for authentification against the TYPO3 session. If this works you can disable the Login plugin.
+8. If you like to use GeoIPDatabase use the admin functions of the module and download the database from maxmind.
 That's all you need to start tracking your visitors. See EXT:piwik manual for more config options and description of it's parameters.
 3 ways to add the trackingcode
 Basically there 3 ways to install the trackingcode to your site
@@ -188,24 +196,24 @@ As described in the extension manager this flag enables detailed logging for the
 Enable heavy logging for the piwik cronjob, should be off in production environments as this can result in very large tables. Please use this function for debugging only.
 
 How does the integration work?
-1.User opens statistik module for a specific page ? TYPO3 checks access ? Module inserts access records to piwik tables automatically (admin as superuser, normal user with view rights)
-2.load piwik in iframe / object tag
-3.Authenticate user against TYPO3 be_users table with the user of the be cookie. For that step the plugin TYPO3Login is needed in piwik.
-4.That's all.
+1. User opens statistik module for a specific page ? TYPO3 checks access ? Module inserts access records to piwik tables automatically (admin as superuser, normal user with view rights)
+2. load piwik in iframe / object tag
+3. Authenticate user against TYPO3 be_users table with the user of the be cookie. For that step the plugin TYPO3Login is needed in piwik.
+4. That's all.
 Statistics on your Desktop
 In this chapter you will learn how to setup the Piwik API and how to get all the needed configuration variables. With that API you can use Piwik on your Desktop or in other Webapplications. In the last subsection of this chapter you will find someusefull tools for your desktop.
 Piwik API Code / token_auth / API Key
 Is supported, currently you need to set up the API key manually. You do that in the be_users form.
-1.Admin tools -> User Admin
-2.select the Admin user
-3.Extended
-4.Just click in the litte recycle icon to get a new API Code generated.
+1. Admin tools -> User Admin
+2. select the Admin user
+3. Extended
+4. Just click in the litte recycle icon to get a new API Code generated.
 
 Currently there is also the way to set a key via the backend module statistics, but this is deprecated.
-1.
-2.Select Page
-3.
-4.
+1. 
+2. Select Page
+3. 
+4. 
 Piwik API URL
 Please take a look into the Statistics BE module to get the URL for Piwik API. Normally it should be:
 DOMAIN/typo3conf/piwik/piwik/
@@ -219,15 +227,15 @@ FAQ
 What do I have to do if the installation fails with:
 There is no valid unzip wrapper, i need either the class ZipArchiv from php or a *nix system with unset path set.
 You have 3 opinions:
-1.Manual setup ? hard
-2.Install Zip Extension for PHP
-3.Do not use Microsoft Windows and disable $GLOBALS['TYPO3_CONF_VARS']['BE']['disable_exec_function'] in the TYPO3 Install tool.
+1. Manual setup ? hard
+2. Install Zip Extension for PHP
+3. Do not use Microsoft Windows and disable $GLOBALS['TYPO3_CONF_VARS']['BE']['disable_exec_function'] in the TYPO3 Install tool.
 Use with ks_sitemgr (currently not published in TER)
 Use the customer id constant to setup the trackingcode – example will be provided later.
 What to do if Piwik can't update?
 There are 2 possible solutions
-1.Manually unpack the archive into typo3conf/piwik
-2.Make a list of installed plugins and settings, delete the typo3conf/piwik directory, make a clean install and reconfigure Piwik
+1. Manually unpack the archive into typo3conf/piwik
+2. Make a list of installed plugins and settings, delete the typo3conf/piwik directory, make a clean install and reconfigure Piwik
 Appendix
 Changelog
 See http://forge.typo3.org/projects/activity/extension-piwikintegration for the current Activity and Changelog
