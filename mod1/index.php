@@ -183,17 +183,15 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 			
 			if(!tx_piwikintegration_install::getInstaller()->checkInstallation()) {
 				tx_piwikintegration_install::getInstaller()->installPiwik();
-				$flashMessage = t3lib_div::makeInstance(
-				    't3lib_FlashMessage',
-				    'Piwik installed',
-				    'Piwik is now installed / upgraded, wait a moment, to let me reload the page ;)',
-				    t3lib_FlashMessage::OK
-				);
-				t3lib_FlashMessageQueue::addMessage($flashMessage);
-
-				#$this->content ='<html><head><meta http-equiv="refresh" content="1" /></head><body></body></html>';
-				//need to die here because of a bug in TYPO3 4.2, the reload will reset the autoloading and all will work fine
-				#die($this->content);
+				if(tx_piwikintegration_install::getInstaller()->checkInstallation()) {
+					$flashMessage = t3lib_div::makeInstance(
+					    't3lib_FlashMessage',
+					    'Piwik installed',
+					    'Piwik is now installed / upgraded, wait a moment, reload the page ;)',
+					    t3lib_FlashMessage::OK
+					);
+					t3lib_FlashMessageQueue::addMessage($flashMessage);
+				}
 				return;
 			} elseif(!$this->pageinfo['uid']) {
 			    $flashMessage = t3lib_div::makeInstance(
