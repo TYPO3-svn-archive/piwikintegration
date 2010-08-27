@@ -55,7 +55,7 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 	 * @return string      DBName with '.'	 
 	 */	 	 	
 	public function getDatabase() {
-		return TYPO3DB.'.';
+		return '';
 	}
 	/**
 	 * authenticate the user
