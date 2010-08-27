@@ -111,12 +111,17 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 			$this->doc->getPageRenderer()->loadExtJS();
 			$this->doc->getPageRenderer()->addCssFile(t3lib_extMgm::extRelPath('piwikintegration') . 'mod1/ext-icons.css');
 			if($this->content = $this->checkEnvironment()) {
-				$this->content = '';
-				$this->doc->extJScode = file_get_contents(t3lib_extMgm::extPath('piwikintegration') . 'mod1/extjs.js');
-				$this->doc->extJScode = str_replace('###1###'       ,$LANG->getLL('function1'),$this->doc->extJScode);
-				$this->doc->extJScode = str_replace('###2###'       ,$LANG->getLL('function2'),$this->doc->extJScode);
-				$this->doc->extJScode = str_replace('###3###'       ,$LANG->getLL('function3'),$this->doc->extJScode);
-				$this->doc->extJScode = str_replace('###piwikAPI###',$this->getPiwikApi()     ,$this->doc->extJScode);
+				if(version_compare ($GLOBALS['TYPO_VERSION'],'4.4.0','>=')) {
+					$this->content = '';
+					$this->doc->extJScode = file_get_contents(t3lib_extMgm::extPath('piwikintegration') . 'mod1/extjs.js');
+					$this->doc->extJScode = str_replace('###1###'       ,$LANG->getLL('function1'),$this->doc->extJScode);
+					$this->doc->extJScode = str_replace('###2###'       ,$LANG->getLL('function2'),$this->doc->extJScode);
+					$this->doc->extJScode = str_replace('###3###'       ,$LANG->getLL('function3'),$this->doc->extJScode);
+					$this->doc->extJScode = str_replace('###piwikAPI###',$this->getPiwikApi()     ,$this->doc->extJScode);
+				} else {
+					$this->content = '<h3>Fallback Mode for older TYPO3 versions, you need at least 4.4 to use all features</h3>';
+					$this->content.= '<iframe width="100%" height="80%" src="../typo3conf/piwik/piwik"></iframe>';
+				}
 			}
 			
 			if (($this->id && $access) || ($BE_USER->user['admin'] && !$this->id))	{
