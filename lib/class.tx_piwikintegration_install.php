@@ -63,7 +63,13 @@ class tx_piwikintegration_install {
 		try {
 			$this->checkInstallation();
 		} catch(Exception $e) {
-			echo 'There was a Problem: '.$e->getMessage();
+			$flashMessage = t3lib_div::makeInstance(
+				't3lib_FlashMessage',
+				$e->getMessage(),
+				'There was a Problem',
+				t3lib_FlashMessage::ERROR
+		    );
+			t3lib_FlashMessageQueue::addMessage($flashMessage);
 		}
 	}
 	/**
@@ -83,7 +89,13 @@ class tx_piwikintegration_install {
 			$this->patchPiwik();
 			$this->configureDownloadedPiwik();
 		} catch(Exception $e) {
-			echo 'There was a Problem: '.$e->getMessage();
+			$flashMessage = t3lib_div::makeInstance(
+				't3lib_FlashMessage',
+				$e->getMessage(),
+				'There was a Problem',
+				t3lib_FlashMessage::ERROR
+		    );
+			t3lib_FlashMessageQueue::addMessage($flashMessage);
 		}
 	}
 	public function getAbsInstallPath() {
@@ -129,6 +141,18 @@ class tx_piwikintegration_install {
 			}
 		//unlink archiv to save space in typo3temp ;)
 			t3lib_div::unlink_tempfile($zipArchivePath);
+		if(!$this->checkInstallation()) {
+			$buffer = 'No files has been extracted!';
+			if(!class_exists('ZipArchive')) {
+				$buffer.= ' -> Please enable the phpextension Zip!';
+			}
+			if((!(TYPO3_OS=='WIN' || $GLOBALS['TYPO3_CONF_VARS']['BE']['disable_exec_function']))) {
+				$buffer.= ' -> used TYPO3 cmd line function to extract files, if you use solars this may be the problem.';
+				$buffer.= ' -> please manually extract piwik and copy it to typo3conf/piwik/piwik and use the extmgm update script to patch and configure piwik';
+				$buffer.= ' -> take a look in your manual for more information or use an environment with a working zip class';
+			}
+			throw new Exception($buffer);
+		}
 
 	}
 	public function checkPiwikPatched() {
