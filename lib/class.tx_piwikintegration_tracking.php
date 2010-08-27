@@ -37,8 +37,6 @@
  
 class tx_piwikintegration_tracking {
 	function init(&$params, &$reference) {
-		//init helper object
-		$this->piwikHelper = new tx_piwikintegration_helper();
 		// process the page with these options
 		$this->extConf = $params['pObj']->config['config']['tx_piwik.'];
 		//read base url

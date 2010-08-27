@@ -1,38 +1,25 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2010 Kay Strobach (typo3@kay-strobach.de)
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*  A copy is found in the textfile GPL.txt and important notices to the license
-*  from the author is found in LICENSE.txt distributed with these scripts.
-*
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
-/**
- * piwik_patches/plugins/TYPO3Login/Auth.php
+ *  Copyright notice
  *
- * Authentification service class
+ *  (c) 2009 	Kay Strobach (typo3@kay-strobach.de),
  *
- * $Id$
+ *  All rights reserved
  *
- * @author Kay Strobach <typo3@kay-strobach.de>
- */
+ *  This script is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; version 2 of the License.
+ * 
+ *   The GNU General Public License can be found at
+ *   http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 	require_once PIWIK_INCLUDE_PATH.'/plugins/UsersManager/API.php';
 /**
  *  Fix some problems with external DB usage
@@ -105,13 +92,13 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 		if($beUserCookie!==false) {
 			// fetch UserId, if cookie is set
 			$beUserId = Zend_Registry::get('db')->fetchOne(
-						'SELECT ses_userid FROM '.$this->getDatabase().'be_sessions WHERE ses_id = ?',
+						'SELECT ses_userid FROM `'.$this->getDatabase().'be_sessions` WHERE ses_id = ?',
 						array($beUserCookie)
 			);
 		} elseif((in_array('token_auth',$_REQUEST)) &&($_REQUEST['token_auth']!='')) {
 			// fetch UserId, if token is set
 			$beUserId = Zend_Registry::get('db')->fetchOne(
-						'SELECT uid FROM '.$this->getDatabase().'be_users WHERE tx_piwikintegration_api_code = ?',
+						'SELECT uid FROM `'.$this->getDatabase().'be_users` WHERE tx_piwikintegration_api_code = ?',
 						array($_REQUEST['token_auth'])
 			);
 		} else {
@@ -120,12 +107,12 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 		if($beUserId!==false) {
 			// getUserName
 			$beUserName = Zend_Registry::get('db')->fetchOne(
-						'SELECT username FROM '.$this->getDatabase().'be_users WHERE uid = ?',
+						'SELECT username FROM `'.$this->getDatabase().'be_users` WHERE uid = ?',
 						array($beUserId)
 			);
 			// get isAdmin
 			$beUserIsAdmin = Zend_Registry::get('db')->fetchOne(
-						'SELECT admin FROM '.$this->getDatabase().'be_users WHERE uid = ?',
+						'SELECT admin FROM `'.$this->getDatabase().'be_users` WHERE uid = ?',
 						array($beUserId)
 			);
 			// is superuser?
@@ -165,9 +152,3 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 		$this->token_auth = $token_auth;
 	}
 }
-//XClass to avoid errors in extmanager of TYPO3 - senseless so far
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/piwik_patches/plugins/TYPO3Login/Auth.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/piwik_patches/plugins/TYPO3Login/Auth.php']);
-}
-
-?>
