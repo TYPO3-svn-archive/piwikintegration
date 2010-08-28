@@ -212,7 +212,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 					$exclude = array(
 						'config/config.ini.php',
 					);
-					$this->piwikHelper->makePiwikPatched($exclude);
+					tx_piwikintegration_install::getInstaller()->patchPiwik($exclude);
 				}
 				return true;
 			} else {

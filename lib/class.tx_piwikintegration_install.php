@@ -164,7 +164,7 @@ class tx_piwikintegration_install {
 		}
 		return true;
 	}
-	public function patchPiwik($force) {
+	public function patchPiwik($exclude) {
 		if(!is_writeable($this->getAbsInstallPath())) {
 			throw new Exception('Installation is invalid, '.$this->getAbsInstallPath().' was not writeable for applying the patches');
 		}
