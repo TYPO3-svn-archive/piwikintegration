@@ -33,24 +33,27 @@
  * @author Kay Strobach <typo3@kay-strobach.de>
  */
 .x-piwikintegration-btn-piwik {
-	background-image:url(moduleicon.gif);
+	background-image:url(img/moduleicon.gif);
 }
 .x-piwikintegration-btn-settings {
-	background-image:url(information.png);
+	background-image:url(img/information.png);
 }
 .x-piwikintegration-btn-docs-api {
-	background-image:url(notice.png)!important;
+	background-image:url(img/notice.png)!important;
 }
 
 .x-piwikintegration-btn-docs-api-1 {
-	background-image:url(default_green.gif)!important;
+	background-image:url(img/default_green.gif)!important;
 }
 .x-piwikintegration-btn-docs-api-2 {
-	background-image:url(default_purple.gif)!important;
+	background-image:url(img/default_purple.gif)!important;
 }
 .x-piwikintegration-btn-docs-api-3 {
-	background-image:url(default_red.gif)!important;
+	background-image:url(img/default_red.gif)!important;
 }
 .x-piwikintegration-btn-docs-api-4{
-	background-image:url(default_yellow.gif)!important;
+	background-image:url(img/default_yellow.gif)!important;
+}
+.x-piwikintegration-btn-fullscreen {
+	background-image:url(img/window-open.png)!important;
 }

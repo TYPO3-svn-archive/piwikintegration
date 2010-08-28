@@ -42,10 +42,24 @@ var piwikViewport = new Ext.Viewport({
 		xtype:'tabpanel',
 		activeTab: 0,
 		items:[{
-			html:'<iframe src="../typo3conf/piwik/piwik/" width="100%" height="100%" frameborder="0"></iframe>',
+			html:'<iframe src="../typo3conf/piwik/piwik/index.php?module=CoreHome&action=index&period=week&date=yesterday&idSite=###siteId###" width="100%" height="100%" frameborder="0"></iframe>',
 			title: '###2###',
 			bodyStyle:'padding:0;margin:0',
-			iconCls: 'x-piwikintegration-btn-piwik'
+			iconCls: 'x-piwikintegration-btn-piwik',
+			tbar:[{
+				text:'Fullscreen',
+				iconCls:'x-piwikintegration-btn-fullscreen',
+				handler:function() {
+					win = new top.Ext.Window({
+						title:'Piwik',
+						html:'<iframe src="../typo3conf/piwik/piwik/index.php?module=CoreHome&action=index&period=week&date=yesterday&idSite=###siteId###" width="100%" height="100%" frameborder="0"></iframe>',
+						modal:true,
+						maximized:true,
+						closeable:true,
+						resizable:false
+					}).show();
+				}
+			}]
 		},{
 			//autoLoad:'mod.php?M=web_txpiwikintegrationM1&id=1&SET[function]=3',
 			html:'###piwikAPI###',
