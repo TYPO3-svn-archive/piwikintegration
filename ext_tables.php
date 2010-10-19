@@ -43,7 +43,6 @@ if (!defined ('TYPO3_MODE')) {
  */ 
 	if (TYPO3_MODE == 'BE') {
 		t3lib_extMgm::addModulePath('web_txpiwikintegrationM1', t3lib_extMgm::extPath($_EXTKEY) . 'mod1/');
-			
 		t3lib_extMgm::addModule('web', 'txpiwikintegrationM1', '', t3lib_extMgm::extPath($_EXTKEY) . 'mod1/');
 	}
 
