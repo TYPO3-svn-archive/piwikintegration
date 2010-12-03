@@ -137,6 +137,7 @@ class tx_piwikintegration_config {
 
 		//General
 		$this->setOption('General'  ,'show_website_selector_in_user_interface',0);
+		$this->setOption('General'  ,'serve_widget_and_data'                  ,0);
 
 		//set Plugins
 		$this->disablePlugin('Login');
