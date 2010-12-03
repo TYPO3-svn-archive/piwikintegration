@@ -140,6 +140,18 @@ class tx_piwikintegration_install {
 					$cmd = $GLOBALS['TYPO3_CONF_VARS']['BE']['unzip_path'].'unzip -qq "'.$zipArchivePath.'" -d "'.$installDir.'"';
 					exec($cmd);
 				break;
+				case 'zlib':
+					try{
+						//up to 4.4.4
+						$zlib_obj = t3lib_div::makeInstance('em_unzip',$zipArchivePath);
+					} catch(Exception $e) {
+						//from 4.5.0b2
+						$zlib_obj = t3lib_div::makeInstance('tx_em_Tools_Unzip',$zipArchivePath);
+					}
+					$zlib_obj->extract(array(
+						'add_path' => $this->getAbsInstallPath()
+					));
+				break;
 				default:
 					throw new Exception('There is no valid unzip wrapper, i need either the class ZipArchiv from php or a *nix system with unzip path set.');
 				break;
@@ -149,10 +161,10 @@ class tx_piwikintegration_install {
 		if(!$this->checkInstallation()) {
 			$buffer = 'No files has been extracted!';
 			if(!class_exists('ZipArchive')) {
-				$buffer.= ' -> Please enable the phpextension Zip!';
+				$buffer.= ' -> Please enable the phpextensions Zip or Zlib!';
 			}
 			if((!(TYPO3_OS=='WIN' || $GLOBALS['TYPO3_CONF_VARS']['BE']['disable_exec_function']))) {
-				$buffer.= ' -> used TYPO3 cmd line function to extract files, if you use solars this may be the problem.';
+				$buffer.= ' -> used TYPO3 cmd line function to extract files, if you use solaris this may be the problem.';
 				$buffer.= ' -> please manually extract piwik and copy it to typo3conf/piwik/piwik and use the extmgm update script to patch and configure piwik';
 				$buffer.= ' -> take a look in your manual for more information or use an environment with a working zip class';
 			}
@@ -169,7 +181,7 @@ class tx_piwikintegration_install {
 		}
 		return true;
 	}
-	public function patchPiwik($exclude) {
+	public function patchPiwik($exclude=array()) {
 		if(!is_writeable($this->getAbsInstallPath())) {
 			throw new Exception('Installation is invalid, '.$this->getAbsInstallPath().' was not writeable for applying the patches');
 		}
@@ -227,6 +239,8 @@ class tx_piwikintegration_install {
 	public function checkUnzip() {
 		if(class_exists('ZipArchive')) {
 				return 'clsZipArchive';
+			} elseif(extension_loaded('zlib')) {
+				return 'zlib';
 			} elseif(!(TYPO3_OS=='WIN' || $GLOBALS['TYPO3_CONF_VARS']['BE']['disable_exec_function']))	{
 				return 'cmd';
 			} else {

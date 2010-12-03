@@ -216,7 +216,13 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 				}
 				return true;
 			} else {
-				$this->content.='<div class="typo3-message message-warning"><div class="message-header message-left">'.$LANG->getLL('selectpage_tip').'</div>'.$LANG->getLL('selectpage_description').'</div>';
+				$flashMessage = t3lib_div::makeInstance(
+					't3lib_FlashMessage',
+					$LANG->getLL('selectpage_description'),
+					$LANG->getLL('selectpage_tip'),
+					t3lib_FlashMessage::NOTICE
+			    );
+			    t3lib_FlashMessageQueue::addMessage($flashMessage);
 			}
 			return false;
 		}
