@@ -111,10 +111,8 @@ class tx_piwikintegration_tracking {
 				);
 			} elseif($numRows>1) {
 				//more than once -> error
-				die('piwik idsite table is inconsistent');
+				die('piwik idsite table is inconsistent, please contact server administrator');
 			}
-		} else {
-			die('Opps please set config.tx_piwik.idSite ... take a look in the manual please.');
 		}
 	}
 	/**
