@@ -84,6 +84,7 @@ class tx_piwikintegration_install {
 	}
 	public function installPiwik() {
 		try {
+			$this->checkUnzip();
 			$zipArchivePath=$this->downloadLatestPiwik();
 			$this->extractDownloadedPiwik($zipArchivePath);
 			$this->patchPiwik();
@@ -127,17 +128,21 @@ class tx_piwikintegration_install {
 				throw new Exception($this->installPath.' must be writeable');
 			}
 		//extract archive
-			if(class_exists('ZipArchive')) {
-				$zip = new ZipArchive();
-				$zip->open($zipArchivePath);
-				$zip->extractTo($this->getAbsInstallPath());
-				$zip->close();
-				unset($zip);
-			} elseif(!(TYPO3_OS=='WIN' || $GLOBALS['TYPO3_CONF_VARS']['BE']['disable_exec_function']))	{
-				$cmd = $GLOBALS['TYPO3_CONF_VARS']['BE']['unzip_path'].'unzip -qq "'.$zipArchivePath.'" -d "'.$installDir.'"';
-				exec($cmd);
-			} else {
-				throw new Exception('There is no valid unzip wrapper, i need either the class ZipArchiv from php or a *nix system with unzip path set.');
+			switch($this->checkUnzip()) {
+				case 'clsZipArchive':
+					$zip = new ZipArchive();
+					$zip->open($zipArchivePath);
+					$zip->extractTo($this->getAbsInstallPath());
+					$zip->close();
+					unset($zip);
+				break;
+				case 'cmd':
+					$cmd = $GLOBALS['TYPO3_CONF_VARS']['BE']['unzip_path'].'unzip -qq "'.$zipArchivePath.'" -d "'.$installDir.'"';
+					exec($cmd);
+				break;
+				default:
+					throw new Exception('There is no valid unzip wrapper, i need either the class ZipArchiv from php or a *nix system with unzip path set.');
+				break;
 			}
 		//unlink archiv to save space in typo3temp ;)
 			t3lib_div::unlink_tempfile($zipArchivePath);
@@ -218,5 +223,14 @@ class tx_piwikintegration_install {
 	}
 	public function removePiwik() {
 		return t3lib_div::rmdir($this->getAbsInstallPath(),true);
+	}
+	public function checkUnzip() {
+		if(class_exists('ZipArchive')) {
+				return 'clsZipArchive';
+			} elseif(!(TYPO3_OS=='WIN' || $GLOBALS['TYPO3_CONF_VARS']['BE']['disable_exec_function']))	{
+				return 'cmd';
+			} else {
+					throw new Exception('There is no valid unzip wrapper, i need either the class ZipArchiv from php or a *nix system with unzip path set.');
+			}
 	}
 }
