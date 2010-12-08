@@ -74,6 +74,7 @@ ul.nav li.sfHover a{
 }
 .widgetTop {
 	background-color:#585858;
+	background-image:none;
 	color:white;
 	border-bottom:none;
 	font-size:10pt;
