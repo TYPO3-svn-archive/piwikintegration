@@ -41,7 +41,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html Gpl v3 or later
  * @package Piwik_TYPO3Login
  */
-class Piwik_TYPO3Login_Controller extends Piwik_Controller
+class Piwik_TYPO3Login_Controller extends Piwik_Login_Controller
 {
 	/**
 	 * redirect to dashboard as we have no view
@@ -50,15 +50,7 @@ class Piwik_TYPO3Login_Controller extends Piwik_Controller
 	 */
 	function index()
 	{
-		header('Location: index.php');
-	}
-	/**
-	 * redirect to dashboard as we have no view
-	 *
-	 * @return	void
-	 */
-	function logout() {
-		header('Location: index.php');
+		$this->login();
 	}
 }
 //XClass to avoid errors in extmanager of TYPO3 - senseless so far

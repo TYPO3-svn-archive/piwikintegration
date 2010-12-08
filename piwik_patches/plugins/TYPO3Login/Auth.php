@@ -64,70 +64,83 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 	 */
 	public function authenticate()
 	{
-		/**
+		/***********************************************************************
 		 * authenticate against the piwik configuration file for emergency access or installer or cronjob!
 		 */		 		
-		$rootLogin = Zend_Registry::get('config')->superuser->login;
-		$rootPassword = Zend_Registry::get('config')->superuser->password;
-		$rootToken = Piwik_UsersManager_API::getTokenAuth($rootLogin, $rootPassword);
-
-		if($this->login == $rootLogin
-			&& $this->token_auth == $rootToken)
-		{
-			return new Piwik_Auth_Result(Piwik_Auth_Result::SUCCESS_SUPERUSER_AUTH_CODE, $this->login, $this->token_auth );
-		}
-
-		if($this->token_auth === $rootToken)
-		{
-			return new Piwik_Auth_Result(Piwik_Auth_Result::SUCCESS_SUPERUSER_AUTH_CODE, $rootLogin, $rootToken );
-		}
-		/**
-		 * TYPO3 cookie
-		 */
-		if(array_key_exists('be_typo_user',$_COOKIE)) {
-			$beUserCookie = $_COOKIE['be_typo_user'];
-		} else {
-			$beUserCookie  = false;
-		}
-		if($beUserCookie!==false) {
-			// fetch UserId, if cookie is set
-			$beUserId = Zend_Registry::get('db')->fetchOne(
-						'SELECT ses_userid FROM `'.$this->getDatabase().'be_sessions` WHERE ses_id = ?',
-						array($beUserCookie)
-			);
-		} elseif((in_array('token_auth',$_REQUEST)) &&($_REQUEST['token_auth']!='')) {
-			// fetch UserId, if token is set
-			$beUserId = Zend_Registry::get('db')->fetchOne(
-						'SELECT uid FROM `'.$this->getDatabase().'be_users` WHERE tx_piwikintegration_api_code = ?',
-						array($_REQUEST['token_auth'])
-			);
-		} else {
-			$beUserId=false;
-		}
-		if($beUserId!==false) {
-			// getUserName
-			$beUserName = Zend_Registry::get('db')->fetchOne(
-						'SELECT username FROM `'.$this->getDatabase().'be_users` WHERE uid = ?',
-						array($beUserId)
-			);
-			// get isAdmin
-			$beUserIsAdmin = Zend_Registry::get('db')->fetchOne(
-						'SELECT admin FROM `'.$this->getDatabase().'be_users` WHERE uid = ?',
-						array($beUserId)
-			);
-			// is superuser?
-			if($beUserIsAdmin ==1) {
-				return new Piwik_Auth_Result(Piwik_Auth_Result::SUCCESS_SUPERUSER_AUTH_CODE, $beUserName, NULL );
+			$rootLogin = Zend_Registry::get('config')->superuser->login;
+			$rootPassword = Zend_Registry::get('config')->superuser->password;
+			$rootToken = Piwik_UsersManager_API::getTokenAuth($rootLogin, $rootPassword);
+	
+			if($this->login == $rootLogin
+				&& $this->token_auth == $rootToken)
+			{
+				return new Piwik_Auth_Result(Piwik_Auth_Result::SUCCESS_SUPERUSER_AUTH_CODE, $this->login, $this->token_auth );
 			}
-			//normal user?
-			return new Piwik_Auth_Result(Piwik_Auth_Result::SUCCESS, $beUserName, NULL );
-		}
-		if($this->login == 'anonymous') {
-			return new Piwik_Auth_Result(Piwik_Auth_Result::SUCCESS, 'anonymous', NULL );
-		}
+	
+			if($this->token_auth === $rootToken)
+			{
+				return new Piwik_Auth_Result(Piwik_Auth_Result::SUCCESS_SUPERUSER_AUTH_CODE, $rootLogin, $rootToken );
+			}
+		/***********************************************************************
+		 * Handle login types
+		 */
+			//catch normal logins (login form)
+			if($this->token_auth && $this->token_auth!='anonymous') {
+				if($this->login) {
+					$beUserId = Zend_Registry::get('db')->fetchOne(
+								'SELECT uid FROM `'.$this->getDatabase().'be_users` WHERE tx_piwikintegration_api_code = ?',
+								array($this->token_auth)
+					);
+				}
+			//catch typo3 logins
+			} elseif(array_key_exists('be_typo_user',$_COOKIE)) {
+				$beUserCookie = $_COOKIE['be_typo_user'];
+				$beUserId = Zend_Registry::get('db')->fetchOne(
+							'SELECT ses_userid FROM `'.$this->getDatabase().'be_sessions` WHERE ses_id = ?',
+							array($beUserCookie)
+				);
+			//catch apikey logins
+			} elseif((in_array('token_auth',$_REQUEST)) &&($_REQUEST['token_auth']!='')) {
+				// fetch UserId, if token is set
+				$beUserId = Zend_Registry::get('db')->fetchOne(
+							'SELECT uid FROM `'.$this->getDatabase().'be_users` WHERE tx_piwikintegration_api_code = ?',
+							array($_REQUEST['token_auth'])
+				);
+			} else {
+				$beUserId=false;
+			}
+		/***********************************************************************
+		 * init user from db
+		 */		 		
+			if($beUserId!==false) {
+				// getUserName
+				$beUserName = Zend_Registry::get('db')->fetchOne(
+							'SELECT username FROM `'.$this->getDatabase().'be_users` WHERE uid = ?',
+							array($beUserId)
+				);
+				// get isAdmin
+				$beUserIsAdmin = Zend_Registry::get('db')->fetchOne(
+							'SELECT admin FROM `'.$this->getDatabase().'be_users` WHERE uid = ?',
+							array($beUserId)
+				);
+				// is superuser?
+				if($beUserIsAdmin ==1) {
+					return new Piwik_Auth_Result(Piwik_Auth_Result::SUCCESS_SUPERUSER_AUTH_CODE, $beUserName, NULL );
+				}
+				//normal user?
+				return new Piwik_Auth_Result(Piwik_Auth_Result::SUCCESS, $beUserName, NULL );
+			}
 
-		// no valid user
-		return new Piwik_Auth_Result( Piwik_Auth_Result::FAILURE, $this->login, $this->token_auth );
+		/***********************************************************************
+		 * authenticate anonymous user
+		 */
+			if($this->login == 'anonymous') {
+				return new Piwik_Auth_Result(Piwik_Auth_Result::SUCCESS, 'anonymous', NULL );
+			}		 		
+		/***********************************************************************
+		 * no valid user
+		 */		 		
+			return new Piwik_Auth_Result( Piwik_Auth_Result::FAILURE, $this->login, $this->token_auth );
 	}
 
 	/**
@@ -150,5 +163,17 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 	public function setTokenAuth($token_auth)
 	{
 		$this->token_auth = $token_auth;
+	}
+	
+	static function getTokenAuth($login, $md5Password) {
+		$token = Zend_Registry::get('db')->fetchOne(
+						'SELECT tx_piwikintegration_api_code FROM `be_users` WHERE username = ?',
+						array($login)
+			);
+		if(md5(substr($token,0,6))==$md5Password) {
+			return $token;
+		} else {
+			return '';
+		}
 	}
 }

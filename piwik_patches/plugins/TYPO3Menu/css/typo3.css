@@ -38,7 +38,7 @@
 
 /* global */
 body {
-	background-color:#EFEFF4;
+	background-color:#EBEBEB;
 	font-family:Verdana,Arial,Helvetica,sans-serif;
 }
 #topBars #topLeftBar,#topBars #topRightBar{
@@ -48,16 +48,35 @@ body {
 #topBars span.topBarElem {
 	padding:0 4px;
 }
+/* navigation*/
+ul.nav li {
+	background-color:#DADADA;
+	border-color:#ADADAD #ADADAD #C0C0C0;
+	border-style:solid;
+	border-width:1px;
+	color:#666666;
+	padding:5px 10px;
+	height:20px;
+}
+ul.nav li a{
+	font-size:11px;
+	padding-top:3px;
+	text-decoration:none;
+}
+ul.nav li.sfHover a{
+	color:#666666;
+	margin-top:0px;
+	margin-bottom:0px;
+}  
 /* widgets */
 .widget {
 	border:1px solid #737373;
 }
 .widgetTop {
-	background-color:#F8F9FB;
-	color:black;
+	background-color:#585858;
+	color:white;
 	border-bottom:none;
 	font-size:10pt;
-	background-image:url(../pics/login-box-header.png);
 }
 .widgetName {
 	font-size:10pt;

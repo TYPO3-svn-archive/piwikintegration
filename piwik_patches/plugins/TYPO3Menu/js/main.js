@@ -34,3 +34,12 @@
  * 
  * @package Piwik_TYPO3Menu
  */
+ $(document).ready(function(){
+ 	if(top) {
+	 	if(top.TYPO3) {
+			if(top.TYPO3.Flashmessage) {
+				top.TYPO3.Flashmessage.display(1,'Piwik ',piwik_translations.General_Loading_js+' '+piwik.siteName,3);
+			}
+		}
+	}
+ });

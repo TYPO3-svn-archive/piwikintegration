@@ -35,66 +35,7 @@
  */
 require PIWIK_INCLUDE_PATH.'/plugins/TYPO3Login/Auth.php';
 
-/**
- * Add widgets
- */ 
-class Piwik_TYPO3Login_Controller extends Piwik_Controller {
-	function rssAllNews() {
-		$rss = new Piwik_ExampleRssWidget_Rss('http://news.typo3.org/rss.xml');
-		$rss->showDescription(true);
-		echo $rss->get();
-	}
-	function rssAllTeamNews() {
-		$rss = new Piwik_ExampleRssWidget_Rss('http://news.typo3.org/news/teams/rss.xml');
-		$rss->showDescription(true);
-		echo $rss->get();
-	}
-	function rssCommunity() {
-		$rss = new Piwik_ExampleRssWidget_Rss('http://news.typo3.org/news/community/rss.xml');
-		$rss->showDescription(true);
-		echo $rss->get();
-	}
-	function rssContentRenderingGroup() {
-		$rss = new Piwik_ExampleRssWidget_Rss('http://news.typo3.org/news/teams/content-rendering-group/rss.xml');
-		$rss->showDescription(true);
-		echo $rss->get();
-	}
-	function rssDevelopment() {
-		$rss = new Piwik_ExampleRssWidget_Rss('http://news.typo3.org/news/development/rss.xml');
-		$rss->showDescription(true);
-		echo $rss->get();
-	}
-	function rssExtensions() {
-		$rss = new Piwik_ExampleRssWidget_Rss('http://news.typo3.org/news/extensions/rss.xml');
-		$rss->showDescription(true);
-		echo $rss->get();
-	}
-	function rssSecurity() {
-		$rss = new Piwik_ExampleRssWidget_Rss('http://news.typo3.org/news/teams/security/rss.xml');
-		$rss->showDescription(true);
-		echo $rss->get();
-	}
-	function rssTypo3Org() {
-		$rss = new Piwik_ExampleRssWidget_Rss('http://news.typo3.org/news/teams/typo3org/rss.xml');
-		$rss->showDescription(true);
-		echo $rss->get();
-	}
-	function rssTypo3Associaton() {
-		$rss = new Piwik_ExampleRssWidget_Rss('http://news.typo3.org/news/typo3-association/rss.xml');
-		$rss->showDescription(true);
-		echo $rss->get();
-	}
-}
- 
-Piwik_AddWidget('TYPO3 Widgets', 'TYPO3 All News',                'TYPO3Login', 'rssAllNews');
-Piwik_AddWidget('TYPO3 Widgets', 'TYPO3 All Team News',           'TYPO3Login', 'rssAllTeamNews');
-Piwik_AddWidget('TYPO3 Widgets', 'TYPO3 Community',               'TYPO3Login', 'rssCommunity');
-Piwik_AddWidget('TYPO3 Widgets', 'TYPO3 Content Rendering Group', 'TYPO3Login', 'rssContentRenderingGroup');
-Piwik_AddWidget('TYPO3 Widgets', 'TYPO3 Development',             'TYPO3Login', 'rssDevelopment');
-Piwik_AddWidget('TYPO3 Widgets', 'TYPO3 Extensions',              'TYPO3Login', 'rssExtensions');
-Piwik_AddWidget('TYPO3 Widgets', 'TYPO3 Security',                'TYPO3Login', 'rssSecurity');
-Piwik_AddWidget('TYPO3 Widgets', 'TYPO3.Org',                     'TYPO3Login', 'rssTypo3Org');
-Piwik_AddWidget('TYPO3 Widgets', 'TYPO3 Associaton',              'TYPO3Login', 'rssTypo3Associaton');
+
 
 
 /**
@@ -133,11 +74,20 @@ class Piwik_TYPO3Login extends Piwik_Plugin
 	function getListHooksRegistered()
 	{
 		$hooks = array(
-			'FrontController.initAuthenticationObject'	=> 'initAuthenticationObject',
-			);
+			'FrontController.initAuthenticationObject'	    => 'initAuthenticationObject',
+			'FrontController.NoAccessException'	            => 'noAccess',
+			'API.Request.authenticate'                      => 'ApiRequestAuthenticate',
+			'Login.initSession'                             => 'initSession',
+		);
 		return $hooks;
 	}
-
+	function noAccess( $notification )
+	{
+		$exception  = $notification->getNotificationObject();
+		$exceptionMessage = $exception->getMessage();
+		$controller = new Piwik_TYPO3Login_Controller();
+		$controller->login($exceptionMessage);
+	}
 	/**
 	 * init the authentification object
 	 *
@@ -168,6 +118,43 @@ class Piwik_TYPO3Login extends Piwik_Plugin
 		}
 		$auth->setLogin($defaultLogin);
 		$auth->setTokenAuth($defaultTokenAuth);
+	}
+	function initSession($notification)
+	{
+		$info = $notification->getNotificationObject();
+		$login = $info['login'];
+		$md5Password = $info['md5Password'];
+		
+		$tokenAuth = Piwik_TYPO3Login_Auth::getTokenAuth($login, $md5Password);
+	
+		$auth = Zend_Registry::get('auth');
+		$auth->setLogin($login);
+		$auth->setTokenAuth($tokenAuth);
+
+		$authResult = $auth->authenticate();
+
+		if(!$authResult->isValid())
+		{
+			throw new Exception(Piwik_Translate('Login_LoginPasswordNotCorrect'));
+		}
+		$ns = new Zend_Session_Namespace('Piwik_Login.referer');
+		unset($ns->referer);
+
+		$authCookieName = Zend_Registry::get('config')->General->login_cookie_name;
+		$authCookieExpiry = time() + Zend_Registry::get('config')->General->login_cookie_expire;
+		$authCookiePath = Zend_Registry::get('config')->General->login_cookie_path;
+		$cookie = new Piwik_Cookie($authCookieName, $authCookieExpiry, $authCookiePath);
+		$cookie->set('login', $login);
+		$cookie->set('token_auth', $tokenAuth);
+		$cookie->save();
+
+		Zend_Session::regenerateId();
+	}
+	function ApiRequestAuthenticate($notification)
+	{
+		$tokenAuth = $notification->getNotificationObject();
+		Zend_Registry::get('auth')->setLogin($login = null);
+		Zend_Registry::get('auth')->setTokenAuth($tokenAuth);
 	}
 
 }

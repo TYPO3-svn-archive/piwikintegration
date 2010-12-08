@@ -143,6 +143,7 @@ class tx_piwikintegration_config {
 		$this->disablePlugin('Login');
 		$this->enablePlugin('TYPO3Login');
 		$this->enablePlugin('TYPO3Menu');
+		$this->enablePlugin('TYPO3Widgets');
 		
 		//create PiwikTables, check wether base tables already exist
 		$this->installDatabase();
