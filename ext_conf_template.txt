@@ -2,7 +2,7 @@
 databaseTablePrefix = 
 # cat=basic/enable; type=boolean; label=EXPERIMENTAL independent mode: Enable independent mode of piwikintegration, that means, the JS is rendered without additional extensions, if not enabled an additional extension is needed to render the fe output for piwik - it's suggested to use EXT:piwik for FE-Rendering 
 enableIndependentMode = 0
-# cat=basic/enable; type=boolean; label=EXPERIMENTAL scheduler task: Enable EXPERIMENTAL scheduler task integration  
+# cat=basic/enable; type=boolean; label=EXPERIMENTAL scheduler task: Enable EXPERIMENTAL scheduler task integration, don't enable prior 4.3  
 enableSchedulerTask = 0
-# cat=basic/enable; type=boolean; label=Debugging of scheduler task:Enable heavy logging for the scheduler task - should be off in production environments 
+# cat=basic/enable; type=boolean; label=Debugging of scheduler task:Enable heavy logging for the scheduler task - should be off in production environments, don't enable prior 4.3 
 enableSchedulerLoging = 0
