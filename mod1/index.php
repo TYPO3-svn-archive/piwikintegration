@@ -112,7 +112,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 			$this->doc->getPageRenderer()->loadExtJS();
 			$this->doc->getPageRenderer()->addCssFile(t3lib_extMgm::extRelPath('piwikintegration') . 'mod1/ext-icons.css');
 			if($this->content = $this->checkEnvironment()) {
-				if(version_compare ($GLOBALS['TYPO_VERSION'],'4.4.0','>=')) {
+				if(version_compare ($GLOBALS['TYPO_VERSION'],'4.3.0','>=')) {
 					$this->content = '';
 					$this->doc->extJScode = file_get_contents(t3lib_extMgm::extPath('piwikintegration') . 'mod1/extjs.js');
 					$this->doc->extJScode = str_replace('###1###'       ,$LANG->getLL('function1')                ,$this->doc->extJScode);
@@ -122,7 +122,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 					$tracker = new tx_piwikintegration_tracking();
 					$this->doc->extJScode = str_replace('###siteId###'  ,$tracker->getPiwikSiteIdForPid($this->id),$this->doc->extJScode);
 				} else {
-					$this->content = '<h3>Fallback Mode for older TYPO3 versions, you need at least 4.4 to use all features</h3>';
+					$this->content = '<h3>Fallback Mode for older TYPO3 versions, you need at least 4.3 to use all features</h3>';
 					$this->content.= '<iframe width="100%" height="80%" src="../typo3conf/piwik/piwik"></iframe>';
 				}
 			}
