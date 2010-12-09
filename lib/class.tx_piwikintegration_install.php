@@ -143,6 +143,10 @@ class tx_piwikintegration_install {
 				case 'zlib':
 					try{
 						//up to 4.4.4
+						$emUnzipFile = PATH_typo3.'/mod/tools/em/class.em_unzip.php';
+						if(file_exists($emUnzipFile)) {
+							require_once($emUnzipFile);
+						}
 						$zlib_obj = t3lib_div::makeInstance('em_unzip',$zipArchivePath);
 					} catch(Exception $e) {
 						//from 4.5.0b2
