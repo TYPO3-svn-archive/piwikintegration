@@ -7,9 +7,8 @@
 	<data type="array">
 		<languageKey index="default" type="array">
 			<label index="title">Statistics</label>
-			<label index="function1">Overview</label>
-			<label index="function2">Direct Statistics Access</label>
-			<label index="function3">Data for API Use</label>
+			<label index="piwikTab">Direct Statistics Access</label>
+			<label index="piwikApiTab">Data for API Use</label>
 		
 			<label index="dashboard_browserfamilies">Browser families</label>
 			<label index="dashboard_visitors">Visitors</label>
@@ -23,9 +22,8 @@
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="title">Statistik</label>
-			<label index="function1">Übersicht</label>
-			<label index="function2">Direkter Zugriff auf die Statistiken</label>
-			<label index="function3">Daten für die PIWIK API</label>
+			<label index="piwikTab">Direkter Zugriff auf die Statistiken</label>
+			<label index="piwikApiTab">Daten für die PIWIK API</label>
 	
 			<label index="dashboard_browserfamilies">Browser Familien</label>
 			<label index="dashboard_visitors">Besucherentwicklung</label>

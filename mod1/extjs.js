@@ -43,7 +43,7 @@ var piwikViewport = new Ext.Viewport({
 		activeTab: 0,
 		items:[{
 			html:'<iframe src="../typo3conf/piwik/piwik/index.php?module=CoreHome&action=index&period=week&date=yesterday&idSite=###siteId###" width="100%" height="100%" frameborder="0"></iframe>',
-			title: '###2###',
+			title: '###piwikTab###',
 			bodyStyle:'padding:0;margin:0',
 			iconCls: 'x-piwikintegration-btn-piwik',
 			tbar:[{
@@ -62,8 +62,8 @@ var piwikViewport = new Ext.Viewport({
 			}]
 		},{
 			//autoLoad:'mod.php?M=web_txpiwikintegrationM1&id=1&SET[function]=3',
-			html:'###piwikAPI###',
-			title: '###3###',
+			html:'###piwikApiContent###',
+			title: '###piwikApiTab###',
 			iconCls: 'x-piwikintegration-btn-settings',
 			autoScroll:true,
 			tbar:[{
