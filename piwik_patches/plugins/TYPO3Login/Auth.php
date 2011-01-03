@@ -84,6 +84,7 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 		/***********************************************************************
 		 * Handle login types
 		 */
+			$beUserId = false;
 			//catch normal logins (login form)
 			if($this->token_auth && $this->token_auth!='anonymous') {
 				if($this->login) {
