@@ -45,6 +45,11 @@ if (!defined ("TYPO3_MODE"))     die ("Access denied.");
  */ 
 	$TYPO3_CONF_VARS['SC_OPTIONS']['typo3/mod/tools/em/index.php']['tsStyleConfigForm'][] = 'EXT:piwikintegration/lib/class.tx_piwikintegration_extmgm.php:tx_piwikintegration_extmgm->emSaveConstants';
 /*******************************************************************************
+ * Save hook für table be_users
+ */
+	$GLOBALS ['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:piwikintegration/lib/class.tx_piwikintegration_hook.php:tx_piwikintegration_hook';
+
+/*******************************************************************************
  * unserialize extConf
  */ 
 	$_EXTCONF = unserialize($_EXTCONF);
