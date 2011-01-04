@@ -12,7 +12,8 @@
 			<label index="methodNotFound">method not found - perhaps not implemented</label>
 
 			<label index="header.installation">installation</label>
-			<label index="header.tools">Tools</label>
+			<label index="header.configuration">configuration</label>
+			<label index="header.database">database</label>
 
 			<label index="action.installPiwik">reinstall piwik</label>
 			<label index="action.updatePiwik">update piwik</label>
@@ -42,7 +43,8 @@
 			<label index="methodNotFound">Methode nicht gefunden - evt. noch nicht implmentiert?</label>
 
 			<label index="header.installation">Installation</label>
-			<label index="header.tools">Werkzeuge</label>
+			<label index="header.configuration">Konfiguration</label>
+			<label index="header.database">Datenbank</label>
 
 			<label index="action.installPiwik">   Piwik neu installieren</label>
 			<label index="action.updatePiwik">    Piwik aktualisieren</label>
