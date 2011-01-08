@@ -85,21 +85,25 @@ class tx_piwikintegration_config {
 						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/plugins/'
 						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/core/'
 						. PATH_SEPARATOR . get_include_path());
-			require_once PIWIK_INCLUDE_PATH .'libs/upgradephp/upgrade.php';
-			require_once PIWIK_INCLUDE_PATH .'core/Loader.php';
-			require_once('core/Piwik.php');
-			require_once('core/Config.php');
-			require_once('core/PluginsManager.php');
+			include_once PIWIK_INCLUDE_PATH .'libs/upgradephp/upgrade.php';
+			include_once PIWIK_INCLUDE_PATH .'core/Loader.php';
+			include_once('core/Piwik.php');
+			include_once('core/Config.php');
+			include_once('core/PluginsManager.php');
 		//create config object
 			Piwik::createConfigObject(PIWIK_INCLUDE_PATH.'config/config.ini.php');
 		
 		//define Table prefix for internal use
-			$this->tableDbPrefix = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['piwikintegration']);
-			$this->tableDbPrefix = $this->tableDbPrefix['databaseTablePrefix'];
-			if($this->tableDbPrefix != '') {
-				$this->tableDbPrefix.= '.';
-			}
-			$this->tablePrefix = $this->tableDbPrefix.'tx_piwikintegration_';
+			
+			//echo $this->tablePrefix = $this->getOption('database','tables_prefix');
+			/*
+				$this->tableDbPrefix = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['piwikintegration']);
+				$this->tableDbPrefix = $this->tableDbPrefix['databaseTablePrefix'];
+				if($this->tableDbPrefix != '') {
+					$this->tableDbPrefix.= '.';
+				}
+				$this->tablePrefix = $this->tableDbPrefix.'tx_piwikintegration_';
+			*/
 		
 	}
 	function initPiwikDatabase($noLoadConfig = false) {
@@ -233,6 +237,7 @@ class tx_piwikintegration_config {
 		}
 	}
 	function getTablePrefix() {
+		return $this->tablePrefix = $this->getOption('database','tables_prefix');
 		return $this->tablePrefix;
 	}
 	function setOption($sectionName,$option,$value) {
@@ -242,7 +247,7 @@ class tx_piwikintegration_config {
 		$section[$option] = $value;
 		$piwikConfig->$sectionName = $section;
 	}
-	function getOption($section,$option) {
+	function getOption($sectionName,$option) {
 		$this->initPiwikFrameWork();
 		$piwikConfig = Zend_Registry::get('config');
 		$section     = $piwikConfig->$sectionName->toArray();

@@ -34,9 +34,13 @@
  * @author Kay Strobach <typo3@kay-strobach.de>
  */
  
- 
+require_once(t3lib_extMgm::extPath('piwikintegration').'/lib/class.tx_piwikintegration_install.php');
+
 class tx_piwikintegration_extmgm {
 	function emMakeDBList($params) {
+		 if(!tx_piwikintegration_install::getInstaller()->checkInstallation()) {
+		 	return 'Piwik is not installed yet ;) - option is unavailable';
+		 }
 		 /* Pull the current fieldname and value from constants */
         $fieldName  = $params['fieldName'];
         $fieldValue = $params['fieldValue'];
@@ -54,39 +58,41 @@ class tx_piwikintegration_extmgm {
 		return $buffer;
 	}
 	function emSaveConstants($par) {
-		return;
 		if($par['extKey'] == 'piwikintegration' && t3lib_div::_POST('submit')) {			
 			$newconf = t3lib_div::_POST();
 			$newconf = $newconf['data'];
 			//init piwik to get table prefix
-				$this->initPiwik();
+			#$this->initPiwik();
+			if(!tx_piwikintegration_install::getInstaller()->checkInstallation()) {
+				return 'Problem moving database, Piwik is not installed ...';
+			}
+			$old_database       = tx_piwikintegration_install::getInstaller()->getConfigObject()->getOption('database','dbname');
+			$new_database       = $newconf['databaseTablePrefix'];
+			$this->table_prefix = tx_piwikintegration_install::getInstaller()->getConfigObject()->getOption('database','table_prefix');
 			//walk through changes
-			if($this->tableDbPrefix!==$newconf['databaseTablePrefix']) {
+			if($database!==$new_database) {
 				//create shortVars
-					if($newconf['databaseTablePrefix'] == '') {
-						$newDbPrefix          = '';
-						$newDbPrefixForRename = TYPO3_db.'.';
-					} else {
-						$newDbPrefix          = $newconf['databaseTablePrefix'].'.';
-						$newDbPrefixForRename = $newconf['databaseTablePrefix'].'.';
+					if($new_database == '') {
+						$new_database = TYPO3_db;
 					}
 				//get tablenames and rename tables
 					$suffix='';
-					if($this->tableDbPrefix!='') {
-						$suffix = ' FROM '.substr($this->tableDbPrefix,0,-1);
+					if($old_database!='') {
+						$suffix = ' FROM `'.$old_database.'`';
 					}
 					$erg = $GLOBALS['TYPO3_DB']->admin_query('SHOW TABLES'.$suffix);
 					while(false !==($row=$GLOBALS['TYPO3_DB']->sql_fetch_row($erg))) {
 						if(substr($row[0],0,20)=='tx_piwikintegration_') {
-							$GLOBALS['TYPO3_DB']->admin_query('RENAME TABLE '.$this->tableDbPrefix.$row[0].' TO '.$newDbPrefixForRename.$row[0]);
+							$GLOBALS['TYPO3_DB']->admin_query(
+								'RENAME TABLE `'.$old_database.'`.`'.$row[0].'`
+								 TO `'.$new_database.'`.`'.$row[0].'`');
 						}
 					}
 				//change config
-					$piwikConfig = Zend_Registry::get('config');
-					$database = $piwikConfig->database->toArray();
-					$database['dbname']        = substr($newDbPrefixForRename,0,-1);
-					$database['tables_prefix'] = "tx_piwikintegration_";
-					$piwikConfig->database = $database;
+					$conf = tx_piwikintegration_install::getInstaller()->getConfigObject();
+					$conf->setOption('database','tables_prefix','tx_piwikintegration_');
+					$conf->setOption('database','dbname'       ,$newconf['databaseTablePrefix']);
+					$conf->setOption('database','t3dbname'     ,TYPO3_db);
 			}
 		}
 	}
