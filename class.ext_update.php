@@ -65,7 +65,7 @@ class ext_update {
 		$buffer.= $flashMessage->render();
 		$buffer.= $this->getHeader($LANG->getLL('header.installation'));
 		$buffer.= $this->getButton('installPiwik',false);
-		$buffer.= $this->getButton('updatePiwik',false);
+		$buffer.= $this->getButton('updatePiwik');
 		$buffer.= $this->getButton('removePiwik');
 		$buffer.= $this->getFooter();
 
@@ -148,10 +148,10 @@ class ext_update {
 				if(method_exists($this, $func)) {
 					$button.= '<input type="submit" value="' . $LANG->getLL('button.DoIt') . '" onclick="' . htmlspecialchars($onClick) . '">';
 				} else {
-					$button.= 'N/A';
+					$button.='<input type="submit" value="' . $LANG->getLL('button.DoIt') . '" onclick="' . htmlspecialchars($onClick) . '" disabled="disabled" title="Method not implemented!">';
 				}
 			} catch(Exception $e) {
-				$button.='Piwik Libraries not available';
+				$button.='<input type="submit" value="' . $LANG->getLL('button.DoIt') . '" onclick="' . htmlspecialchars($onClick) . '" disabled="disabled" title="Piwik not installed!">';
 			}
 			
 		$button.='</td>';
