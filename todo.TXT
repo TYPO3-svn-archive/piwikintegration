@@ -1,0 +1,3 @@
+- lib/class.tx_piwikintegration_tracking.php
+		L  97 add external DB support
+		L 101 add external DB support
