@@ -36,7 +36,29 @@
 
 
 class tx_piwikintegration_div {
-		/**
+    /**
+     * @param  $table piwik tablename without prefix
+     * @return string name of the table prefixed with database
+     *
+     */
+    static function getTblName($table) {
+        tx_piwikintegration_install::getInstaller()->getConfigObject()->initPiwikFrameWork();
+        $database = tx_piwikintegration_install::getInstaller()->getConfigObject()->getDBName();
+        $tablePrefix = tx_piwikintegration_install::getInstaller()->getConfigObject()->getTablePrefix();
+        if($database != '') {
+            $database = '`'.$database.'`.';
+        }
+        return $database.'`'.$tablePrefix.$table.'`';
+    }
+    /**
+     * @param  $table piwik tablename without prefix
+     * @return string name of the table prefixed with database
+     *
+     */
+    function tblNm($table) {
+        return self::getTblName($table);
+    }
+	/**
 	 * returns the piwik site id for a given page
 	 * call it with $this->pageinfo['uid'] as param from a backend module
 	 *
@@ -45,7 +67,6 @@ class tx_piwikintegration_div {
 	 */
 	function getPiwikSiteIdForPid($uid) {
 		tx_piwikintegration_install::getInstaller()->getConfigObject()->initPiwikFrameWork();
-		$this->tablePrefix = tx_piwikintegration_install::getInstaller()->getConfigObject()->getTablePrefix();
 		#throw new Exception($this->tablePrefix);
 
 		if($uid <= 0 || $uid!=intval($uid)) {
@@ -79,7 +100,7 @@ class tx_piwikintegration_div {
 			$GLOBALS['TYPO3_DB']->debugOutput=true;
 			$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 				'*',
-				$this->tablePrefix.'site',
+				$this->tblNm('site'),
 				'idsite = '.intval($id),
 				'',
 				'',
@@ -95,7 +116,7 @@ class tx_piwikintegration_div {
 				$timezone = Piwik_GetOption('SitesManager_DefaultTimezone') ? Piwik_GetOption('SitesManager_DefaultTimezone') : 'UTC';
 				
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-					$this->tablePrefix.'site',
+					$this->tblNm('site'),
 					array(
 						'idsite'     => $id,
 						'main_url'   => 'http://'.$_SERVER["SERVER_NAME"],
@@ -129,7 +150,7 @@ class tx_piwikintegration_div {
 
 		$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'*',
-			$this->tablePrefix.'user',
+			$this->tblNm('user'),
 			'login="'.$beUserName.'"',
 			'',
 			'',
@@ -137,7 +158,7 @@ class tx_piwikintegration_div {
 			);
 		if(count($erg)!=1) {
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-					$this->tablePrefix.'user',
+					$this->tblNm('user'),
 					array(
 						'login'          => $beUserName,
 						'alias'          => $GLOBALS['BE_USER']->user['realName'] ? $GLOBALS['BE_USER']->user['realName'] : $beUserName,
@@ -147,7 +168,7 @@ class tx_piwikintegration_div {
 				);
 		} else {
 			$GLOBALS['TYPO3_DB']->exec_Updatequery(
-					$this->tablePrefix.'user',
+					$this->tblNm('user'),
 					'login = "'.mysql_escape_string($beUserName).'"',
 					array(
 						'alias' => $GLOBALS['BE_USER']->user['realName'] ? $GLOBALS['BE_USER']->user['realName'] : $beUserName,
@@ -162,7 +183,7 @@ class tx_piwikintegration_div {
 		if($GLOBALS['BE_USER']->user['admin']!=1) {
 			$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 					'*',
-					$this->tablePrefix.'access',
+					$this->tblNm('access'),
 					'login="'.$beUserName.'" AND idsite='.$this->getPiwikSiteIdForPid($uid),
 					'',
 					'',
@@ -170,7 +191,7 @@ class tx_piwikintegration_div {
 			);
 			if(count($erg)==0) {
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-					$this->tablePrefix.'access',
+					$this->tblNm('access'),
 					array(
 						'login' => $beUserName,
 						'idsite'=> $this->getPiwikSiteIdForPid($uid),

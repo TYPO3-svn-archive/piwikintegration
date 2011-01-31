@@ -238,7 +238,12 @@ class tx_piwikintegration_config {
 	}
 	function getTablePrefix() {
 		return $this->tablePrefix = $this->getOption('database','tables_prefix');
-		return $this->tablePrefix;
+	}
+    function getDBName() {
+		return $this->dbName = $this->getOption('database','dbname');
+	}
+    function getT3DBName() {
+		return $this->T3DBName = $this->getOption('database','t3dbname');
 	}
 	function setOption($sectionName,$option,$value) {
 		$this->initPiwikFrameWork();

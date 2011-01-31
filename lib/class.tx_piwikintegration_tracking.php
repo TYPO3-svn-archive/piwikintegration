@@ -165,8 +165,8 @@ class tx_piwikintegration_tracking {
 	 */
 	function getPiwikSiteIdForPid($uid) {
 		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
-		$path              = tx_piwikintegration_install::getInstaller()->getConfigObject()->initPiwikDatabase();
-		$this->tablePrefix = tx_piwikintegration_install::getInstaller()->getConfigObject()->getTablePrefix();
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_div.php'));
+        $path              = tx_piwikintegration_install::getInstaller()->getConfigObject()->initPiwikDatabase();
 
 		if($uid <= 0 || $uid!=intval($uid)) {
 			throw new Exception('Problem with uid in tx_piwikintegration_helper.php::getPiwikSiteIdForPid');
@@ -198,7 +198,7 @@ class tx_piwikintegration_tracking {
 		//check wether site already exists in piwik db
 			$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 				'*',
-				$this->tablePrefix.'site',
+				tx_piwikintegration_div::getTblName('site'),
 				'idsite = '.intval($id),
 				'',
 				'',
@@ -211,7 +211,7 @@ class tx_piwikintegration_tracking {
 				$timezone = Piwik_GetOption('SitesManager_DefaultTimezone') ? Piwik_GetOption('SitesManager_DefaultTimezone') : 'UTC';
 				
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-					$this->tablePrefix.'site',
+					tx_piwikintegration_div::getTblName('site'),
 					array(
 						'idsite'     => $id,
 						'main_url'   => 'http://'.$_SERVER["SERVER_NAME"],

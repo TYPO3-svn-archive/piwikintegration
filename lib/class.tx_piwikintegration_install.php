@@ -229,6 +229,10 @@ class tx_piwikintegration_install {
 	private function configureDownloadedPiwik() {
 		$this->getConfigObject()->makePiwikConfigured();
 	}
+    /**
+     * @throws Exception
+     * @return tx_piwikintegration_config
+     */
 	public function getConfigObject() {
 		if($this->checkInstallation()) {
 			include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_config.php'));
