@@ -86,7 +86,7 @@ class tx_piwikintegration_tracking {
 		if($this->extConf['piwik_idsite']!=0) {
 			$erg = $GLOBALS['TYPO3_DB']->exec_SELECTquery (
 				'*',
-				'tx_piwikintegration_site',
+				tx_piwikintegration_div::getTblName('site'),
 				'idsite='.intval($this->extConf['piwik_idsite'])
 			);
 			$numRows = $GLOBALS['TYPO3_DB']->sql_num_rows($erg);
@@ -99,7 +99,7 @@ class tx_piwikintegration_tracking {
 				#$timezone = Piwik_GetOption('SitesManager_DefaultTimezone') ? Piwik_GetOption('SitesManager_DefaultTimezone') : 'UTC';
 				
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-					'tx_piwikintegration_site',
+					tx_piwikintegration_div::getTblName('site'),
 					array(
 						'idsite'   => intval($this->extConf['piwik_idsite']),
 						'name'     => 'ID '.intval($this->extConf['piwik_idsite']),
