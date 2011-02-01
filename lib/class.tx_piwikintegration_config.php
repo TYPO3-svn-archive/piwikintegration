@@ -145,6 +145,11 @@ class tx_piwikintegration_config {
 
 		//set Plugins
 		$this->disablePlugin('Login');
+		$this->disablePlugin('ExampleAPI');
+		$this->disablePlugin('ExampleFeedburner');
+		$this->disablePlugin('ExamplePlugin');
+		$this->disablePlugin('ExampleRssWidget');
+		$this->disablePlugin('ExampleUI');
 		$this->enablePlugin('TYPO3Login');
 		$this->enablePlugin('TYPO3Menu');
 		$this->enablePlugin('TYPO3Widgets');
