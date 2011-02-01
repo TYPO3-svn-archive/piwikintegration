@@ -34,7 +34,7 @@
  * @author Kay Strobach <typo3@kay-strobach.de>
  */
 
-
+include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
 class tx_piwikintegration_div {
     /**
      * @param  $table piwik tablename without prefix
@@ -42,7 +42,7 @@ class tx_piwikintegration_div {
      *
      */
     static function getTblName($table) {
-        tx_piwikintegration_install::getInstaller()->getConfigObject()->initPiwikFrameWork();
+		tx_piwikintegration_install::getInstaller()->getConfigObject()->initPiwikFrameWork();
         $database = tx_piwikintegration_install::getInstaller()->getConfigObject()->getDBName();
         $tablePrefix = tx_piwikintegration_install::getInstaller()->getConfigObject()->getTablePrefix();
         if($database != '') {
@@ -72,7 +72,6 @@ class tx_piwikintegration_div {
 		if($uid <= 0 || $uid!=intval($uid)) {
 			throw new Exception('Problem with uid in tx_piwikintegration_helper.php::getPiwikSiteIdForPid');
 		}
-
 		if(isset($this->piwik_id[$uid])) {
 			return $this->piwik_id[$uid];
 		}
@@ -90,6 +89,7 @@ class tx_piwikintegration_div {
 				$rootLine = $sys_page->getRootLine($pageId);
 				$tmpl->runThroughTemplates($rootLine);	// This generates the constants/config + hierarchy info for the template.
 				$tmpl->generateConfig();
+				t3lib_div::debug('<pre>'.print_r($tmpl,true).'</pre>');
 			}
 			if($tmpl->setup['config.']['tx_piwik.']['piwik_idsite']) {
 				$id = intval($tmpl->setup['config.']['tx_piwik.']['piwik_idsite']);
@@ -128,6 +128,7 @@ class tx_piwikintegration_div {
 				);
 			}
 		$this->piwik_id[$uid] = $id;
+		t3lib_div::debug('id_site='.$this->piwik_id[$uid].'...uid='.$uid);
 		return $this->piwik_id[$uid];
 	}
 	/**

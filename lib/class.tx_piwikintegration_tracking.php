@@ -34,7 +34,7 @@
  * @author Kay Strobach <typo3@kay-strobach.de>
  */
  
- 
+include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_div.php')); 
 class tx_piwikintegration_tracking {
 	function init(&$params, &$reference) {
 		// process the page with these options
@@ -165,7 +165,6 @@ class tx_piwikintegration_tracking {
 	 */
 	function getPiwikSiteIdForPid($uid) {
 		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
-		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_div.php'));
         $path              = tx_piwikintegration_install::getInstaller()->getConfigObject()->initPiwikDatabase();
 
 		if($uid <= 0 || $uid!=intval($uid)) {
