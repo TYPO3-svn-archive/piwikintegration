@@ -57,17 +57,8 @@ $tempColumns = array (
 		'label'   => 'LLL:EXT:piwikintegration/locallang_db.xml:be_users.tx_piwikintegration_api_code',		
 		'config'  => array (
 			'type'    => 'input',
+			'readOnly' => true,
 			'eval'    => 'unique,uniqueInPid',
-			'wizards' => array (
-				 '_PADDING' => 1,
-				 '_VERTICAL' => 1,
-				 'renewAPIKey' => array (
-				 	'type'     => 'userFunc',
-				 	'userFunc' => 'EXT:piwikintegration/lib/class.tx_piwikintegration_tca_api_code_wizard.php:tx_piwikintegration_tca_api_code_wizard->main',
-				 	'icon'     => 'import_update.gif',
-				 	'title'    => 'Refresh API Key',
-				 ),
-			),
 		),
 	),
 );
