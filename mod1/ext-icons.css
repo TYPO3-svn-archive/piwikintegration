@@ -32,6 +32,12 @@
  *
  * @author Kay Strobach <typo3@kay-strobach.de>
  */
+
+.x-piwikintegration-toolbar {
+	background-color:#585858!important;
+	background-image:none;
+}
+
 .x-piwikintegration-btn-piwik {
 	background-image:url(img/moduleicon.gif);
 }

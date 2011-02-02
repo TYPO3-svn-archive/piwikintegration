@@ -77,6 +77,7 @@ class ext_update {
 		$buffer.= $this->getFooter();
 
 		$buffer.= $this->getHeader($LANG->getLL('header.database'));
+		$buffer.= $this->getButton('resetUserRights');
 		$buffer.= $this->getButton('truncatePiwikDB');
 		$buffer.= $this->getButton('reInitPiwikDB');
 		$buffer.= $this->getFooter();
@@ -118,6 +119,13 @@ class ext_update {
 		$installer =  tx_piwikintegration_install::getInstaller();
 		$installer->getConfigObject()->makePiwikConfigured();
 		return 'Piwik is configured now';
+	}
+	function resetUserRights() {
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_div.php'));
+		$installer =  tx_piwikintegration_install::getInstaller();
+		$installer->getConfigObject();
+		$GLOBALS['TYPO3_DB']->admin_query('TRUNCATE TABLE '.tx_piwikintegration_div::getTblName('access'));
+		return 'Userrights reseted';
 	}
 	function getHeader($text) {
 		$buffer.= '<table class="typo3-dblist">';

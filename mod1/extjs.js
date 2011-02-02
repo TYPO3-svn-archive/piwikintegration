@@ -32,66 +32,96 @@
  *
  * @author Kay Strobach <typo3@kay-strobach.de>
  */
- 
-var piwikViewport = new Ext.Viewport({
-	layout:'border',
-	renderTo:Ext.getBody(),
-	items:[{
-		title:'BLub',
-		region:'center',
-		xtype:'tabpanel',
-		activeTab: 0,
-		items:[{
-			html:'<iframe src="../typo3conf/piwik/piwik/index.php?module=CoreHome&action=index&period=week&date=yesterday&idSite=###siteId###" width="100%" height="100%" frameborder="0"></iframe>',
-			title: '###piwikTab###',
-			bodyStyle:'padding:0;margin:0',
-			iconCls: 'x-piwikintegration-btn-piwik',
-			tbar:[{
-				text:'Fullscreen',
-				iconCls:'x-piwikintegration-btn-fullscreen',
-				handler:function() {
-					win = new top.Ext.Window({
-						title:'Piwik',
-						html:'<iframe src="../typo3conf/piwik/piwik/index.php?module=CoreHome&action=index&period=week&date=yesterday&idSite=###siteId###" width="100%" height="100%" frameborder="0"></iframe>',
-						modal:true,
-						maximized:true,
-						closeable:true,
-						resizable:false
-					}).show();
-				}
-			}]
-		},{
-			//autoLoad:'mod.php?M=web_txpiwikintegrationM1&id=1&SET[function]=3',
-			html:'###piwikApiContent###',
-			title: '###piwikApiTab###',
-			iconCls: 'x-piwikintegration-btn-settings',
-			autoScroll:true,
-			tbar:[{
-				text:'API',
-				iconCls:'x-piwikintegration-btn-docs-api-1',
-				handler:function() {
-					window.open('http://dev.piwik.org/trac/wiki/API/Reference');
-				}
-			},'-',{
-				text:'Tracker',
-				iconCls:'x-piwikintegration-btn-docs-api-2',
-				handler:function() {
-					window.open('http://piwik.org/docs/javascript-tracking/');
-				}
-			},{
-				text:'Goaltracker',
-				iconCls:'x-piwikintegration-btn-docs-api-3',
-				handler:function() {
-					window.open('http://piwik.org/docs/tracking-goals-web-analytics/');
-				}
-			},{
-				text:'Advanced Tracking',
-				iconCls:'x-piwikintegration-btn-docs-api-4',
-				handler:function() {
-					window.open('http://piwik.org/docs/tracking-api/');
-				}
-			}]
-		}]
-	}]
+
+Ext.onReady(function() {
+
+	Ext.QuickTips.init();
+	var piwikViewport = new Ext.Viewport({
+		layout:'fit',
+		renderTo:Ext.getBody(),
+		items:[
+			{
+				bbar:[
+					'->',{
+						xtype:'panel',
+						html:'<a onClick="window.open(\'http://www.kay-strobach.de\');">&copy;KS</a>'
+					},'-',{
+						xtype:'panel',
+						html:'<a onClick="window.open(\'http://typo3.org/extensions/repository/view/piwikintegration/current/\');">Powered by piwikintegration</a>'
+					}	
+				],
+				tbar:new Ext.Toolbar({
+					cls:'x-piwikintegration-toolbar',
+					items:[
+						{
+							tooltip:'Fullscreen',
+							iconCls:'x-piwikintegration-btn-fullscreen',
+							handler:function() {
+								win = new top.Ext.Window({
+									title:'Piwik',
+									html:'<iframe src="../typo3conf/piwik/piwik/index.php?module=CoreHome&action=index&period=week&date=yesterday&idSite=###siteId###" width="100%" height="100%" frameborder="0"></iframe>',
+									modal:true,
+									maximized:true,
+									closeable:true,
+									resizable:false
+								}).show();
+							}
+						},{
+							tooltip:'###piwikApiTab###',
+							iconCls: 'x-piwikintegration-btn-settings',
+							handler:function() {
+								win = new top.Ext.Window({
+									title:'###piwikApiTab###',
+									html:'###piwikApiContent###',
+									autoScroll:true,
+									width:600,
+									height:350,
+									modal:true,
+									closeaction:'close'
+								});
+								win.show();
+							}
+						},'->',
+						{
+							tooltip:'Docu',
+							iconCls:'x-piwikintegration-btn-docs-api-1',
+							xtype:'tbbutton',
+							menu:[
+								{
+									text:'API Documentation',
+									iconCls:'x-piwikintegration-btn-docs-api-1',
+									handler:function() {
+										window.open('http://dev.piwik.org/trac/wiki/API/Reference');
+									}
+								},'-',{
+									text:'Tracker Documentation',
+									iconCls:'x-piwikintegration-btn-docs-api-2',
+									handler:function() {
+										window.open('http://piwik.org/docs/javascript-tracking/');
+									}
+								},{
+									text:'Goaltracker Documentation',
+									iconCls:'x-piwikintegration-btn-docs-api-3',
+									handler:function() {
+										window.open('http://piwik.org/docs/tracking-goals-web-analytics/');
+									}
+								},{
+									text:'Advanced Tracking Documentation',
+									iconCls:'x-piwikintegration-btn-docs-api-4',
+									handler:function() {
+										window.open('http://piwik.org/docs/tracking-api/');
+									}
+								}
+							]
+						}
+					]
+				}),
+			
+				html:'<iframe src="../typo3conf/piwik/piwik/index.php?module=CoreHome&action=index&period=week&date=yesterday&idSite=###siteId###" width="100%" height="100%" frameborder="0"></iframe>',
+				//title: '###piwikTab###',
+				bodyStyle:'padding:0;margin:0'
+			}
+		]
+	});
+	Ext.get('typo3-docbody').remove(); 
 });
-Ext.get('typo3-docbody').remove(); 

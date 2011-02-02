@@ -89,7 +89,6 @@ class tx_piwikintegration_div {
 				$rootLine = $sys_page->getRootLine($pageId);
 				$tmpl->runThroughTemplates($rootLine);	// This generates the constants/config + hierarchy info for the template.
 				$tmpl->generateConfig();
-				t3lib_div::debug('<pre>'.print_r($tmpl,true).'</pre>');
 			}
 			if($tmpl->setup['config.']['tx_piwik.']['piwik_idsite']) {
 				$id = intval($tmpl->setup['config.']['tx_piwik.']['piwik_idsite']);
@@ -128,7 +127,6 @@ class tx_piwikintegration_div {
 				);
 			}
 		$this->piwik_id[$uid] = $id;
-		t3lib_div::debug('id_site='.$this->piwik_id[$uid].'...uid='.$uid);
 		return $this->piwik_id[$uid];
 	}
 	/**
