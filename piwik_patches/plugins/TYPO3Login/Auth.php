@@ -94,12 +94,10 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 			$beUserId = false;
 			//catch normal logins (login form)
 			if($this->token_auth && $this->token_auth!='anonymous') {
-				if($this->login) {
-					$beUserId = Zend_Registry::get('db')->fetchOne(
-								'SELECT uid FROM '.$t3database.'`be_users` WHERE tx_piwikintegration_api_code = ?',
-								array($this->token_auth)
-					);
-				}
+				$beUserId = Zend_Registry::get('db')->fetchOne(
+						'SELECT uid FROM '.$t3database.'`be_users` WHERE tx_piwikintegration_api_code = ?',
+						array($this->token_auth)
+				);
 			//catch typo3 logins
 			} elseif(array_key_exists('be_typo_user',$_COOKIE)) {
 				$beUserCookie = $_COOKIE['be_typo_user'];
