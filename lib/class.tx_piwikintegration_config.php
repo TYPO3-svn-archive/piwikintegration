@@ -136,7 +136,7 @@ class tx_piwikintegration_config {
 		$this->setOption('database' ,'username'     ,TYPO3_db_username);
 		$this->setOption('database' ,'password'     ,TYPO3_db_password);
 		$this->setOption('database' ,'dbname'       ,TYPO3_db);
-		$this->setOption('database' ,'tables_prefix',$this->tablePrefix);
+		$this->setOption('database' ,'tables_prefix','tx_piwikintegration_');
 		$this->setOption('database' ,'adapter'      ,"PDO_MYSQL");
 
 		//General
