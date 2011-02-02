@@ -42,7 +42,10 @@ Ext.onReady(function() {
 		items:[
 			{
 				bbar:[
-					'->',{
+					{
+						xtype:'panel',
+						html:'Piwik siteid[<b>###siteId###</b>]'
+					},'->',{
 						xtype:'panel',
 						html:'<a onClick="window.open(\'http://www.kay-strobach.de\');">&copy;KS</a>'
 					},'-',{
