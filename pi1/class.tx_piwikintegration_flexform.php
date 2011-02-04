@@ -33,7 +33,7 @@
  *
  * @author Kay Strobach <typo3@kay-strobach.de>
  */
-include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
+include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_div.php'));
 class tx_piwikintegration_flexform {
 	function init() {
 		$this->tablePrefix = tx_piwikintegration_install::getInstaller()->getConfigObject()->getTablePrefix();
@@ -43,7 +43,7 @@ class tx_piwikintegration_flexform {
 		//fetch anonymous accessable idsites
 		$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'idsite',
-			$this->tablePrefix.'access',
+			tx_piwikintegration_div::getTblName('access'),
 			'login="anonymous"'
 		);
 
@@ -55,7 +55,7 @@ class tx_piwikintegration_flexform {
 		$accessableSites = implode(',',$sites);
 		$erg = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'idsite,name,main_url',
-			$this->tablePrefix.'site',
+			tx_piwikintegration_div::getTblName('site'),
 			'idsite IN('.$accessableSites.')',
 			'',
 			'name, main_url, idsite'
