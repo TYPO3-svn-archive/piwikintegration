@@ -187,8 +187,9 @@ class tx_piwikintegration_config {
 		 * needed to change user attributes (mail, ...)	
 		 * tx_piwikintegration_user		 	 
 		 */		 		
-
-		$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+		//commented out, as no apikeys are needed in piwikdb
+		//will check this lateron
+		/*$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'*',
 			$this->tablePrefix.'user',
 			'login="'.$beUserName.'"',
@@ -198,7 +199,7 @@ class tx_piwikintegration_config {
 			);
 		if(count($erg)!=1) {
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-					$this->tablePrefix.'user',
+					tx_piwikintegration_div::getTblName('user'),
 					array(
 						'login'          => $beUserName,
 						'alias'          => $GLOBALS['BE_USER']->user['realName'] ? $GLOBALS['BE_USER']->user['realName'] : $beUserName,
@@ -208,14 +209,14 @@ class tx_piwikintegration_config {
 				);
 		} else {
 			$GLOBALS['TYPO3_DB']->exec_Updatequery(
-					$this->tablePrefix.'user',
+					tx_piwikintegration_div::getTblName('user'),
 					'login = "'.mysql_escape_string($beUserName).'"',
 					array(
 						'alias' => $GLOBALS['BE_USER']->user['realName'] ? $GLOBALS['BE_USER']->user['realName'] : $beUserName,
 						'email' => $GLOBALS['BE_USER']->user['email'],
 					)
 				);		
-		}
+		}*/
 		/**
 		 * ensure, that user's right are added to the database
 		 * tx_piwikintegration_access		 
@@ -223,7 +224,7 @@ class tx_piwikintegration_config {
 		if($GLOBALS['BE_USER']->user['admin']!=1) {
 			$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 					'*',
-					$this->tablePrefix.'access',
+					tx_piwikintegration_div::getTblName('access'),
 					'login="'.$beUserName.'" AND idsite='.$this->getPiwikSiteIdForPid($uid),
 					'',
 					'',
@@ -231,7 +232,7 @@ class tx_piwikintegration_config {
 			);
 			if(count($erg)==0) {
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-					$this->tablePrefix.'access',
+					tx_piwikintegration_div::getTblName('access'),
 					array(
 						'login' => $beUserName,
 						'idsite'=> $this->getPiwikSiteIdForPid($uid),
@@ -242,6 +243,7 @@ class tx_piwikintegration_config {
 		}
 	}
 	function getTablePrefix() {
+		#throw new Exception('config. getTablePrefix is deprecated');
 		return $this->tablePrefix = $this->getOption('database','tables_prefix');
 	}
     function getDBName() {
