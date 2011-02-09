@@ -60,7 +60,10 @@ class tx_piwikintegration_scheduler_archive extends tx_scheduler_Task {
 		ini_set('max_execution_time',0);
 		//find piwik
 		
-		$piwikScriptPath = dirname(dirname(__FILE__)).'/../piwik/piwik';
+		$piwikScriptPath = dirname(dirname(__FILE__)).'/../../piwik/piwik';
+		
+		file_put_contents('e:\log.txt',$piwikScriptPath);
+		
 		define('PIWIK_INCLUDE_PATH'         , $piwikScriptPath);
 		define('PIWIK_ENABLE_DISPATCH'      , false);
 		define('PIWIK_ENABLE_ERROR_HANDLER' , false);
@@ -145,6 +148,9 @@ class tx_piwikintegration_scheduler_archive extends tx_scheduler_Task {
 	 * @return	void
 	 */
 	function writeLog($message,$data='') {
+		if(!array_key_exists('REMOTE_ADDR',$_SERVER)) {
+			$_SERVER['REMOTE_ADDR'] = 'local CLI';
+		}
 		$conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['piwikintegration']);
 		if($conf['enableSchedulerLoging']) {
 			$GLOBALS['BE_USER']->writeLog(
