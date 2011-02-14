@@ -46,7 +46,7 @@ class tx_piwikintegration_extmgm {
         $fieldValue = $params['fieldValue'];
         $dbs        = $GLOBALS['TYPO3_DB']->admin_get_dbs();
 		$buffer.='<select name="'.$fieldName.'">';
-        $buffer.='<option value="">---TYPO3DB---</option>';
+        $buffer.='<option value="'.TYPO3_db.'">---TYPO3DB---</option>';
 		foreach($dbs as $db) {
 			$buffer.= '<option value="'.htmlspecialchars($db).'"';
 			if($db == $fieldValue) {

@@ -56,8 +56,10 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 		$prefix        = Zend_Registry::get('config')->database->tables_prefix;
 		if(!$isT3Table) {
 			$table = '`'.$prefix.$table.'`';
-		} else {
+		} elseif($t3database!='') {
 			$table = '`'.$t3database.'`.`'.$table.'`';
+		} else {
+			$table = '`'.$table.'`';
 		}
 		return $table;
 	}
