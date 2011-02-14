@@ -22,6 +22,7 @@ class Piwik_KSVisitorImport extends Piwik_Plugin {
 				'author' => 'Kay Strobach',
 				'author_homepage' => 'http://www.kay-strobach.de/',
 				'version' => '1.0.0',
+				'translationAvailable' => true,
 		);
 		return $info;
 	}
@@ -34,7 +35,7 @@ class Piwik_KSVisitorImport extends Piwik_Plugin {
 
 	public function addMenu() {
 		Piwik_AddAdminMenu(
-				'Visitor Import',
+				'KSVisitorImport_KSVisitorImport',
 				array('module' => 'KSVisitorImport', 'action' => 'index'),
 				Piwik::isUserIsSuperUser(),
 				$order = 11
