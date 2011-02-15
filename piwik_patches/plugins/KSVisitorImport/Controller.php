@@ -88,6 +88,7 @@ class Piwik_KSVisitorImport_Controller extends Piwik_Controller {
 			// we set the DO NOT load plugins so that the Tracker generator doesn't load the plugins we've just disabled.
 			// if for some reasons you want to load the plugins, comment this line, and disable the plugin Provider in the plugins interface
 			Piwik_PluginsManager::getInstance()->doNotLoadPlugins();
+			Piwik_PluginsManager::getInstance()->doNotLoadAlwaysActivatedPlugins();
 			
 			$timer        = new Piwik_Timer;
 			if(!array_key_exists($logfiletype, $this->logfiletypes)) {
