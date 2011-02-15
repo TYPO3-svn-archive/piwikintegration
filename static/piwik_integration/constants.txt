@@ -16,6 +16,6 @@ config.tx_piwik {
 	   	customerRefresh = 0
 	# cat=plugin.tx_piwik; type=input; label= fixed pid level, to make customerRootPid more flexible
 		customerPidLevel = 2
-	# cat=plugin.tx_piwik; type=input; label= fixed root pid for renaming (pid will be used to replace params)
+	# cat=plugin.tx_piwik/; type=input; label= fixed root pid for renaming (pid will be used to replace params)
   		customerRootPid = 0 
 }
