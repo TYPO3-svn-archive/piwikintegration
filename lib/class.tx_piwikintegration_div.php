@@ -44,7 +44,6 @@ class tx_piwikintegration_div {
 			foreach($page as $key=>$value) {
 				$newName = str_replace('%'.$key.'%',$value,$newName);
 			}
-			t3lib_div::debug($newName);
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 				$this->tblNm('site'),
 				'idsite='.intval($siteid),
@@ -144,7 +143,7 @@ class tx_piwikintegration_div {
 	 * @param	integer		$siteid: Piwik ID
 	 * @return	integer     piwik site id
 	 */
-	function makePiwikSiteExisting($siteid) {
+	function makePiwikSiteExisting($id) {
 		$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'*',
 			tx_piwikintegration_div::getTblName('site'),
