@@ -11,7 +11,7 @@
  */
 
 $translations = array(
-	'KSVisitorImport_KSVisitorImport' => 'Einlesen von Logdateien.',
+	'KSVisitorImport_KSVisitorImport' => 'Besucherimport',
 	'KSVisitorImport_PluginDescription' => 'Mit diesem Plugin kannst du Daten aus anderen Trackinglösungen einlesen.',
 	'KSVisitorImport_path' => 'Pfad zur Datei auf dem Server',
 	'KSVisitorImport_logfiletype' => 'Typ der Logdatei',
@@ -23,4 +23,7 @@ $translations = array(
 	'KSVisitorImport_AreYouSure' => 'Sind sie sich sicher die Daten importieren zu wollen?',
 	'KSVisitorImport_ChoiceYes' => 'Ja ich bin sicher',
 	'KSVisitorImport_Submit' => 'Import beginnen',
+	'KSVisitorImport_Error_choice'=>'Bitte bestätige dass du wirklich weißt was du tust.',
+	'KSVisitorImport_Error_file'=>'Die angegebene Datei ist nicht gültig',
+	'KSVisitorImport_Error_logfiletype'=>'unbekannter Logfiletyp',
 );
