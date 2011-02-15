@@ -11,7 +11,7 @@
  */
 
 $translations = array(
-	'KSVisitorImport_KSVisitorImport' => 'Read Logfiles.',
+	'KSVisitorImport_KSVisitorImport' => 'visitor import',
 	'KSVisitorImport_PluginDescription' => 'This Plugin enables you to read data from other Trackingsolutions.',
 	'KSVisitorImport_path' => 'path to logfile on server.',
 	'KSVisitorImport_logfiletype' => 'type of the logfile',
@@ -23,4 +23,7 @@ $translations = array(
 	'KSVisitorImport_AreYouSure' => 'Are you sure that you wanna import the data?',
 	'KSVisitorImport_ChoiceYes' => 'Yes I´m sure.',
 	'KSVisitorImport_Submit' => 'start import',
+	'KSVisitorImport_Error_choice'=>'Please verify, that you know what you do.',
+	'KSVisitorImport_Error_file'=>'This file is not valid.',
+	'KSVisitorImport_Error_logfiletype'=>'unknown logfiletype',
 );
