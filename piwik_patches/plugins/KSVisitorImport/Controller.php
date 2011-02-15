@@ -31,7 +31,7 @@ class Piwik_KSVisitorImport_Controller extends Piwik_Controller {
 
 	);
 
-	public function index() {
+	public function index($message='') {
 		Piwik::checkUserIsSuperUser();
 
 		$sitesList = Piwik_SitesManager_API::getInstance()->getSitesWithAdminAccess();
@@ -40,69 +40,75 @@ class Piwik_KSVisitorImport_Controller extends Piwik_Controller {
 		$this->setBasicVariablesView($view);
 		$view->assign('sitesList'   , $sitesList);
 		$view->assign('logfilesList', $this->logfiletypes);
+		$view->assign('message',      $message);
 		$view->nonce = Piwik_Nonce::getNonce('Piwik_KSVisitorImport.generate');
 
 		$view->menu = Piwik_GetAdminMenu();
 		echo $view->render();
 	}
 
-	public function generate() {
+	public function generate($start=null,$stop=null) {
 		// Only admin is allowed to do this!
 		Piwik::checkUserIsSuperUser();
-		$this->checkTokenInUrl();
-
-		$GET = $_GET;
-		$POST = $_POST;
-		$COOKIE = $_COOKIE;
-		$REQUEST = $_REQUEST;
-		
-		$nonce = Piwik_Common::getRequestVar('form_nonce', '', 'string', $_POST);
-		if(Piwik_Common::getRequestVar('choice', 'no') != 'yes' ||
-				!Piwik_Nonce::verifyNonce('Piwik_KSVisitorImport.generate', $nonce))
-		{
-			Piwik::redirectToModule('KSVisitorImport', 'index');
+		$message = '';
+		try {
+			$this->checkTokenInUrl();
+	
+			$GET = $_GET;
+			$POST = $_POST;
+			$COOKIE = $_COOKIE;
+			$REQUEST = $_REQUEST;
+			
+			$nonce = Piwik_Common::getRequestVar('form_nonce', '', 'string', $_POST);
+			if(Piwik_Common::getRequestVar('choice', 'no') != 'yes' ||
+					!Piwik_Nonce::verifyNonce('Piwik_KSVisitorImport.generate', $nonce))
+			{
+				return $this->index('KSVisitorImport_Error_choice');
+				#Piwik::redirectToModule('KSVisitorImport', 'index');
+			}
+			
+			//change logic here
+			
+			$path        = Piwik_Common::getRequestVar('path',        '', 'string');
+			$logfiletype = Piwik_Common::getRequestVar('logfiletype', '', 'string');
+	
+			// get idSite from POST with fallback to GET
+			$idSite = Piwik_Common::getRequestVar('idSite', false,   'int', $_GET);
+			$idSite = Piwik_Common::getRequestVar('idSite', $idSite, 'int', $_POST);
+	
+			Piwik::setMaxExecutionTime(0);
+	
+			$loadedPlugins = Piwik_PluginsManager::getInstance()->getLoadedPlugins();
+			$loadedPlugins = array_keys($loadedPlugins);
+			// we have to unload the Provider plugin otherwise it tries to lookup the IP for a hostname, and there is no dns server here
+			if(Piwik_PluginsManager::getInstance()->isPluginActivated('Provider')) {
+				Piwik_PluginsManager::getInstance()->unloadPlugin('Provider');
+			}
+	
+			// we set the DO NOT load plugins so that the Tracker generator doesn't load the plugins we've just disabled.
+			// if for some reasons you want to load the plugins, comment this line, and disable the plugin Provider in the plugins interface
+			Piwik_PluginsManager::getInstance()->doNotLoadPlugins();
+			
+			$timer        = new Piwik_Timer;
+			if(!array_key_exists($logfiletype, $this->logfiletypes)) {
+				throw new Exception ('KSVisitorImport_Error_logfiletype');
+			}
+			$importerCls  = $this->logfiletypes[$logfiletype]['handler']; 
+			$importerName = $this->logfiletypes[$logfiletype]['name'];
+			
+			//######################################################################
+			$importer     = new $importerCls($idSite,$path);
+			if(!Piwik_Common::getRequestVar('keepLogs', false,   'int', $_POST)) {
+				$importer->emptyLogTables();
+			}
+			if(Piwik_Common::getRequestVar('debug', false,   'int', $_POST)) {
+				$GLOBALS['PIWIK_TRACKER_DEBUG'] = true;
+			}
+			$importer->import();
+			//######################################################################
+		} catch(Exception $e) {
+			return $this->index('KSVisitorImport_Error_file');
 		}
-		
-		//change logic here
-		
-		$path        = Piwik_Common::getRequestVar('path',        '', 'string');
-		$logfiletype = Piwik_Common::getRequestVar('logfiletype', '', 'string');
-
-		// get idSite from POST with fallback to GET
-		$idSite = Piwik_Common::getRequestVar('idSite', false,   'int', $_GET);
-		$idSite = Piwik_Common::getRequestVar('idSite', $idSite, 'int', $_POST);
-
-		Piwik::setMaxExecutionTime(0);
-
-		$loadedPlugins = Piwik_PluginsManager::getInstance()->getLoadedPlugins();
-		$loadedPlugins = array_keys($loadedPlugins);
-		// we have to unload the Provider plugin otherwise it tries to lookup the IP for a hostname, and there is no dns server here
-		if(Piwik_PluginsManager::getInstance()->isPluginActivated('Provider')) {
-			Piwik_PluginsManager::getInstance()->unloadPlugin('Provider');
-		}
-
-		// we set the DO NOT load plugins so that the Tracker generator doesn't load the plugins we've just disabled.
-		// if for some reasons you want to load the plugins, comment this line, and disable the plugin Provider in the plugins interface
-		Piwik_PluginsManager::getInstance()->doNotLoadPlugins();
-		
-		$timer        = new Piwik_Timer;
-		if(!array_key_exists($logfiletype, $this->logfiletypes)) {
-			throw new Exception ('unknown logfiletype');
-		}
-		$importerCls  = $this->logfiletypes[$logfiletype]['handler']; 
-		$importerName = $this->logfiletypes[$logfiletype]['name'];
-		
-		//######################################################################
-		$importer     = new $importerCls($idSite,$path);
-		if(!Piwik_Common::getRequestVar('keepLogs', false,   'int', $_POST)) {
-			$importer->emptyLogTables();
-		}
-		if(Piwik_Common::getRequestVar('debug', false,   'int', $_POST)) {
-			$GLOBALS['PIWIK_TRACKER_DEBUG'] = true;
-		}
-		$importer->import();
-		//######################################################################
-		
 		// Recover all super globals
 		$_GET = $GET;
 		$_POST = $POST;

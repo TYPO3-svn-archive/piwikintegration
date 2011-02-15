@@ -1,4 +1,6 @@
 <?php
+#require_once PIWIK_INCLUDE_PATH . '/libs/PiwikTracker/PiwikTracker.php';
+
 abstract class Piwik_KSVisitorImport_Import_Abstract {
 	var $rows = 0;
 	function __construct($idSite,$path) {
@@ -14,6 +16,9 @@ abstract class Piwik_KSVisitorImport_Import_Abstract {
 	}
 	function import() {
 		$this->emptyLogTables();
+		if(!file_exists($this->path) || !is_file($this->path)) {
+			throw new Exception('File doesn´t exist.');
+		}
 		$this->fileHandle = fopen($this->path,'r');
 		while (!feof($this->fileHandle)) {
 			if($this->lineHandler(fgets($this->fileHandle))) {
@@ -31,9 +36,20 @@ abstract class Piwik_KSVisitorImport_Import_Abstract {
 		$_SERVER['HTTP_CLIENT_IP']       = $entry['remoteHost'];
 		#$_SERVER['HTTP_ACCEPT_LANGUAGE'] =
 		$process = new Piwik_VisitorGenerator_Tracker();
-		#$process->infoArray = $entry;
 		$process->main();
 		unset($process);
+		
+		##HTTP Tracking :)
+		/*$t = new PiwikTracker( $entry['idsite']);
+		$t->setUrl($entry['url']);
+		$t->setForceVisitDateTime('');
+		$t->setIp($entry['remoteHost']);
+		#$t->setLocalTime();
+		$t->setResolution( 1024, 768 );
+		$t->setBrowserHasCookies(true);
+		$t->doTrackPageView($entry['url']);
+		#$t->setPlugins($flash = true, $java = true, $director = false);
+		unset($t);*/
 	}
 	function emptyLogTables() {
 		$db = Zend_Registry::get('db');

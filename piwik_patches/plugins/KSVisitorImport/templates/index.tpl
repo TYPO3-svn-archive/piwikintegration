@@ -4,7 +4,14 @@
 
 <h2>{'KSVisitorImport_KSVisitorImport'|translate}</h2>
 <p>{'KSVisitorImport_PluginDescription'|translate}</p>
-
+{if $message neq ""}
+	<div class="ui-widget">
+		<div class="ui-inline-help ui-state-highlight ui-corner-all">
+			<span class="ui-icon ui-icon-info" style="float:left;margin-right:.3em;"></span>
+			{$message|translate}
+		</div>
+	</div>
+{/if}
 <form method="POST" action="{url module=KSVisitorImport action=generate}">
 	<table class="adminTable">
 		<tr>
@@ -17,7 +24,7 @@
 		</tr>
 		<tr>
 		    <td><label for="path">{'KSVisitorImport_path'|translate}</label></td>
-		    <td><input type="text" value="/" name="path" id="path" /></td>
+		    <td><input type="text" value="" name="path" id="path" /></td>
 		</tr>
 		<tr>
 		    <td><label for="logfiletype">{'KSVisitorImport_logfiletype'|translate}</label></td>
@@ -40,7 +47,7 @@
 		    <td>
 				<input type="checkbox" name="choice" id="choice" value="yes" /> <label for="choice">{'KSVisitorImport_ChoiceYes'|translate}</label><br />
 				<p>{'KSVisitorImport_Warning'|translate}<br />
-				{'KSVisitorImport_NotReversible'|translate:'<b>':'</b>'}</p>
+				   {'KSVisitorImport_NotReversible'|translate:'<b>':'</b>'}</p>
 			</td>
 		</tr>
 	</table>
@@ -60,5 +67,4 @@
 		</td>
 	</tr>
 </table>
-
 {include file="CoreAdminHome/templates/footer.tpl"}
