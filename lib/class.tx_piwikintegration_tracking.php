@@ -134,7 +134,8 @@ class tx_piwikintegration_tracking {
 	 * @return	string		trackingcode for a given uid
 	 */
 	function getPiwikJavaScriptCodeForPid($uid) {
-		return $this->getPiwikJavaScriptCodeForSite($this->getPiwikSiteIdForPid($uid));
+		return $this->getPiwikJavaScriptCodeForSite(1);
+		//return $this->getPiwikJavaScriptCodeForSite($this->getPiwikSiteIdForPid($uid));
 	}
 
 	/**
@@ -155,73 +156,5 @@ class tx_piwikintegration_tracking {
 		//need to be retrieved different for fe, so that it works ...
 		#$path = 'http://localhost/t3alpha4.3/typo3conf/piwik/piwik/';
 		return $path;
-	}
-	/**
-	 * returns the piwik site id for a given page
-	 * call it with $this->pageinfo['uid'] as param from a backend module
-	 *
-	 * @param	integer		$uid: Page ID
-	 * @return	integer     piwik site id
-	 */
-	function getPiwikSiteIdForPid($uid) {
-		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
-        $path              = tx_piwikintegration_install::getInstaller()->getConfigObject()->initPiwikDatabase();
-
-		if($uid <= 0 || $uid!=intval($uid)) {
-			throw new Exception('Problem with uid in tx_piwikintegration_helper.php::getPiwikSiteIdForPid');
-		}
-
-		if(isset($this->piwik_id[$uid])) {
-			return $this->piwik_id[$uid];
-		}
-		//parse ts template
-			$template_uid = 0;
-			$pageId = $uid;
-			$tmpl = t3lib_div::makeInstance("t3lib_tsparser_ext");	// Defined global here!
-			$tmpl->tt_track = 0;	// Do not log time-performance information
-			$tmpl->init();
-
-			$tplRow = $tmpl->ext_getFirstTemplate($pageId,$template_uid);
-			if (is_array($tplRow) || 1)	{	// IF there was a template...
-					// Gets the rootLine
-				$sys_page = t3lib_div::makeInstance("t3lib_pageSelect");
-				$rootLine = $sys_page->getRootLine($pageId);
-				$tmpl->runThroughTemplates($rootLine);	// This generates the constants/config + hierarchy info for the template.
-				$tmpl->generateConfig();
-			}
-			if($tmpl->setup['config.']['tx_piwik.']['piwik_idsite']) {
-				$id = intval($tmpl->setup['config.']['tx_piwik.']['piwik_idsite']);
-			} else {
-				$id = 0;
-			}
-		//check wether site already exists in piwik db
-			$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-				'*',
-				tx_piwikintegration_div::getTblName('site'),
-				'idsite = '.intval($id),
-				'',
-				'',
-				'0,1'
-			);
-			if(count($erg)==0) {
-				//FIX currency for current Piwik version, since 0.6.3
-				$currency = Piwik_GetOption('SitesManager_DefaultCurrency') ? Piwik_GetOption('SitesManager_DefaultCurrency') : 'USD';
-				//FIX timezone for current Piwik version, since 0.6.3
-				$timezone = Piwik_GetOption('SitesManager_DefaultTimezone') ? Piwik_GetOption('SitesManager_DefaultTimezone') : 'UTC';
-				
-				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-					tx_piwikintegration_div::getTblName('site'),
-					array(
-						'idsite'     => $id,
-						'main_url'   => 'http://'.$_SERVER["SERVER_NAME"],
-						'name'       => 'Customer '.$id,
-						'timezone'   => $timezone,
-						'currency'   => $currency,
-						'ts_created' => date('Y-m-d H:i:s',time()),
-					)
-				);
-			}
-		$this->piwik_id[$uid] = $id;
-		return $this->piwik_id[$uid];
 	}
 }

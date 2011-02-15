@@ -119,8 +119,9 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 				if(version_compare ($GLOBALS['TYPO_VERSION'],'4.3.0','>=')) {
 					$this->content = '';
 					$tracker       = new tx_piwikintegration_tracking();
-					$piwikSiteId   = $tracker->getPiwikSiteIdForPid($this->id);
+					$piwikSiteId   = $this->piwikHelper->getPiwikSiteIdForPid($this->id);
 					$this->piwikHelper->correctUserRightsForPid($piwikSiteId);
+					$this->piwikHelper->correctTitle($this->id,$piwikSiteId,$this->piwikHelper->getPiwikConfigArray($this->id));
 					$this->doc->extJScode = file_get_contents(t3lib_extMgm::extPath('piwikintegration') . 'mod1/extjs.js');
 					$this->doc->extJScode = str_replace('###piwikTab###'       ,$LANG->getLL('piwikTab')    ,$this->doc->extJScode);
 					$this->doc->extJScode = str_replace('###piwikApiTab###'    ,$LANG->getLL('piwikApiTab') ,$this->doc->extJScode);

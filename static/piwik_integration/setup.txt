@@ -1,4 +1,9 @@
 config.tx_piwik {
   piwik_host   = typo3conf/piwik/piwik/
   piwik_idsite = 1
+  customerName = customer %pid% %uid% %siteid% %title%
+  customerPidLevel = 2
+  customerRootPid = 0 
+  customerRefresh = 1
+  
 }
