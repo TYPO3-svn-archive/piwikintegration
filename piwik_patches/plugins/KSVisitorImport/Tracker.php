@@ -39,10 +39,20 @@ class Piwik_KSVisitorImport_Tracker extends Piwik_Tracker
 	 *
 	 * @return Piwik_VisitorGenerator_Visit
 	 */
+	 // if we dont need Piwik_KSVisitorImport_Visit no more, we wont need this method either
 	protected function getNewVisitObject()
 	{
-		$visit = new Piwik_VisitorGenerator_Visit();
-		$visit->generateTimestamp();
+		$visit = null;
+		Piwik_PostEvent('Tracker.getNewVisitObject', $visit);
+	
+		if(is_null($visit))
+		{
+			$visit = new Piwik_KSVisitorImport_Visit( self::$forcedIpString, self::$forcedDateTime );
+		}
+		elseif(!($visit instanceof Piwik_Tracker_Visit_Interface ))
+		{
+			throw new Exception("The Visit object set in the plugin must implement Piwik_Tracker_Visit_Interface");
+		}
 		return $visit;
 	}	
 	

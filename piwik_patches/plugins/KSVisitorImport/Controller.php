@@ -77,18 +77,21 @@ class Piwik_KSVisitorImport_Controller extends Piwik_Controller {
 			$idSite = Piwik_Common::getRequestVar('idSite', $idSite, 'int', $_POST);
 	
 			Piwik::setMaxExecutionTime(0);
-	
-			$loadedPlugins = Piwik_PluginsManager::getInstance()->getLoadedPlugins();
-			$loadedPlugins = array_keys($loadedPlugins);
+			
+			// There is a dns, why not? It takes some time for the lookups, but at least you get the provider info
+			// If you want to unload the provider plugin (most probably for performance reasons), then uncomment the related lines
+			
+			#$loadedPlugins = Piwik_PluginsManager::getInstance()->getLoadedPlugins();
+			#$loadedPlugins = array_keys($loadedPlugins);
 			// we have to unload the Provider plugin otherwise it tries to lookup the IP for a hostname, and there is no dns server here
-			if(Piwik_PluginsManager::getInstance()->isPluginActivated('Provider')) {
-				Piwik_PluginsManager::getInstance()->unloadPlugin('Provider');
-			}
+			#if(Piwik_PluginsManager::getInstance()->isPluginActivated('Provider')) {
+			#	Piwik_PluginsManager::getInstance()->unloadPlugin('Provider');
+			#}
 	
 			// we set the DO NOT load plugins so that the Tracker generator doesn't load the plugins we've just disabled.
 			// if for some reasons you want to load the plugins, comment this line, and disable the plugin Provider in the plugins interface
-			Piwik_PluginsManager::getInstance()->doNotLoadPlugins();
-			Piwik_PluginsManager::getInstance()->doNotLoadAlwaysActivatedPlugins();
+			#Piwik_PluginsManager::getInstance()->doNotLoadPlugins();
+			#Piwik_PluginsManager::getInstance()->doNotLoadAlwaysActivatedPlugins();
 			
 			$timer        = new Piwik_Timer;
 			if(!array_key_exists($logfiletype, $this->logfiletypes)) {
@@ -105,6 +108,10 @@ class Piwik_KSVisitorImport_Controller extends Piwik_Controller {
 			if(Piwik_Common::getRequestVar('debug', false,   'int', $_POST)) {
 				$GLOBALS['PIWIK_TRACKER_DEBUG'] = true;
 			}
+			
+			$importer->setIdSite( $idSite );
+			$importer->setPath( $path );
+			
 			$importer->import();
 			//######################################################################
 		} catch(Exception $e) {
@@ -117,7 +124,7 @@ class Piwik_KSVisitorImport_Controller extends Piwik_Controller {
 		$_REQUEST = $REQUEST;
 		
 		// Reload plugins
-		Piwik_PluginsManager::getInstance()->loadPlugins($loadedPlugins);
+		#Piwik_PluginsManager::getInstance()->loadPlugins($loadedPlugins);
 
 		#Piwik_Common::runScheduledTasks(time());
 		// Init view

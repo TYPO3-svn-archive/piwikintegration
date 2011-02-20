@@ -18,27 +18,25 @@
  */
 class Piwik_KSVisitorImport_Visit extends Piwik_Tracker_Visit
 {
-	static protected $timestampToUse;
+	// since we force the timestamp to the Tracker class there is no more need for the time related stuff here
 	
-	static public function setTimestampToUse($time)
+	public function __construct($forcedIpString = null, $forcedDateTime = null)
 	{
-		self::$timestampToUse = $time;
+		$this->timestamp = time();
+		if(!empty($forcedDateTime))
+		{
+			//$this->timestamp = strtotime($forcedDateTime); // only change compared to the Visit class is here ($forcedDateTime is a unix timestamp)
+															 // so it would make sense to use fullDateTime and get rid of Piwik_KSVisitorImport_Visit
+			$this->timestamp = $forcedDateTime;
+		}
+		$ipString = $forcedIpString;
+		if(empty($ipString))
+		{
+			$ipString = Piwik_Common::getIpString();
+		}
+		
+		$this->ipString = Piwik_Common::getIp($ipString);
 	}
-	protected function getCurrentDate( $format = "Y-m-d")
-	{
-		return date($format, $this->getCurrentTimestamp() );
-	}
-	
-	protected function getCurrentTimestamp()
-	{
-		return self::$timestampToUse;
-	}
-	
-	public function generateTimestamp()
-	{
-		self::$timestampToUse = max(@$this->visitorInfo['visit_last_action_time'],self::$timestampToUse);
-		self::$timestampToUse += mt_rand(4,1840);
-	}		
 	
 	protected function updateCookie()
 	{

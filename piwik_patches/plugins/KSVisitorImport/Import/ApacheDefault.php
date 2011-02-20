@@ -25,8 +25,14 @@ class Piwik_KSVisitorImport_Import_ApacheDefault extends Piwik_KSVisitorImport_I
 						    'referrer'      => '',
 						    'userAgent'     => 'unknown',
 						    'siteName'      => preg_replace('/[\/\.]+/', ' ', $matches[12]),
-						    'idsite'        => $this->idSite,
 				);
+			
+			$this->setCurrentRequest( 'h' , $result['h']);
+			$this->setCurrentRequest( 'm' , $result['m']);
+			$this->setCurrentRequest( 's' , $result['s']);
+			$this->setCurrentRequest( 'url' , $result['url']);
+			$this->setCurrentRequest( 'action_name' , $result['siteName']);
+			
 			$this->makeEntry(
 				$result
 			);

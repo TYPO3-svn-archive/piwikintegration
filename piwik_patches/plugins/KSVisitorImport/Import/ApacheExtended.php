@@ -24,8 +24,15 @@ class Piwik_KSVisitorImport_Import_ApacheExtended extends Piwik_KSVisitorImport_
 						    'referrer'      => $matches[16],
 						    'userAgent'     => $matches[17],
 						    'siteName'      => preg_replace('/[\/\.]+/', ' ', $matches[12]),
-						    'idsite'        => $this->idSite,
 				);
+				
+			$this->setCurrentRequest( 'h' , $result['h']);
+			$this->setCurrentRequest( 'm' , $result['m']);
+			$this->setCurrentRequest( 's' , $result['s']);
+			$this->setCurrentRequest( 'url' , $result['url']);
+			$this->setCurrentRequest( 'action_name' ,$result['siteName']);
+			$this->setCurrentRequest( 'urlref' , $result['referrer']);
+			
 			$this->makeEntry(
 				$result
 			);

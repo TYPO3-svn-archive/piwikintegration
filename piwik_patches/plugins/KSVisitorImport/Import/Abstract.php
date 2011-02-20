@@ -1,21 +1,83 @@
 <?php
-#require_once PIWIK_INCLUDE_PATH . '/libs/PiwikTracker/PiwikTracker.php';
 
 abstract class Piwik_KSVisitorImport_Import_Abstract {
-	var $rows = 0;
-	function __construct($idSite,$path) {
+	
+	public $rows = 0;
+	
+	/**
+	 * GET parameters array of values to be used for the current visit
+	 */
+	protected $currentget = array();
+	
+	/**
+	 * Unix timestamp to use for the generated visitor 
+	 *
+	 * @var int Unix timestamp
+	 */
+	protected $timestampToUse;
+	
+	/**
+	* IdSite to generate visits for (@see setIdSite())
+	*
+	* @var int
+	*/
+	public $idSite = 1;
+	
+	/**
+	* Path to read logfile from (@see setPath())
+	*
+	* @var string
+	*/
+	public $path = 1;
+	
+	/**
+	 * clientIP
+	 *
+	 * @var string
+	 */
+	protected $clientIP = '';
+	
+	/**
+	 * Set the idsite to generate the visits for
+	 * 
+	 * @param int idSite
+	 */
+	public function setIdSite($idSite)
+	{
 		$this->idSite = $idSite;
-		$this->path   = $path;
-		$this->init();
 	}
-	function init() {
+	
+	/**
+	 * Set path to read logfile from
+	 * 
+	 * @param string path
+	 */
+	public function setPath($path)
+	{
+		$this->path = $path;
+	}
+	
+	public function __construct()
+	{
+		$_COOKIE = $_GET = $_POST = array();
 		
+		// init GET and REQUEST to the empty array
+		$this->setFakeRequest();
+		
+		// I am not sure weather we need this here
+		Piwik::createConfigObject(PIWIK_USER_PATH . '/config/config.ini.php');
+		Zend_Registry::get('config')->disableSavingConfigurationFileUpdates();
+		
+		$this->timestampToUse = time();
 	}
-	function getRows() {
+	
+	public function getRows()
+	{
 		return $this->rows;
 	}
-	function import() {
-		$this->emptyLogTables();
+	
+	public function import()
+	{
 		if(!file_exists($this->path) || !is_file($this->path)) {
 			throw new Exception('File doesn´t exist.');
 		}
@@ -27,31 +89,58 @@ abstract class Piwik_KSVisitorImport_Import_Abstract {
 		}
 		fclose ($this->fileHandle);	
 	}
-	function makeEntry(array $entry) {
-		$entry['rec'] = true;
-		$_GET = $entry;
-		//set timestamp
-		Piwik_VisitorGenerator_Visit::setTimestampToUse($entry['unixTimestamp']);
-		$_SERVER['HTTP_USER_AGENT']      = $entry['userAgent'];
-		$_SERVER['HTTP_CLIENT_IP']       = $entry['remoteHost'];
-		#$_SERVER['HTTP_ACCEPT_LANGUAGE'] =
-		$process = new Piwik_VisitorGenerator_Tracker();
+	
+	protected function makeEntry(array $entry)
+	{
+		$_SERVER['HTTP_USER_AGENT'] = $entry['userAgent'];
+		$this->clientIP = ip2long($entry['remoteHost']);
+		$this->timestampToUse = $entry['unixTimestamp'];
+		$this->setCurrentRequest( 'idsite', $this->idSite);
+		$this->setCurrentRequest('rec', 1);
+		$this->saveVisit();
+	}
+	
+	/**
+	 * Saves the visit 
+	 * - replaces GET and REQUEST by the fake generated request
+	 * - load the Tracker class and call the method to launch the recording
+	 * 
+	 * This will save the visit in the database
+	 */
+	protected function saveVisit()
+	{
+		$this->setFakeRequest();
+		$process = new Piwik_KSVisitorImport_Tracker();
+		$process->setForceIp($this->clientIP);
+		$process->setForceDateTime($this->timestampToUse);
 		$process->main();
 		unset($process);
-		
-		##HTTP Tracking :)
-		/*$t = new PiwikTracker( $entry['idsite']);
-		$t->setUrl($entry['url']);
-		$t->setForceVisitDateTime('');
-		$t->setIp($entry['remoteHost']);
-		#$t->setLocalTime();
-		$t->setResolution( 1024, 768 );
-		$t->setBrowserHasCookies(true);
-		$t->doTrackPageView($entry['url']);
-		#$t->setPlugins($flash = true, $java = true, $director = false);
-		unset($t);*/
+	}	
+	
+	/**
+	 * Sets the _GET and _REQUEST superglobal to the current generated array of values.
+	 * @see setCurrentRequest()
+	 * This method is called once the current action parameters array has been generated from 
+	 * the global parameters array
+	 */
+	protected function setFakeRequest()
+	{
+		$_GET = $this->currentget;
 	}
-	function emptyLogTables() {
+	
+	/**
+	 * Sets a value in the current action request array.
+	 * 
+	 * @param string Name of the parameter to set
+	 * @param string Value of the parameter
+	 */
+	protected function setCurrentRequest($name,$value)
+	{
+		$this->currentget[$name] = $value;
+	}
+	
+	public function emptyLogTables()
+	{
 		$db = Zend_Registry::get('db');
 		$db->query('TRUNCATE TABLE '.Piwik_Common::prefixTable('log_action'));
 		$db->query('TRUNCATE TABLE '.Piwik_Common::prefixTable('log_visit'));
