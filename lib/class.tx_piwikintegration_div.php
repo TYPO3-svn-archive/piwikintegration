@@ -171,14 +171,19 @@ class tx_piwikintegration_div {
 			);
 		}
 	}
+	function correctUserRightsForPid($uid) {
+		$uid = $this->getPiwikSiteIdForPid($uid);
+		return $this->correctUserRightsForSiteId($uid);
+	}
 	/**
 	 * This function makes a page statistics accessable for a user
 	 * call it with $this->pageinfo['uid'] as param from a backend module
 	 *
-	 * @param	integer		$uid: pid for which the user will get access
+	 * @param	integer		$uid: siteid for which the user will get access
 	 * @return	void
 	 */
-	function correctUserRightsForPid($uid) {
+	function correctUserRightsForSiteId($uid) {
+		t3lib_div::debug('Add access grants for:'.$uid);
 		if($uid <= 0 || $uid!=intval($uid)) {
 			throw new Exception('Problem with uid in tx_piwikintegration_helper.php::correctUserRightsForPid');
 		}
@@ -225,7 +230,7 @@ class tx_piwikintegration_div {
 			$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 					'*',
 					$this->tblNm('access'),
-					'login="'.$beUserName.'" AND idsite='.$this->getPiwikSiteIdForPid($uid),
+					'login="'.$beUserName.'" AND idsite='.$uid,
 					'',
 					'',
 					'0,1'
@@ -235,7 +240,7 @@ class tx_piwikintegration_div {
 					$this->tblNm('access'),
 					array(
 						'login' => $beUserName,
-						'idsite'=> $this->getPiwikSiteIdForPid($uid),
+						'idsite'=> $uid,
 						'access'=> 'view',
 					)
 				);

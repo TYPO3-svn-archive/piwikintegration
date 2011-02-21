@@ -120,7 +120,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 					$this->content = '';
 					$tracker       = new tx_piwikintegration_tracking();
 					$piwikSiteId   = $this->piwikHelper->getPiwikSiteIdForPid($this->id);
-					$this->piwikHelper->correctUserRightsForPid($piwikSiteId);
+					$this->piwikHelper->correctUserRightsForSiteId($piwikSiteId);
 					$this->piwikHelper->correctTitle($this->id,$piwikSiteId,$this->piwikHelper->getPiwikConfigArray($this->id));
 					$this->doc->extJScode = file_get_contents(t3lib_extMgm::extPath('piwikintegration') . 'mod1/extjs.js');
 					$this->doc->extJScode = str_replace('###piwikTab###'       ,$LANG->getLL('piwikTab')    ,$this->doc->extJScode);
