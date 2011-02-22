@@ -183,7 +183,7 @@ class tx_piwikintegration_div {
 	 * @return	void
 	 */
 	function correctUserRightsForSiteId($uid) {
-		t3lib_div::debug('Add access grants for:'.$uid);
+		//t3lib_div::debug('Add access grants for:'.$uid);
 		if($uid <= 0 || $uid!=intval($uid)) {
 			throw new Exception('Problem with uid in tx_piwikintegration_helper.php::correctUserRightsForPid');
 		}
@@ -206,10 +206,11 @@ class tx_piwikintegration_div {
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
 					$this->tblNm('user'),
 					array(
-						'login'          => $beUserName,
-						'alias'          => $GLOBALS['BE_USER']->user['realName'] ? $GLOBALS['BE_USER']->user['realName'] : $beUserName,
-						'email'          => $GLOBALS['BE_USER']->user['email'],
-						'date_registered'=> date('Y-m-d H:i:s',time()),
+						'login'           => $beUserName,
+						'alias'           => $GLOBALS['BE_USER']->user['realName'] ? $GLOBALS['BE_USER']->user['realName'] : $beUserName,
+						'email'           => $GLOBALS['BE_USER']->user['email'],
+						'date_registered' => date('Y-m-d H:i:s',time()),
+						'token_auth'      => $GLOBALS['BE_USER']->user['tx_piwikintegration_api_code'],
 					)
 				);
 		} else {
@@ -217,8 +218,9 @@ class tx_piwikintegration_div {
 					$this->tblNm('user'),
 					'login = "'.mysql_escape_string($beUserName).'"',
 					array(
-						'alias' => $GLOBALS['BE_USER']->user['realName'] ? $GLOBALS['BE_USER']->user['realName'] : $beUserName,
-						'email' => $GLOBALS['BE_USER']->user['email'],
+						'alias'           => $GLOBALS['BE_USER']->user['realName'] ? $GLOBALS['BE_USER']->user['realName'] : $beUserName,
+						'email'           => $GLOBALS['BE_USER']->user['email'],
+						'token_auth'      => $GLOBALS['BE_USER']->user['tx_piwikintegration_api_code'],
 					)
 				);		
 		}
