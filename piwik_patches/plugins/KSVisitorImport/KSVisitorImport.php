@@ -30,7 +30,15 @@ class Piwik_KSVisitorImport extends Piwik_Plugin {
 	public function getListHooksRegistered() {
 		return array(
 				'AdminMenu.add' => 'addMenu',
+                'AssetManager.getCssFiles' => 'getCssFiles',
 		);
+	}
+
+	public function getCssFiles( $notification )
+	{
+		$cssFiles = &$notification->getNotificationObject();
+		
+		$cssFiles[] = "plugins/KSVisitorImport/templates/styles.css";
 	}
 
 	public function addMenu() {
