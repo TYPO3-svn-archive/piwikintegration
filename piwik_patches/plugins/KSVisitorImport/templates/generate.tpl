@@ -14,8 +14,16 @@
 		<td>{$path}</td>
 	</tr>
 	<tr>
-		<td>Rows</td>
+		<td>Rows parsed</td>
 		<td>{$rows}</td>
+	</tr>
+	<tr>
+		<td>Skipped rows</td>
+		<td>{$skippedRows}</td>
+	</tr>
+	<tr>
+		<td>Invalid rows</td>
+		<td>{$invalidRows}</td>
 	</tr>
 	<tr>
 		<td>Time</td>

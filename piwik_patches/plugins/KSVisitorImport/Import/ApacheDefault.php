@@ -1,6 +1,6 @@
 <?php
 class Piwik_KSVisitorImport_Import_ApacheDefault extends Piwik_KSVisitorImport_Import_Abstract {
-	function lineHandler($line) {
+	function lineHandler($line, $callback) {
 		//explode line
 		#preg_match('/(\S+) (\S+) (\S+) \[(([^:]+):((\d+):(\d+):(\d+)) ([^\]]+))\] "(\S+) (.+?) (\S+)" (\S+) (\S+) "([^"]+)" "([^"]+)"/', $line, $matches);
 		preg_match('/(\S+) (\S+) (\S+) \[(([^:]+):((\d+):(\d+):(\d+)) ([^\]]+))\] "(\S+) (.+?) (\S+)" (\S+) (\S+)/', $line, $matches);
@@ -32,8 +32,8 @@ class Piwik_KSVisitorImport_Import_ApacheDefault extends Piwik_KSVisitorImport_I
 			$this->setCurrentRequest( 's' , $result['s']);
 			$this->setCurrentRequest( 'url' , $result['url']);
 			$this->setCurrentRequest( 'action_name' , $result['siteName']);
-			
-			$this->makeEntry(
+
+			$this->$callback(
 				$result
 			);
 			return true;

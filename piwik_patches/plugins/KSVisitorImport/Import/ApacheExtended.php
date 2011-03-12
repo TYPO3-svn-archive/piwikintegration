@@ -1,6 +1,6 @@
 <?php
 class Piwik_KSVisitorImport_Import_ApacheExtended extends Piwik_KSVisitorImport_Import_Abstract {
-	function lineHandler($line) {
+	function lineHandler($line, $callback) {
 		//explode line
 		preg_match('/(\S+) (\S+) (\S+) \[(([^:]+):((\d+):(\d+):(\d+)) ([^\]]+))\] "(\S+) (.+?) (\S+)" (\S+) (\S+) "([^"]+)" "([^"]+)"/', $line, $matches);
 		if(is_array($matches) && array_key_exists(0, $matches)) {
@@ -33,11 +33,11 @@ class Piwik_KSVisitorImport_Import_ApacheExtended extends Piwik_KSVisitorImport_
 			$this->setCurrentRequest( 'action_name' ,$result['siteName']);
 			$this->setCurrentRequest( 'urlref' , $result['referrer']);
 			
-			$this->makeEntry(
+			$this->$callback(
 				$result
 			);
 			return true;
-		}
+        }
 	}
 }
 
