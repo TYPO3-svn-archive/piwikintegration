@@ -73,6 +73,7 @@ class ext_update {
 		$buffer.= $this->getButton('patchPiwik');
 		$buffer.= $this->getButton('configurePiwik');
 		$buffer.= $this->getButton('enableSuggestedPlugins');
+		$buffer.= $this->getButton('respectGermanDataPrivacyAct');
 		$buffer.= $this->getButton('showPiwikConfig');
 		$buffer.= $this->getFooter();
 
@@ -103,7 +104,6 @@ class ext_update {
 		} else {
 			return 'Piwik not removed';
 		}
-		
 	}
 	function patchPiwik() {
 		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
@@ -202,5 +202,14 @@ class ext_update {
 		$config->enablePlugin('AnonymizeIP');
 		$config->disablePlugin('Login');
 		return 'installed: TYPO3Login, TYPO3Menu, SecurityInfo, DBStats, AnonymizeIP<br />removed: Login';
+	}
+	function respectGermanDataPrivacyAct() {
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
+		$config =  tx_piwikintegration_install::getInstaller()->getConfigObject();
+		
+		$config->setOption('Tracker','ip_address_mask_length',2);
+		$config->setOption('Tracker','cookie_expire',604800);
+		
+		return 'installed: AnonymizeIP<br />set: Tracker.ip_address_mask_length=2<br />set: Tracker.cookie_expire=604800';
 	}
 }

@@ -34,6 +34,7 @@
 			<label index="action.showPiwikConfig">Show Piwik Configfile</label> 
 			<label index="action.reInitPiwikDB">Init Database</label>
 			<label index="action.resetUserRights">Reset all Userrights</label>
+			<label index="action.respectGermanDataPrivacyAct">Settings to respect german data privacy act</label>
 			
 			<label index="desc.showPiwikConfig">Shows the configurationfile of piwik.</label>
 			<label index="desc.installPiwik">Download, Unzip, Patch, Configure Piwik</label>
@@ -45,6 +46,7 @@
 			<label index="desc.enableSuggestedPlugins">Enable Shipped Plugins, Suggested Plugins and disable senseless stuff</label>
 			<label index="desc.reInitPiwikDB">Init Piwik DB, Warning all Tables will be dropped before!</label>
 			<label index="desc.resetUserRights">truncate piwik access table</label>
+			<label index="desc.respectGermanDataPrivacyAct">Set settings to respect german data privacy act, the base for these settings is the document of the the ULDSH. https://www.datenschutzzentrum.de/tracking/piwik/20110315-webanalyse-piwik.pdf </label>
 			<label index="button.DoIt">Do It</label>
 			<label index="installedPiwikNeeded">For some actions piwik sources need to be present!</label>
 		</languageKey>
@@ -77,6 +79,8 @@
 			<label index="action.showPiwikConfig">Zeige Piwik Konfigurationsdatei</label>
 			<label index="action.reInitPiwikDB">Initialisiere Datenbank</label>
 			<label index="action.resetUserRights">Zurücksetzen aller Benutzerrechte</label>
+			<label index="action.respectGermanDataPrivacyAct">Respektiere den deutschen Datenschutz</label>
+			
 			<label index="desc.showPiwikConfig">Zeigt die Konfigurationsdatei von Piwik an</label>
 			<label index="desc.installPiwik">Download, Unzip, Patch, Konfiguriere Piwik</label>
 			<label index="desc.updatePiwik">Download, Unzip, Patch Piwk</label>
@@ -87,6 +91,7 @@
 			<label index="desc.enableSuggestedPlugins">Aktviere mitgelieferte Plugins, empfohlene Plugins und deaktiviere nicht nötige Plugins</label>
 			<label index="desc.reInitPiwikDB">Initialisiere Piwik DB, Achtung alle Piwiktabellen werden vorher gelöscht!</label>
 			<label index="desc.resetUserRights">truncate piwik access Tabelle</label>
+			<label index="desc.respectGermanDataPrivacyAct">Aktiviere Einstellungen, um den deutschen Datenschutz zu respektieren.Die Grundlage für die Einstellungen ist das folgende Dokument des ULDSH. https://www.datenschutzzentrum.de/tracking/piwik/20110315-webanalyse-piwik.pdf </label>
 			
 			<label index="button.DoIt">Ausführen</label>
 			<label index="installedPiwikNeeded">Für einige Aktionen muss Piwik installiert sein!</label>
