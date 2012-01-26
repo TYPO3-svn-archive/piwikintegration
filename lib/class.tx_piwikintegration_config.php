@@ -136,12 +136,16 @@ class tx_piwikintegration_config {
 		$this->setOption('database' ,'username'     ,TYPO3_db_username);
 		$this->setOption('database' ,'password'     ,TYPO3_db_password);
 		$this->setOption('database' ,'dbname'       ,TYPO3_db);
-		$this->setOption('database' ,'tables_prefix','tx_piwikintegration_');
+		$this->setOption('database' ,'tables_prefix','user_piwikintegration_');
 		$this->setOption('database' ,'adapter'      ,"PDO_MYSQL");
 
 		//General
 		$this->setOption('General'  ,'show_website_selector_in_user_interface',0);
 		$this->setOption('General'  ,'serve_widget_and_data'                  ,0);
+
+		//Disable the frame detection of Piwik
+		$this->setOption('General'  ,'enable_framed_logins'                   ,1);
+		$this->setOption('General'  ,'enable_framed_settings'                 ,1);
 
 		//set Plugins
 		$this->disablePlugin('Login');

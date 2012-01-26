@@ -34,7 +34,7 @@
  * @author Kay Strobach <typo3@kay-strobach.de>
  * 
  * Contributors:
- * Dimitry König (point to missing correctUserRights for PID in 3.0.x)   
+ * Dimitry Kï¿½nig (point to missing correctUserRights for PID in 3.0.x)   
  */
 
 
@@ -118,7 +118,6 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 
 				if(version_compare ($GLOBALS['TYPO_VERSION'],'4.3.0','>=')) {
 					$this->content = '';
-					$tracker       = new tx_piwikintegration_tracking();
 					$piwikSiteId   = $this->piwikHelper->getPiwikSiteIdForPid($this->id);
 					$this->piwikHelper->correctUserRightsForSiteId($piwikSiteId);
 					$this->piwikHelper->correctTitle($this->id,$piwikSiteId,$this->piwikHelper->getPiwikConfigArray($this->id));

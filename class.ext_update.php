@@ -42,6 +42,7 @@ class ext_update {
 		global $LANG;
 		$LANG->includeLLFile('EXT:piwikintegration/locallang.xml');
 		$func = trim(t3lib_div::_GP('func'));
+		$buffer = '';
 		if(t3lib_div::_GP('do_update')) {
 			if (method_exists($this, $func)) {
 				$flashMessage = t3lib_div::makeInstance(
@@ -128,6 +129,7 @@ class ext_update {
 		return 'Userrights reseted';
 	}
 	function getHeader($text) {
+		$buffer = '';
 		$buffer.= '<table class="typo3-dblist">';
 		$buffer.= '<cols><col width="80%"><col width="20%"></cols>';
 		$buffer.= '<tr class="t3-row-header"><td colspan="2">'.$text.'</td></tr>';
