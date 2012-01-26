@@ -161,6 +161,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 		}
 		function getPiwikApi() {
 			global $BE_USER;
+			$content = '';
 			require_once(t3lib_extMgm::extPath('piwikintegration').'lib/class.tx_piwikintegration_tracking.php');
 			$content.='<h3>Piwik API</h3>';
 			$content.='Your API Code: '.$BE_USER->user['tx_piwikintegration_api_code'].'<br />';
