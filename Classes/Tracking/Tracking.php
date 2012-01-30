@@ -33,6 +33,7 @@
  */
  
 include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Div.php'));
+
 class tx_piwikintegration_tracking {
 	function init(&$params, &$reference) {
 		// process the page with these options

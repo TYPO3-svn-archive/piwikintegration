@@ -19,6 +19,9 @@
 			
 			<label index="selectpage_tip">Hint</label>
 			<label index="selectpage_description">Please choose a page from the tree on the left, which has at least a template with the setup config.tx_piwik.piwik_idsite set. See manual for more details.</label>
+
+			<label index="config_piwik_host_tip">Unsupported piwik_host</label>
+			<label index="config_piwik_host_description">This version of EXT:piwikintegration just allows connections to the local installed Piwik, your piwik_host entry has to be "typo3conf/piwik/piwik/".</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="title">Statistik</label>
@@ -34,6 +37,11 @@
 
 			<label index="selectpage_tip">Tipp</label>
 			<label index="selectpage_description">Bitte wählen Sie eine Seite aus dem Seitenbaum, auf der mindestens config.tx_piwik.piwik_idsite gesetzt ist. Im Handbuch gibt es dazu mehr Hinweise.</label>
+
+			<label index="config_piwik_host_tip">Nicht unterstützter piwik_host</label>
+			<label index="config_piwik_host_description">Diese Version von EXT:piwikintegration unterstützt nur Verbindungen zum lokal installierten Piwik, dein piwik_host muss daher "typo3conf/piwik/piwik/" lauten.</label>
+
+
 		</languageKey>
 	</data>
 </T3locallang>

@@ -58,7 +58,10 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
  */
 	class  tx_piwikintegration_module1 extends t3lib_SCbase {
 		var $pageinfo;
-
+		/**
+		 * @var tx_piwikintegration_div
+		 */
+		private $piwikHelper;
 		/**
 		 * Initializes the Module
  		 *
@@ -187,8 +190,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 		 */
 		function checkEnvironment()	{
 			global $BACK_PATH,$TYPO3_CONF_VARS, $BE_USER,$LANG;
-			//check if piwik is installed
-			
+				// check if piwik is installed
 			if(!tx_piwikintegration_install::getInstaller()->checkInstallation()) {
 				tx_piwikintegration_install::getInstaller()->installPiwik();
 				if(tx_piwikintegration_install::getInstaller()->checkInstallation()) {
@@ -200,36 +202,41 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 					);
 					t3lib_FlashMessageQueue::addMessage($flashMessage);
 				}
-				return;
-			} elseif(!$this->pageinfo['uid']) {
-			    $flashMessage = t3lib_div::makeInstance(
-					't3lib_FlashMessage',
-					$LANG->getLL('selectpage_description'),
-					$LANG->getLL('selectpage_tip'),
-					t3lib_FlashMessage::NOTICE
-			    );
-			    t3lib_FlashMessageQueue::addMessage($flashMessage);
-			    #$this->doc->pushFlashMessage($flashMessage);
-			    return;
-			} elseif($this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid'])) {
-				if(!tx_piwikintegration_install::getInstaller()->checkPiwikPatched()) {
-					//prevent lost configuration and so the forced repair.
-					$exclude = array(
-						'config/config.ini.php',
-					);
-					tx_piwikintegration_install::getInstaller()->patchPiwik($exclude);
-				}
-				return true;
-			} else {
+				return false;
+			}
+				// check wether a configured page is selected
+			if(!$this->pageinfo['uid'] || !$this->piwikHelper->getPiwikSiteIdForPid($this->pageinfo['uid'])) {
 				$flashMessage = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
 					$LANG->getLL('selectpage_description'),
 					$LANG->getLL('selectpage_tip'),
 					t3lib_FlashMessage::NOTICE
-			    );
-			    t3lib_FlashMessageQueue::addMessage($flashMessage);
+				);
+				t3lib_FlashMessageQueue::addMessage($flashMessage);
+				return false;
 			}
-			return false;
+				// check wether piwik_host is correct
+			$t = $this->piwikHelper->getPiwikConfigArray($this->pageinfo['uid']);
+			if($t['piwik_host'] !== 'typo3conf/piwik/piwik/') {
+				$flashMessage = t3lib_div::makeInstance(
+					't3lib_FlashMessage',
+					$LANG->getLL('config_piwik_host_description'),
+					$LANG->getLL('config_piwik_host_tip'),
+					t3lib_FlashMessage::ERROR
+				);
+				t3lib_FlashMessageQueue::addMessage($flashMessage);
+				return false;
+			}
+			unset($t);
+				// check if patch level is correct
+			if(!tx_piwikintegration_install::getInstaller()->checkPiwikPatched()) {
+				//prevent lost configuration and so the forced repair.
+				$exclude = array(
+					'config/config.ini.php',
+				);
+				tx_piwikintegration_install::getInstaller()->patchPiwik($exclude);
+			}
+			return true;
 		}
 		/**
 		 * Create the panel of buttons for submitting the form or otherwise perform operations.
