@@ -25,16 +25,14 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * lib/class.tx_piwikintegration_tracking.php
- *
  * tools to get tracking code
  *
- * $Id$
+ * $Id: class.tx_piwikintegration_tracking.php 43636 2011-02-15 15:11:20Z kaystrobach $
  *
  * @author Kay Strobach <typo3@kay-strobach.de>
  */
  
-include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_div.php')); 
+include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Div.php'));
 class tx_piwikintegration_tracking {
 	function init(&$params, &$reference) {
 		// process the page with these options
@@ -145,7 +143,7 @@ class tx_piwikintegration_tracking {
 	 */
 	function getPiwikBaseURL() {
 		if(TYPO3_MODE == 'BE') {
-			include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
+			include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
 			tx_piwikintegration_install::getInstaller()->getConfigObject()->initPiwikFrameWork();
 			$path = Piwik_Url::getCurrentUrlWithoutFileName();
 			$path = dirname($path);

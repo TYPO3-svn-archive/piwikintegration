@@ -86,19 +86,19 @@ class ext_update {
 		return $buffer;
 	}
 	function installPiwik() {
-		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
 		$installer =  tx_piwikintegration_install::getInstaller();
 		$installer->installPiwik();
 		return 'Piwik installed';
 	}
 	function updatePiwik() {
-		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
 		$installer =  tx_piwikintegration_install::getInstaller();
 		$installer->updatePiwik();
 		return 'Piwik installed';
 	}
 	function removePiwik() {
-		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
 		$installer =  tx_piwikintegration_install::getInstaller();
 		if($installer->removePiwik()) {
 			return 'Piwik removed';
@@ -107,7 +107,7 @@ class ext_update {
 		}
 	}
 	function patchPiwik() {
-		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
 		$installer =  tx_piwikintegration_install::getInstaller();
 		$exclude = array(
 			'config/config.ini.php',
@@ -116,13 +116,13 @@ class ext_update {
 		return 'Piwik patched - without modifying config/config.ini.php';
 	}
 	function configurePiwik() {
-		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
 		$installer =  tx_piwikintegration_install::getInstaller();
 		$installer->getConfigObject()->makePiwikConfigured();
 		return 'Piwik is configured now';
 	}
 	function resetUserRights() {
-		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_div.php'));
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Div.php'));
 		$installer =  tx_piwikintegration_install::getInstaller();
 		$installer->getConfigObject();
 		$GLOBALS['TYPO3_DB']->admin_query('TRUNCATE TABLE '.tx_piwikintegration_div::getTblName('access'));
@@ -140,7 +140,7 @@ class ext_update {
 	}
 	function getButton($func,$piwikNeeded=true) {
 		global $LANG;
-		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
 		$params = array('do_update' => 1, 'func' => $func);
 		$onClick = "document.location='" . t3lib_div::linkThisScript($params) . "'; return false;";
 		
@@ -169,7 +169,7 @@ class ext_update {
 		return $button;
 	}
 	function truncatePiwikDB() {
-		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
 		$path   = tx_piwikintegration_install::getInstaller()->getConfigObject()->initPiwikDatabase();
 		$tablesInstalled = Piwik::getTablesInstalled();
 		$buffer = 'Dropped Tables:';
@@ -181,12 +181,12 @@ class ext_update {
 	}
 	function reInitPiwikDB() {
 		$this->truncatePiwikDB();
-		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
 		$path   = tx_piwikintegration_install::getInstaller()->getConfigObject()->installDatabase();
 		return 'Tables dropped an recreated';
 	}//*/
 	function showPiwikConfig() {
-		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
 		$path   = tx_piwikintegration_install::getInstaller()->getAbsInstallPath().'piwik/config/config.ini.php';
 		$button.= $path;
 		$button.= '</b><pre style="width:80%;height:300px;overflow-y:scroll;border:1px solid silver;padding:10px;">';
@@ -195,7 +195,7 @@ class ext_update {
 		return $button;
 	}
 	function enableSuggestedPlugins() {
-		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
 		$config =  tx_piwikintegration_install::getInstaller()->getConfigObject();
 		$config->enablePlugin('TYPO3Login');
 		$config->enablePlugin('TYPO3Menu');
@@ -206,7 +206,7 @@ class ext_update {
 		return 'installed: TYPO3Login, TYPO3Menu, SecurityInfo, DBStats, AnonymizeIP<br />removed: Login';
 	}
 	function respectGermanDataPrivacyAct() {
-		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
 		$config =  tx_piwikintegration_install::getInstaller()->getConfigObject();
 		
 		$config->setOption('Tracker','ip_address_mask_length',2);

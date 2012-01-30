@@ -26,7 +26,8 @@
  */ 
 /**
  * for version 3.0.9
- */ 
+ */
+	define('TYPO3_MODE', 'BE');
 	include      PIWIK_INCLUDE_PATH.'/../../localconf.php';
 	define('TYPO3DB',$typo_db);
 /**

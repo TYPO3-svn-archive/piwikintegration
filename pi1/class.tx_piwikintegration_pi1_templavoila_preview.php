@@ -37,7 +37,7 @@
  * [CLASS/FUNCTION INDEX of SCRIPT]
  */
 
-require_once(t3lib_extMgm::extPath('piwikintegration').'lib/class.tx_piwikintegration_div.php');
+require_once(t3lib_extMgm::extPath('piwikintegration').'Classes/Lib/Div.php');
 
 /**
  * Renders the preview in templavoila

@@ -25,11 +25,9 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * lib/class.tx_piwikintegration_config.php
- *
  * interact with Piwik core after download and unzip
  *
- * $Id$
+ * $Id: class.tx_piwikintegration_config.php 56783 2012-01-26 17:19:37Z kaystrobach $
  *
  * @author Kay Strobach <typo3@kay-strobach.de>
  */
@@ -85,8 +83,8 @@ class tx_piwikintegration_config {
 						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/plugins/'
 						. PATH_SEPARATOR . PIWIK_INCLUDE_PATH . '/core/'
 						. PATH_SEPARATOR . get_include_path());
-			include_once PIWIK_INCLUDE_PATH .'libs/upgradephp/upgrade.php';
-			include_once PIWIK_INCLUDE_PATH .'core/Loader.php';
+			include_once PIWIK_INCLUDE_PATH . 'libs/upgradephp/upgrade.php';
+			include_once PIWIK_INCLUDE_PATH . 'core/Loader.php';
 			include_once('core/Piwik.php');
 			include_once('core/Config.php');
 			include_once('core/PluginsManager.php');
@@ -112,7 +110,7 @@ class tx_piwikintegration_config {
 			$this->initPiwikDB = true;
 			return;
 		}
-		include_once(PIWIK_INCLUDE_PATH.'/core/Option.php');
+		include_once(PIWIK_INCLUDE_PATH . '/core/Option.php');
 		if($noLoadConfig===true) {
 			Piwik::createConfigObject(PIWIK_INCLUDE_PATH.'config/config.ini.php');
 		}
@@ -120,11 +118,6 @@ class tx_piwikintegration_config {
 		Piwik::createDatabaseObject();
 	}
 	function makePiwikConfigured() {
-		global $typo_db_host,
-		       $typo_db_username,
-		       $typo_db_password,
-		       $typo_db,
-			   $BE_USER;
 		$this->initPiwikFrameWork();
 		//userdata
 		$this->setOption('superuser','login'        ,md5(microtime()));

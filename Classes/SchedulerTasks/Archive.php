@@ -29,7 +29,7 @@
  *
  * scheduler task class
  *
- * $Id$
+ * $Id: class.tx_piwikintegration_scheduler_archive.php 43324 2011-02-09 11:47:35Z kaystrobach $
  *
  * @author Kay Strobach <typo3@kay-strobach.de>
  */
@@ -40,7 +40,7 @@ require_once(t3lib_extMgm::extPath('scheduler', 'class.tx_scheduler_task.php'));
 /**
  * scheduler task class
  *
- * $Id$
+ * $Id: class.tx_piwikintegration_scheduler_archive.php 43324 2011-02-09 11:47:35Z kaystrobach $
  * 
  * @author  Kay Strobach <typo3@kay-strobach.de>
  * @link http://kay-strobach.de

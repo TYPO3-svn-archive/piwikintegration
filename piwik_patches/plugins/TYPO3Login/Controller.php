@@ -53,9 +53,4 @@ class Piwik_TYPO3Login_Controller extends Piwik_Login_Controller
 		$this->login();
 	}
 }
-//XClass to avoid errors in extmanager of TYPO3 - senseless so far
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/piwik_patches/plugins/TYPO3Login/Controller.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/piwikintegration/piwik_patches/plugins/TYPO3Login/Controller.php']);
-}
-
 ?>

@@ -33,7 +33,7 @@
  *
  * @author Kay Strobach <typo3@kay-strobach.de>
  */
-include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_div.php'));
+include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Div.php'));
 class tx_piwikintegration_flexform {
 	function init() {
 		$this->tablePrefix = tx_piwikintegration_install::getInstaller()->getConfigObject()->getTablePrefix();

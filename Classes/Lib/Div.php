@@ -25,16 +25,14 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * lib/class.tx_piwikintegration_div.php
- *
  * div functions to handle piwik stuff
  *
- * $Id$
+ * $Id: class.tx_piwikintegration_div.php 44087 2011-02-22 20:05:29Z kaystrobach $
  *
  * @author Kay Strobach <typo3@kay-strobach.de>
  */
 
-include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
+include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
 class tx_piwikintegration_div {
     function correctTitle($uid,$siteid,$config) {
 		if($config['customerRefresh'] && $config['customerName'] && $config['customerRootPid']) {
@@ -83,7 +81,7 @@ class tx_piwikintegration_div {
 	 * @return	array    	piwik config array
 	 */
 	function getPiwikConfigArray($uid) {
-		include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_install.php'));
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
         $path              = tx_piwikintegration_install::getInstaller()->getConfigObject()->initPiwikDatabase();
 
 		if($uid <= 0 || $uid!=intval($uid)) {

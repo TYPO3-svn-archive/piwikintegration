@@ -25,11 +25,9 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * lib/class.tx_piwikintegration_install.php
- *
  * Handles the first steps of install and returns config object for next steps
  *
- * $Id$
+ * $Id: class.tx_piwikintegration_install.php 42880 2011-01-31 22:40:14Z kaystrobach $
  *
  * @author Kay Strobach <typo3@kay-strobach.de>
  */
@@ -235,7 +233,7 @@ class tx_piwikintegration_install {
      */
 	public function getConfigObject() {
 		if($this->checkInstallation()) {
-			include_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_config.php'));
+			include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Config.php'));
 			return tx_piwikintegration_config::getConfigObject();
 		} else {
 			throw new Exception('Piwik is not installed!');

@@ -43,11 +43,11 @@ if (!defined ("TYPO3_MODE"))     die ("Access denied.");
 /*******************************************************************************
  * Save hook für ExtMgm
  */ 
-	$TYPO3_CONF_VARS['SC_OPTIONS']['typo3/mod/tools/em/index.php']['tsStyleConfigForm'][] = 'EXT:piwikintegration/lib/class.tx_piwikintegration_extmgm.php:tx_piwikintegration_extmgm->emSaveConstants';
+	$TYPO3_CONF_VARS['SC_OPTIONS']['typo3/mod/tools/em/index.php']['tsStyleConfigForm'][] = 'EXT:piwikintegration/Classes/Lib/Extmgm.php:tx_piwikintegration_extmgm->emSaveConstants';
 /*******************************************************************************
  * Save hook für table be_users
  */
-	$GLOBALS ['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:piwikintegration/lib/class.tx_piwikintegration_hook.php:tx_piwikintegration_hook';
+	$GLOBALS ['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:piwikintegration/Classes/Hooks/BeUserProcessing.php:tx_piwikintegration_Hooks_BeUserProcessing';
 
 /*******************************************************************************
  * unserialize extConf
@@ -68,7 +68,7 @@ if (!defined ("TYPO3_MODE"))     die ("Access denied.");
  * load fe hooks
  */ 
 	if(TYPO3_MODE=='FE') {
-		require_once(t3lib_extMgm::extPath('piwikintegration').'lib/class.tx_piwikintegration_tracking.php');
+		include_once(t3lib_extMgm::extPath('piwikintegration').'Classes/Tracking/Tracking.php');
 		if($_EXTCONF['enableIndependentMode']) {
 			$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-output'][] = 'tx_piwikintegration_tracking->contentPostProc_output'; 
 		}
@@ -85,6 +85,6 @@ if (!defined ("TYPO3_MODE"))     die ("Access denied.");
 				'description'      => 'LLL:EXT:' . $_EXTKEY . '/locallang.xml:piwikArchiveTask.description',
 				#'additionalFields' => 'tx_piwikintegration_piwikArchiveTask_AdditionalFieldProvider',
 		);
-		require_once(t3lib_extMgm::extPath('piwikintegration', 'lib/class.tx_piwikintegration_scheduler_archive.php'));
+		require_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/SchedulerTasks/Archive.php'));
 	}
 ?>

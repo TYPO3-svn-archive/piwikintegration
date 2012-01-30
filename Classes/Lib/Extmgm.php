@@ -25,16 +25,14 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * lib/class.tx_piwikintegration_extmgm.php
- *
  * functions for the extmgm render forms and react on changes
  *
- * $Id$
+ * $Id: class.tx_piwikintegration_extmgm.php 43656 2011-02-15 17:09:51Z kaystrobach $
  *
  * @author Kay Strobach <typo3@kay-strobach.de>
  */
  
-require_once(t3lib_extMgm::extPath('piwikintegration').'/lib/class.tx_piwikintegration_install.php');
+require_once(t3lib_extMgm::extPath('piwikintegration').'/Classes/Lib/Install.php');
 
 class tx_piwikintegration_extmgm {
 	function emMakeDBList($params) {

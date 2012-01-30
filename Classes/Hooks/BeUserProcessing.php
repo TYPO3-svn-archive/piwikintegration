@@ -1,6 +1,6 @@
 <?php
 
-class tx_piwikintegration_hook {
+class tx_piwikintegration_Hooks_BeUserProcessing {
 	/**
 	 * Process changes to a backendusers password to generate a new API key for
 	 * piwik

@@ -41,9 +41,9 @@
 $LANG->includeLLFile('EXT:piwikintegration/mod1/locallang.xml');
 require_once(PATH_t3lib . 'class.t3lib_scbase.php');
 require_once(PATH_t3lib . 'class.t3lib_page.php');
-require_once(t3lib_extMgm::extPath('piwikintegration').'lib/class.tx_piwikintegration_install.php');
-require_once(t3lib_extMgm::extPath('piwikintegration').'lib/class.tx_piwikintegration_div.php');
-require_once(t3lib_extMgm::extPath('piwikintegration').'lib/class.tx_piwikintegration_tracking.php');
+require_once(t3lib_extMgm::extPath('piwikintegration').'Classes/Lib/Install.php');
+require_once(t3lib_extMgm::extPath('piwikintegration').'Classes/Lib/Div.php');
+require_once(t3lib_extMgm::extPath('piwikintegration').'Classes/Tracking/Tracking.php');
 $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users has no permission for entry.
 // DEFAULT initialization of a module [END]
 
@@ -162,7 +162,6 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 		function getPiwikApi() {
 			global $BE_USER;
 			$content = '';
-			require_once(t3lib_extMgm::extPath('piwikintegration').'lib/class.tx_piwikintegration_tracking.php');
 			$content.='<h3>Piwik API</h3>';
 			$content.='Your API Code: '.$BE_USER->user['tx_piwikintegration_api_code'].'<br />';
 			$content.='Your Piwik URL: '.tx_piwikintegration_install::getInstaller()->getBaseUrl().'<br />';
