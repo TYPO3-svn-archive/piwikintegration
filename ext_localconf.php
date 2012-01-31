@@ -85,6 +85,6 @@ if (!defined ("TYPO3_MODE"))     die ("Access denied.");
 				'description'      => 'LLL:EXT:' . $_EXTKEY . '/locallang.xml:piwikArchiveTask.description',
 				#'additionalFields' => 'tx_piwikintegration_piwikArchiveTask_AdditionalFieldProvider',
 		);
-		require_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/SchedulerTasks/Archive.php'));
+		require_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/SchedulerTasks/Archive.php'));
 	}
 ?>
