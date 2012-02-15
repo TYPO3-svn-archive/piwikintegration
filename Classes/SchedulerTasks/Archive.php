@@ -34,8 +34,9 @@
  * @author Kay Strobach <typo3@kay-strobach.de>
  */
 
-require_once(t3lib_extMgm::extPath('scheduler', 'class.tx_scheduler_task.php'));
-
+# @todo fix that path
+#require_once(t3lib_extMgm::extPath('scheduler', 'class.tx_scheduler_task.php'));
+return;
 
 /**
  * scheduler task class

@@ -77,7 +77,7 @@ if (!defined ("TYPO3_MODE"))     die ("Access denied.");
 /******************************************************************************
  * load scheduler class if scheduler is installed
  */ 
-	if(t3lib_extMgm::isLoaded ('scheduler') && $_EXTCONF['enableSchedulerTask']) {
+	/*if(t3lib_extMgm::isLoaded ('scheduler') && $_EXTCONF['enableSchedulerTask']) {
 		//add task to scheduler list
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_piwikintegration_scheduler_archive'] = array(
 				'extension'        => $_EXTKEY,
@@ -86,5 +86,5 @@ if (!defined ("TYPO3_MODE"))     die ("Access denied.");
 				#'additionalFields' => 'tx_piwikintegration_piwikArchiveTask_AdditionalFieldProvider',
 		);
 		require_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/SchedulerTasks/Archive.php'));
-	}
+	}*/
 ?>
