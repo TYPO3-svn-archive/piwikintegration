@@ -137,6 +137,7 @@ class tx_piwikintegration_config {
 		$this->setOption('General'  ,'serve_widget_and_data'                  ,0);
 
 		//Disable the frame detection of Piwik
+		$this->setOption('General'  ,'enable_framed_pages'                    ,1);
 		$this->setOption('General'  ,'enable_framed_logins'                   ,1);
 		$this->setOption('General'  ,'enable_framed_settings'                 ,1);
 
