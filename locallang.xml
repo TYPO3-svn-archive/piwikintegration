@@ -35,6 +35,7 @@
 			<label index="action.reInitPiwikDB">Init Database</label>
 			<label index="action.resetUserRights">Reset all Userrights</label>
 			<label index="action.respectGermanDataPrivacyAct">Settings to respect german data privacy act</label>
+			<label index="action.renameTables">Rename, tx_piwikintegration tables into user_piwikintegration tables</label>
 			
 			<label index="desc.showPiwikConfig">Shows the configurationfile of piwik.</label>
 			<label index="desc.installPiwik">Download, Unzip, Patch, Configure Piwik</label>
@@ -47,6 +48,7 @@
 			<label index="desc.reInitPiwikDB">Init Piwik DB, Warning all Tables will be dropped before!</label>
 			<label index="desc.resetUserRights">truncate piwik access table</label>
 			<label index="desc.respectGermanDataPrivacyAct">Set settings to respect german data privacy act, the base for these settings is the document of the the ULDSH. https://www.datenschutzzentrum.de/tracking/piwik/20110315-webanalyse-piwik.pdf </label>
+			<label index="desc.renameTables">Fixes table rename bug</label>
 			<label index="button.DoIt">Do It</label>
 			<label index="installedPiwikNeeded">For some actions piwik sources need to be present!</label>
 		</languageKey>
@@ -63,7 +65,7 @@
 			<label index="extmgm.enableIndependentMode">EXPERIMENTAL independent mode: bindet den Tracking code ohne weitere Extension ein, denoch wird die Nutzung von EXT:piwik für das FE-Rendering empfohlen</label>
 			<label index="extmgm.enableSchedulerTask">EXPERIMENTAL scheduler task: Aktiviere EXPERIMENTAL scheduler task Integration, aktiviere nicht vor TYPOO 4.3</label>
 			<label index="extmgm.enableSchedulerLoging">Debug scheduler task:aktiviere aggressives loggen, nicht vor TYPO3 4.3 aktivieren</label>
-
+			<label index="action.renameTables">Umbenennen, tx_piwikintegration_* in user_piwikintegration_*</label>
 
 			<label index="header.installation">Installation</label>
 			<label index="header.configuration">Konfiguration</label>
@@ -92,7 +94,8 @@
 			<label index="desc.reInitPiwikDB">Initialisiere Piwik DB, Achtung alle Piwiktabellen werden vorher gelöscht!</label>
 			<label index="desc.resetUserRights">truncate piwik access Tabelle</label>
 			<label index="desc.respectGermanDataPrivacyAct">Aktiviere Einstellungen, um den deutschen Datenschutz zu respektieren.Die Grundlage für die Einstellungen ist das folgende Dokument des ULDSH. https://www.datenschutzzentrum.de/tracking/piwik/20110315-webanalyse-piwik.pdf </label>
-			
+			<label index="desc.renameTables">Löst das Problem der umbenannten Tabellen.</label>
+
 			<label index="button.DoIt">Ausführen</label>
 			<label index="installedPiwikNeeded">Für einige Aktionen muss Piwik installiert sein!</label>
 		</languageKey>

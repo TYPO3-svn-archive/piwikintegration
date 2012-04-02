@@ -79,6 +79,7 @@ class ext_update {
 		$buffer.= $this->getFooter();
 
 		$buffer.= $this->getHeader($LANG->getLL('header.database'));
+		$buffer.= $this->getButton('renameTables');
 		$buffer.= $this->getButton('resetUserRights');
 		$buffer.= $this->getButton('truncatePiwikDB');
 		$buffer.= $this->getButton('reInitPiwikDB');
@@ -92,10 +93,7 @@ class ext_update {
 		return 'Piwik installed';
 	}
 	function updatePiwik() {
-		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
-		$installer =  tx_piwikintegration_install::getInstaller();
-		$installer->updatePiwik();
-		return 'Piwik installed';
+		return 'Please use the wizard in Piwik to update your installation';
 	}
 	function removePiwik() {
 		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
@@ -188,7 +186,7 @@ class ext_update {
 	function showPiwikConfig() {
 		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
 		$path   = tx_piwikintegration_install::getInstaller()->getAbsInstallPath().'piwik/config/config.ini.php';
-		$button.= $path;
+		$button = $path;
 		$button.= '</b><pre style="width:80%;height:300px;overflow-y:scroll;border:1px solid silver;padding:10px;">';
 		$button.= file_get_contents($path);
 		$button.= '</pre><b>';
@@ -213,5 +211,19 @@ class ext_update {
 		$config->setOption('Tracker','cookie_expire',604800);
 		
 		return 'installed: AnonymizeIP<br />set: Tracker.ip_address_mask_length=2<br />set: Tracker.cookie_expire=604800';
+	}
+	function renameTables() {
+		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
+		$buffer = 'Renamed all tables prepended with tx_piwikintegration to user_piwikintegration:';
+		$tablesInstalled = $GLOBALS['TYPO3_DB']->admin_get_tables();
+		foreach($tablesInstalled as $table) {
+			if(substr($table['Name'], 0, 20) === 'tx_piwikintegration_') {
+				$newTableName = str_replace('tx_piwikintegration_', 'user_piwikintegration_', $table['Name']);
+				$GLOBALS['TYPO3_DB']->admin_query('RENAME TABLE `'.$table['Name'].'` to `' . $newTableName .'`');
+				$buffer.= $table['Name'].', ';
+			}
+		}
+		tx_piwikintegration_install::getInstaller()->getConfigObject()->setOption('database' ,'tables_prefix','user_piwikintegration_');
+		return $buffer;
 	}
 }

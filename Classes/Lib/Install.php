@@ -43,11 +43,16 @@ class tx_piwikintegration_install {
 	 * path were piwik will be installed
 	 */	 	
 	protected $installPath = 'typo3conf/piwik/';
-	
+
+	/**
+	 * @var tx_piwikintegration_install
+	 */
 	private static $installer   = null;
 	/**
 	 * get Singleton function
-	 */	 	
+	 * @static
+	 * @return tx_piwikintegration_install
+	 */
 	static function getInstaller() {
 		if(self::$installer == null) {
 			self::$installer = new tx_piwikintegration_install();
