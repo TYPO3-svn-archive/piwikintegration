@@ -3,7 +3,7 @@
 ########################################################################
 # Extension Manager/Repository config file for ext "piwikintegration".
 #
-# Auto generated 05-04-2012 10:50
+# Auto generated 12-04-2012 14:27
 #
 # Manual updates:
 # Only the data in the array - everything else is removed by next
@@ -15,7 +15,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'Uses EXT:piwik to inserts Data in the HTML header and gives BE-Users the right to see the data for their sites. Autoupdate of Piwik will work as TYPO3-Admin!',
 	'category' => 'module',
 	'shy' => 0,
-	'version' => '3.5.1',
+	'version' => '3.5.2',
 	'dependencies' => '',
 	'conflicts' => 'dbal',
 	'priority' => '',
