@@ -217,7 +217,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 			}
 				// check wether piwik_host is correct
 			$t = $this->piwikHelper->getPiwikConfigArray($this->pageinfo['uid']);
-			if($t['piwik_host'] !== 'typo3conf/piwik/piwik/') {
+			if(($t['piwik_host'] !== 'typo3conf/piwik/piwik/') && ($t['piwik_host'] !== '/typo3conf/piwik/piwik/')) {
 				$flashMessage = t3lib_div::makeInstance(
 					't3lib_FlashMessage',
 					$LANG->getLL('config_piwik_host_description'),
