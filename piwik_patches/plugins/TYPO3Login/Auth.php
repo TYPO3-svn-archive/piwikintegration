@@ -77,7 +77,11 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 		 */		 		
 			$rootLogin = Zend_Registry::get('config')->superuser->login;
 			$rootPassword = Zend_Registry::get('config')->superuser->password;
-			$rootToken = Piwik_UsersManager_API::getTokenAuth($rootLogin, $rootPassword);
+		/**
+		 * Fix http://forge.typo3.org/issues/37167
+		 */
+			$userManager = new Piwik_UsersManager_API();
+			$rootToken = $userManager->getTokenAuth($rootLogin, $rootPassword);
 	
 			if($this->login == $rootLogin
 				&& $this->token_auth == $rootToken)
