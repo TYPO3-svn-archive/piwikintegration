@@ -40,7 +40,13 @@
  */
 class Piwik_TYPO3Login_Auth implements Piwik_Auth
 {
+	/**
+	 * @var mixed|null
+	 */
 	protected $login = null;
+	/**
+	 * @var string|null
+	 */
 	protected $token_auth = null;
 
 	/**
@@ -72,6 +78,10 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 	 */
 	public function authenticate()
 	{
+		if(!is_object($this)) {
+			throw new Exception('only non static calls are supported ...');
+		}
+
 		/***********************************************************************
 		 * authenticate against the piwik configuration file for emergency access or installer or cronjob!
 		 */		 		
@@ -178,7 +188,7 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 	
 	static function getTokenAuth($login, $md5Password) {
 		$token = Zend_Registry::get('db')->fetchOne(
-						'SELECT tx_piwikintegration_api_code FROM `be_users` WHERE username = ?',
+						'SELECT ' . self::getTableName('api_code') . ' FROM `be_users` WHERE username = ?',
 						array($login)
 			);
 		if(md5(substr($token,0,6))==$md5Password) {
