@@ -45,28 +45,14 @@ class tx_piwikintegration_pi1_wizicon {
 	function proc($wizardItems)	{
 		global $LANG;
 
-		$LL = $this->includeLocalLang();
-
 		$wizardItems['plugins_tx_piwikintegration_pi1'] = array(
 			'icon'        => t3lib_extMgm::extRelPath('piwikintegration').'pi1/ce_wiz.gif',
-			'title'       => $LANG->getLLL('pi1_wizard_title',$LL),
-			'description' => $LANG->getLLL('pi1_wizard_description',$LL),
+			'title'       => 'LLL:EXT:piwikintegration/pi1/locallang.xml:pi1_wizard_title',
+			'description' => 'LLL:EXT:piwikintegration/pi1/locallang.xml:pi1_wizard_description',
 			'params'      => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=piwikintegration_pi1'
 		);
 
 		return $wizardItems;
-	}
-	
-	/**
-	 * Includes the locallang file for the 'tt_address' extension
-	 *
-	 * @return	array		The LOCAL_LANG array
-	 */
-	function includeLocalLang()	{
-		$llFile     = t3lib_extMgm::extPath('piwikintegration').'pi1/locallang.xml';
-		$LOCAL_LANG = t3lib_div::readLLXMLfile($llFile, $GLOBALS['LANG']->lang);
-		
-		return $LOCAL_LANG;
 	}
 }
 
