@@ -78,10 +78,6 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 	 */
 	public function authenticate()
 	{
-		if(!is_object($this)) {
-			throw new Exception('only non static calls are supported ...');
-		}
-
 		/***********************************************************************
 		 * authenticate against the piwik configuration file for emergency access or installer or cronjob!
 		 */		 		
