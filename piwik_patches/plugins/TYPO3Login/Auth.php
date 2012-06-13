@@ -104,11 +104,13 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 		 */
 			$beUserId = false;
 			//catch normal logins (login form)
-			if($this->token_auth && $this->token_auth!='anonymous') {
+			if((array_key_exists('token_auth',$_REQUEST)) &&($_REQUEST['token_auth']!='')) {
+				// fetch UserId, if token is set
 				$beUserId = Zend_Registry::get('db')->fetchOne(
-						'SELECT uid FROM '.$this->getTableName('be_users').' WHERE tx_piwikintegration_api_code = ?',
-						array($this->token_auth)
+							'SELECT uid FROM '.$this->getTableName('be_users').' WHERE tx_piwikintegration_api_code = ?',
+							array($_REQUEST['token_auth'])
 				);
+				#print_r($beUserId);
 			//catch typo3 logins
 			} elseif(array_key_exists('be_typo_user',$_COOKIE)) {
 				$beUserCookie = $_COOKIE['be_typo_user'];
@@ -117,11 +119,10 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 							array($beUserCookie)
 				);
 			//catch apikey logins
-			} elseif((in_array('token_auth',$_REQUEST)) &&($_REQUEST['token_auth']!='')) {
-				// fetch UserId, if token is set
+			} elseif($this->token_auth && $this->token_auth!='anonymous') {
 				$beUserId = Zend_Registry::get('db')->fetchOne(
-							'SELECT uid FROM '.$this->getTableName('be_users').' WHERE tx_piwikintegration_api_code = ?',
-							array($_REQUEST['token_auth'])
+						'SELECT uid FROM '.$this->getTableName('be_users').' WHERE tx_piwikintegration_api_code = ?',
+						array($this->token_auth)
 				);
 			} else {
 				$beUserId=false;
@@ -141,7 +142,7 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 							array($beUserId)
 				);
 				// is superuser?
-				if($beUserIsAdmin ==1) {
+				if($beUserIsAdmin == 1) {
 					return new Piwik_Auth_Result(Piwik_Auth_Result::SUCCESS_SUPERUSER_AUTH_CODE, $beUserName, NULL );
 				}
 				//normal user?
@@ -187,7 +188,7 @@ class Piwik_TYPO3Login_Auth implements Piwik_Auth
 						'SELECT ' . self::getTableName('api_code') . ' FROM `be_users` WHERE username = ?',
 						array($login)
 			);
-		if(md5(substr($token,0,6))==$md5Password) {
+		if(md5(substr($token,0,6)) == $md5Password) {
 			return $token;
 		} else {
 			return '';
