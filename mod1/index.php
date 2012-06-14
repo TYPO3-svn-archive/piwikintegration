@@ -118,8 +118,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 			$this->doc->getPageRenderer()->loadExtJS();
 			$this->doc->getPageRenderer()->addCssFile(t3lib_extMgm::extRelPath('piwikintegration') . 'mod1/ext-icons.css');
 			if($this->content = $this->checkEnvironment()) {
-
-				if(version_compare (TYPO3_VERSION,'4.3.0','>=')) {
+				if(version_compare (TYPO3_version,'4.3.0','>=')) {
 					$this->content = '';
 					$piwikSiteId   = $this->piwikHelper->getPiwikSiteIdForPid($this->id);
 					$this->piwikHelper->correctUserRightsForSiteId($piwikSiteId);
