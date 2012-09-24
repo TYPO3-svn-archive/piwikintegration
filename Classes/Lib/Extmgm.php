@@ -43,7 +43,7 @@ class tx_piwikintegration_extmgm {
         $fieldName  = $params['fieldName'];
         $fieldValue = $params['fieldValue'];
         $dbs        = $GLOBALS['TYPO3_DB']->admin_get_dbs();
-		$buffer.='<select name="'.$fieldName.'">';
+		$buffer ='<select name="'.$fieldName.'">';
         $buffer.='<option value="'.TYPO3_db.'">---TYPO3DB---</option>';
 		foreach($dbs as $db) {
 			$buffer.= '<option value="'.htmlspecialchars($db).'"';
@@ -68,7 +68,7 @@ class tx_piwikintegration_extmgm {
 			$new_database       = $newconf['databaseTablePrefix'];
 			$this->table_prefix = tx_piwikintegration_install::getInstaller()->getConfigObject()->getOption('database','table_prefix');
 			//walk through changes
-			if($database!==$new_database) {
+			if($old_database!==$new_database) {
 				//create shortVars
 					if($new_database == '') {
 						$new_database = TYPO3_db;

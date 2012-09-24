@@ -151,10 +151,11 @@ class tx_piwikintegration_div {
 			'0,1'
 		);
 		if(count($erg)==0) {
+			#include_once(tx_piwikintegration_install::getInstaller()->getAbsInstallPath() . '/core/Option.php');
 			//FIX currency for current Piwik version, since 0.6.3
-			$currency = Piwik_GetOption('SitesManager_DefaultCurrency') ? Piwik_GetOption('SitesManager_DefaultCurrency') : 'USD';
+			$currency = Piwik_Option::getInstance()->get('SitesManager_DefaultCurrency') ? Piwik_Option::getInstance()->get('SitesManager_DefaultCurrency') : 'USD';
 			//FIX timezone for current Piwik version, since 0.6.3
-			$timezone = Piwik_GetOption('SitesManager_DefaultTimezone') ? Piwik_GetOption('SitesManager_DefaultTimezone') : 'UTC';
+			$timezone = Piwik_Option::getInstance()->get('SitesManager_DefaultTimezone') ? Piwik_Option::getInstance()->get('SitesManager_DefaultTimezone') : 'UTC';
 			
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
 				tx_piwikintegration_div::getTblName('site'),

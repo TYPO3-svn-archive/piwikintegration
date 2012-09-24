@@ -10,6 +10,6 @@ host = "localhost"
 username = "--"
 password = --
 dbname = "--"
-tables_prefix = "tx_piwikintegration_"
+tables_prefix = "user_piwikintegration_"
 port = 3306
 adapter = "PDO_MYSQL"

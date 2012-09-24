@@ -196,7 +196,7 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
 					$flashMessage = t3lib_div::makeInstance(
 					    't3lib_FlashMessage',
 					    'Piwik installed',
-					    'Piwik is now installed / upgraded, wait a moment, reload the page ;)',
+					    'Piwik is now installed / upgraded, wait a moment, reload the page ;) <meta http-equiv="refresh" content="2; URL=mod.php?M=web_txpiwikintegrationM1&uid=' .$this->pageinfo['uid']  . '#reload">',
 					    t3lib_FlashMessage::OK
 					);
 					t3lib_FlashMessageQueue::addMessage($flashMessage);

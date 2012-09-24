@@ -81,7 +81,7 @@ class ext_update {
 		$buffer.= $this->getHeader($LANG->getLL('header.database'));
 		$buffer.= $this->getButton('renameTables');
 		$buffer.= $this->getButton('resetUserRights');
-		$buffer.= $this->getButton('truncatePiwikDB');
+		$buffer.= $this->getButton('cleanupPiwikDB');
 		$buffer.= $this->getButton('reInitPiwikDB');
 		$buffer.= $this->getFooter();
 		return $buffer;
@@ -166,7 +166,7 @@ class ext_update {
 		$button.='</tr>';
 		return $button;
 	}
-	function truncatePiwikDB() {
+	function cleanupPiwikDB() {
 		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
 		$path   = tx_piwikintegration_install::getInstaller()->getConfigObject()->initPiwikDatabase();
 		$tablesInstalled = Piwik::getTablesInstalled();
@@ -195,18 +195,15 @@ class ext_update {
 	function enableSuggestedPlugins() {
 		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
 		$config =  tx_piwikintegration_install::getInstaller()->getConfigObject();
-		$config->enablePlugin('TYPO3Login');
-		$config->enablePlugin('TYPO3Menu');
-		$config->enablePlugin('SecurityInfo');
-		$config->enablePlugin('DBStats');
-		$config->enablePlugin('AnonymizeIP');
+		$config->enableSuggestedPlugins();
 		$config->disablePlugin('Login');
 		return 'installed: TYPO3Login, TYPO3Menu, SecurityInfo, DBStats, AnonymizeIP<br />removed: Login';
 	}
 	function respectGermanDataPrivacyAct() {
 		include_once(t3lib_extMgm::extPath('piwikintegration', 'Classes/Lib/Install.php'));
 		$config =  tx_piwikintegration_install::getInstaller()->getConfigObject();
-		
+
+		tx_piwikintegration_install::getInstaller()->getConfigObject()->enablePlugin('AnonymizeIP');
 		$config->setOption('Tracker','ip_address_mask_length',2);
 		$config->setOption('Tracker','cookie_expire',604800);
 		

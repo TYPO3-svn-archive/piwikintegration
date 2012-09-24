@@ -29,7 +29,7 @@
 			<label index="action.patchPiwik">patch piwik</label>
 			<label index="action.removePiwik">remove piwik</label>
 			<label index="action.configurePiwik">configure piwik</label>
-			<label index="action.truncatePiwikDB">truncate database</label>
+			<label index="action.cleanupPiwikDB">truncate database</label>
 			<label index="action.enableSuggestedPlugins">Enable Suggested Plugins</label>
 			<label index="action.showPiwikConfig">Show Piwik Configfile</label> 
 			<label index="action.reInitPiwikDB">Init Database</label>
@@ -43,7 +43,7 @@
 			<label index="desc.patchPiwik">Patch Piwik</label>
 			<label index="desc.removePiwik">Remove Piwik directory</label>
 			<label index="desc.configurePiwik">Configure Piwik</label>
-			<label index="desc.truncatePiwikDB">Drop Piwikdata from Database</label>
+			<label index="desc.cleanupPiwikDB">Drop Piwikdata from Database</label>
 			<label index="desc.enableSuggestedPlugins">Enable Shipped Plugins, Suggested Plugins and disable senseless stuff</label>
 			<label index="desc.reInitPiwikDB">Init Piwik DB, Warning all Tables will be dropped before!</label>
 			<label index="desc.resetUserRights">truncate piwik access table</label>

@@ -89,20 +89,12 @@ class tx_piwikintegration_config {
 			include_once('core/Config.php');
 			include_once('core/PluginsManager.php');
 		//create config object
-			Piwik::createConfigObject(PIWIK_INCLUDE_PATH.'config/config.ini.php');
-		
-		//define Table prefix for internal use
-			
-			//echo $this->tablePrefix = $this->getOption('database','tables_prefix');
-			/*
-				$this->tableDbPrefix = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['piwikintegration']);
-				$this->tableDbPrefix = $this->tableDbPrefix['databaseTablePrefix'];
-				if($this->tableDbPrefix != '') {
-					$this->tableDbPrefix.= '.';
-				}
-				$this->tablePrefix = $this->tableDbPrefix.'tx_piwikintegration_';
-			*/
-		
+			try {
+				Piwik::createConfigObject();
+				$config = Piwik_Config::getInstance();
+				$config->init();
+			} catch(Exception $e) {
+			}
 	}
 	function initPiwikDatabase($noLoadConfig = false) {
 		$this->initPiwikFrameWork();
@@ -110,15 +102,17 @@ class tx_piwikintegration_config {
 			$this->initPiwikDB = true;
 			return;
 		}
-		include_once(PIWIK_INCLUDE_PATH . '/core/Option.php');
-		if($noLoadConfig===true) {
-			Piwik::createConfigObject(PIWIK_INCLUDE_PATH.'config/config.ini.php');
-		}
-		#$piwikConfig = Zend_Registry::get('config');
+		#include_once(PIWIK_INCLUDE_PATH . '/core/Option.php');
+		#if($noLoadConfig===true) {
+		#	Piwik::createConfigObject(PIWIK_INCLUDE_PATH.'config/config.ini.php');
+		#}
 		Piwik::createDatabaseObject();
 	}
 	function makePiwikConfigured() {
 		$this->initPiwikFrameWork();
+
+		#Piwik::setUserIsSuperUser(TRUE);
+
 		//userdata
 		$this->setOption('superuser','login'        ,md5(microtime()));
 		$this->setOption('superuser','password'     ,md5(microtime()));
@@ -141,20 +135,32 @@ class tx_piwikintegration_config {
 		$this->setOption('General'  ,'enable_framed_logins'                   ,1);
 		$this->setOption('General'  ,'enable_framed_settings'                 ,1);
 
+		//init all plugins
+
+
 		//set Plugins
-		$this->disablePlugin('Login');
 		$this->disablePlugin('ExampleAPI');
 		$this->disablePlugin('ExampleFeedburner');
 		$this->disablePlugin('ExamplePlugin');
 		$this->disablePlugin('ExampleRssWidget');
 		$this->disablePlugin('ExampleUI');
-		$this->enablePlugin('TYPO3Login');
-		$this->enablePlugin('TYPO3Menu');
-		$this->enablePlugin('TYPO3Widgets');
-		
+		$this->disablePlugin('Login');
+		$this->enableSuggestedPlugins();
+
 		//create PiwikTables, check wether base tables already exist
 		$this->installDatabase();
 	}
+
+	function enableSuggestedPlugins() {
+		$this->enablePlugin('TYPO3Login');
+		$this->enablePlugin('TYPO3Menu');
+		$this->enablePlugin('TYPO3Widgets');
+		$this->enablePlugin('SecurityInfo');
+		$this->enablePlugin('DBStats');
+		$this->enablePlugin('AnonymizeIP');
+
+	}
+
 	function installDatabase() {
 		$this->initPiwikDatabase(true);
 		$tablesInstalled = Piwik::getTablesInstalled();
@@ -165,14 +171,6 @@ class tx_piwikintegration_config {
 			$updater = new Piwik_Updater();
 			//set Piwikversion
 			$updater->recordComponentSuccessfullyUpdated('core', Piwik_Version::VERSION);
-
-			$request = new Piwik_API_Request("
-							method=SitesManager.addSite
-							&siteName=test
-							&urls=localhost
-							&ecommerce=ecommerce
-							&format=original
-						");
 		}
 	}
 	/**
@@ -188,41 +186,6 @@ class tx_piwikintegration_config {
 			throw new Exception('Problem with uid in tx_piwikintegration_helper.php::correctUserRightsForPid');
 		}
 		$beUserName = $GLOBALS['BE_USER']->user['username'];
-		/**
-		 * ensure, that the user is added to the database
-		 * needed to change user attributes (mail, ...)	
-		 * tx_piwikintegration_user		 	 
-		 */		 		
-		//commented out, as no apikeys are needed in piwikdb
-		//will check this lateron
-		/*$erg = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-			'*',
-			$this->tablePrefix.'user',
-			'login="'.$beUserName.'"',
-			'',
-			'',
-			'0,1'
-			);
-		if(count($erg)!=1) {
-			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-					tx_piwikintegration_div::getTblName('user'),
-					array(
-						'login'          => $beUserName,
-						'alias'          => $GLOBALS['BE_USER']->user['realName'] ? $GLOBALS['BE_USER']->user['realName'] : $beUserName,
-						'email'          => $GLOBALS['BE_USER']->user['email'],
-						'date_registered'=> date('Y-m-d H:i:s',time()),
-					)
-				);
-		} else {
-			$GLOBALS['TYPO3_DB']->exec_Updatequery(
-					tx_piwikintegration_div::getTblName('user'),
-					'login = "'.mysql_escape_string($beUserName).'"',
-					array(
-						'alias' => $GLOBALS['BE_USER']->user['realName'] ? $GLOBALS['BE_USER']->user['realName'] : $beUserName,
-						'email' => $GLOBALS['BE_USER']->user['email'],
-					)
-				);		
-		}*/
 		/**
 		 * ensure, that user's right are added to the database
 		 * tx_piwikintegration_access		 
@@ -260,41 +223,44 @@ class tx_piwikintegration_config {
 	}
 	function setOption($sectionName,$option,$value) {
 		$this->initPiwikFrameWork();
-		$piwikConfig = Zend_Registry::get('config');
-		$section     = $piwikConfig->$sectionName->toArray();
+		$piwikConfig = Piwik_Config::getInstance();
+		$section     = $piwikConfig->$sectionName;
 		$section[$option] = $value;
 		$piwikConfig->$sectionName = $section;
+		$piwikConfig->forceSave();
 	}
 	function getOption($sectionName,$option) {
 		$this->initPiwikFrameWork();
-		$piwikConfig = Zend_Registry::get('config');
-		$section     = $piwikConfig->$sectionName->toArray();
+		$piwikConfig = Piwik_Config::getInstance();
+		$section     = $piwikConfig->$sectionName;
 		return $section[$option];
 	}
 	function enablePlugin($plugin) {
 		$this->initPiwikFrameWork();
-		//makeConfigObject
-		$piwikConfig = Zend_Registry::get('config');
-		$plugins     = $piwikConfig->Plugins->toArray();
-		//load typo3login
-		if(array_search($plugin,$plugins)===false) {
-			$plugins[]=$plugin;
+		if(!Piwik_PluginsManager::getInstance()->isPluginActivated($plugin)) {
+			try {
+				Piwik_PluginsManager::getInstance()->activatePlugin($plugin);
+				Piwik_PluginsManager::getInstance()->loadPlugins( Piwik_Config::getInstance()->Plugins['Plugins'] );
+				#Piwik_PluginsManager::getInstance()->installLoadedPlugins();
+				Piwik::install();
+			} catch(Exception $e) {
+
+			}
 		}
-		//write Config back
-		$piwikConfig->Plugins = $plugins;
+		return;
 	}
 	function disablePlugin($plugin) {
 		$this->initPiwikFrameWork();
-		//makeConfigObject
-		$piwikConfig = Zend_Registry::get('config');
-		$plugins     = $piwikConfig->Plugins->toArray();
-		//unload plugin
-		$key = array_search($plugin,$plugins);
-		if($key===false) {
-			unset($plugins[$key]);
+		if(Piwik_PluginsManager::getInstance()->isPluginActivated($plugin)) {
+			try {
+				Piwik_PluginsManager::getInstance()->deactivatePlugin($plugin);
+				#Piwik_PluginsManager::getInstance()->installLoadedPlugins();
+				Piwik::install();
+			} catch(Exception $e) {
+
+			}
 		}
-		//write Config back
-		$piwikConfig->Plugins = $plugins;
+		return;
 	}
 	function getJsForUid($uid) {
 		return '--';

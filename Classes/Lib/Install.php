@@ -116,7 +116,7 @@ class tx_piwikintegration_install {
 
 		// tell installer where to grab piwik
 		$settings = unserialize($TYPO3_CONF_VARS['EXT']['extConf']['piwikintegration']);
-		if(array_key_exists('piwikDownloadSource', $settings)) {
+		if(array_key_exists('piwikDownloadSource', $settings) && $settings['piwikDownloadSource'] != '') {
 			$downloadSource = $settings['piwikDownloadSource'];
 		} else {
 			$downloadSource = 'http://piwik.org/latest.zip';
