@@ -165,6 +165,14 @@ class tx_piwikintegration_config {
 			$updater = new Piwik_Updater();
 			//set Piwikversion
 			$updater->recordComponentSuccessfullyUpdated('core', Piwik_Version::VERSION);
+
+			$request = new Piwik_API_Request("
+							method=SitesManager.addSite
+							&siteName=test
+							&urls=localhost
+							&ecommerce=ecommerce
+							&format=original
+						");
 		}
 	}
 	/**

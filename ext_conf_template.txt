@@ -8,3 +8,5 @@ enableIndependentMode = 0
 enableSchedulerTask = 0
 # cat=basic/enable; type=boolean; label= LLL:EXT:piwikintegration/locallang.xml:extmgm.enableSchedulerLoging
 enableSchedulerLoging = 0
+# cat=basic/enable; type=string; label= LLL:EXT:piwikintegration/locallang.xml:extmgm.piwikDownloadSource
+piwikDownloadSource = http://piwik.org/latest.zip

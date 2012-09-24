@@ -112,10 +112,19 @@ class tx_piwikintegration_install {
 		return $this->installPath.'piwik/';
 	}
 	private function downloadLatestPiwik() {
+		GLOBAL $TYPO3_CONF_VARS;
+
+		// tell installer where to grab piwik
+		$settings = unserialize($TYPO3_CONF_VARS['EXT']['extConf']['piwikintegration']);
+		if(array_key_exists('piwikDownloadSource', $settings)) {
+			$downloadSource = $settings['piwikDownloadSource'];
+		} else {
+			$downloadSource = 'http://piwik.org/latest.zip';
+		}
+
 		//download piwik into typo3temp
-		//can be hardcoded, because latest piwik is always on the same url ;) thanks guys
 		$zipArchivePath = t3lib_div::getFileAbsFileName('typo3temp/piwiklatest.zip');
-		t3lib_div::writeFileToTypo3tempDir($zipArchivePath,t3lib_div::getURL('http://piwik.org/latest.zip'));
+		t3lib_div::writeFileToTypo3tempDir($zipArchivePath,t3lib_div::getURL($downloadSource));
 		if(@filesize($zipArchivePath)===FALSE) {
 			throw new Exception('Installation invalid, typo3temp '.$zipArchivePath.' can´t be created for some reason');
 		}
@@ -140,7 +149,7 @@ class tx_piwikintegration_install {
 					unset($zip);
 				break;
 				case 'cmd':
-					$cmd = $GLOBALS['TYPO3_CONF_VARS']['BE']['unzip_path'].'unzip -qq "'.$zipArchivePath.'" -d "'.$installDir.'"';
+					$cmd = $GLOBALS['TYPO3_CONF_VARS']['BE']['unzip_path'].'unzip -qq "'.$zipArchivePath.'" -d "'.$this->getAbsInstallPath().'"';
 					exec($cmd);
 				break;
 				case 'zlib':
@@ -181,6 +190,8 @@ class tx_piwikintegration_install {
 	}
 	public function checkPiwikPatched() {
 		$_EXTKEY = 'piwikintegration';
+		$piwikPatchVersion = '0.0.0';
+		$EM_CONF = array();
 		@include(t3lib_extMgm::extPath('piwikintegration').'ext_emconf.php');
 		@include($this->getAbsInstallPath().'/piwik/piwikintegration.php');
 		if($EM_CONF['piwikintegration']['version'] != $piwikPatchVersion) {
@@ -225,6 +236,7 @@ class tx_piwikintegration_install {
 		}
 		//store information about the last patch process
 		$_EXTKEY = 'piwikintegration';
+		$EM_CONF = array();
 		@include(t3lib_extMgm::extPath('piwikintegration').'ext_emconf.php');
 		$data = '<?php $piwikPatchVersion = "'.$EM_CONF['piwikintegration']['version'].'"; '.chr(63).'>';
 		file_put_contents($this->getAbsInstallPath().'piwik/piwikintegration.php',$data);
@@ -255,7 +267,7 @@ class tx_piwikintegration_install {
 			} elseif(!(TYPO3_OS=='WIN' || $GLOBALS['TYPO3_CONF_VARS']['BE']['disable_exec_function']))	{
 				return 'cmd';
 			} else {
-					throw new Exception('There is no valid unzip wrapper, i need either the class ZipArchiv from php or a *nix system with unzip path set.');
+				throw new Exception('There is no valid unzip wrapper, i need either the class ZipArchiv from php or a *nix system with unzip path set.');
 			}
 	}
 }
