@@ -38,6 +38,7 @@ class Piwik_TYPO3Menu extends Piwik_Plugin
 	 */
 	public function getInformation()
 	{
+		$piwikPatchVersion = '0.0.0';
 		include(PIWIK_INCLUDE_PATH.'/piwikintegration.php');
 		return array(
 			'name' => 'TYPO3NMenu',
