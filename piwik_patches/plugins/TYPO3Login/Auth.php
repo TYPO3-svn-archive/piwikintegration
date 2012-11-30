@@ -28,8 +28,16 @@
  * for version 3.0.9
  */
 	define('TYPO3_MODE', 'BE');
-	include      PIWIK_INCLUDE_PATH.'/../../localconf.php';
-	define('TYPO3DB',$typo_db);
+	if(file_exists(PIWIK_INCLUDE_PATH.'/../../LocalConfiguration.php')) {
+		$TYPO3config = include(PIWIK_INCLUDE_PATH.'/../../LocalConfiguration.php');
+		define('TYPO3DB', $TYPO3config['DB']['database']);
+	} elseif(file_exists(PIWIK_INCLUDE_PATH.'/../../localconf.php')) {
+		include(PIWIK_INCLUDE_PATH.'/../../localconf.php');
+		define('TYPO3DB',$typo_db);
+	} else {
+		throw Exception('Can´t include TYPO3-config file');
+	}
+
 /**
  * Provide authentification service against TYPO3 for piwik
  *
